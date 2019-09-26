@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="userstatus_online">#2DE0A5</color>
+    <color name="userstatus_online_outline">#2DE0A5</color>
+    <color name="userstatus_away">#FFD21F</color>
+    <color name="userstatus_away_outline">#FFD21F</color>
+    <color name="userstatus_busy">#F5455C</color>
+    <color name="userstatus_busy_outline">#F5455C</color>
+    <color name="userstatus_offline">#CBCED1</color>
+    <color name="userstatus_offline_outline">#CBCED1</color>
+</resources>

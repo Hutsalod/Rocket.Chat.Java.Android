@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:theme="@style/AppTheme.Dark"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+    <LinearLayout
+            android:id="@+id/user_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:elevation="2dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/margin_8"
+            android:paddingTop="@dimen/margin_8"
+            android:paddingLeft="@dimen/margin_16"
+            android:paddingRight="@dimen/margin_16">
+
+        <ImageView
+                android:id="@+id/current_user_status"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/userstatus_online" />
+
+        <Space
+                android:layout_width="@dimen/margin_8"
+                android:layout_height="wrap_content" />
+
+        <chat.wewe.android.widget.RocketChatAvatar
+                android:id="@+id/current_user_avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp" >
+
+        </chat.wewe.android.widget.RocketChatAvatar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/current_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/margin_8"
+                android:layout_marginRight="@dimen/margin_8"
+                android:layout_weight="1"
+                android:textColor="#1B1B1B"
+                android:textSize="14sp"
+                tools:text="Dima Hutsalo" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_8"
+                android:layout_marginRight="@dimen/margin_8"
+                android:fontFamily="sans-serif-light"
+                android:layout_weight="1"
+                android:textColor="#999999"
+                android:text="Chat: Онлайн SIP: Онлайн" />
+        </LinearLayout>
+
+        <chat.wewe.android.widget.DownUpToggleView
+                android:id="@+id/toggle_user_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/search_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_info_container"
+        android:background="?attr/colorPrimaryDark"
+        android:elevation="2dp"
+        android:paddingTop="@dimen/margin_8"
+        android:paddingBottom="@dimen/margin_8"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:iconifiedByDefault="false"
+            app:queryHint="@string/navigation_search_rooms" />
+    </FrameLayout>
+
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/user_action_outer_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_info_container"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        android:visibility="visible"
+        tools:visibility="@string/user_status_invisible">
+
+        <LinearLayout
+            android:id="@+id/actionContainers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/btn_status_online"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawableLeft="@drawable/userstatus_online"
+                android:drawablePadding="16dp"
+                android:textSize="14sp"
+                android:text="@string/user_status_online"
+                android:textColor="#1B1B1B"
+                android:fontFamily="sans-serif-light"
+                android:textAppearance="?attr/textAppearanceListItemSmall" />
+
+            <TextView
+                android:id="@+id/btn_status_away"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawableLeft="@drawable/userstatus_away"
+                android:drawablePadding="16dp"
+                android:textSize="14sp"
+                android:text="@string/user_status_away"
+                android:textColor="#1B1B1B"
+                android:fontFamily="sans-serif-light"
+                android:textAppearance="?attr/textAppearanceListItemSmall" />
+
+            <TextView
+                android:id="@+id/btn_status_busy"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawableLeft="@drawable/userstatus_busy"
+                android:drawablePadding="16dp"
+                android:textSize="14sp"
+                android:text="@string/user_status_busy"
+                android:textColor="#1B1B1B"
+                android:fontFamily="sans-serif-light"
+                android:textAppearance="?attr/textAppearanceListItemSmall" />
+
+            <TextView
+                android:id="@+id/btn_status_invisible"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawableLeft="@drawable/userstatus_offline"
+                android:drawablePadding="16dp"
+                android:textSize="14sp"
+                android:text="@string/user_status_invisible"
+                android:textColor="#1B1B1B"
+                android:fontFamily="sans-serif-light"
+                android:textAppearance="?attr/textAppearanceListItemSmall" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                android:id="@+id/btn_language"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/str_6"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/deviceprivat"
+                style="@style/sidebar_list_item"
+                android:drawablePadding="16dp"
+                android:layout_marginLeft="16dp"
+                android:checked="true"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/str_4"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B"
+                android:textSize="14sp"
+                android:theme="@style/MySwitch" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+
+
+            <TextView
+                android:id="@+id/securityBtn"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:textSize="14sp"
+                android:text="@string/str_5"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/switch2"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:checked="false"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="Альтернативный сервер"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B"
+                android:textSize="14sp"
+                android:theme="@style/MySwitch" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                style="@style/sidebar_list_item"
+                android:text="Версия: 1.3.7 (1370)"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-light"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+            <TextView
+                style="@style/sidebar_list_item"
+                android:text="Версия сервера:  2.5.0"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-light"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+            <TextView
+                android:id="@+id/policy_mss"
+                style="@style/sidebar_list_item"
+                android:text="@string/str_3"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:textSize="14sp"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#1B1B1B" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <LinearLayout
+                android:id="@+id/deleye_mss"
+                style="@style/sidebar_list_item"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent">
+
+                    <io.github.yusukeiwaki.android.widget.FontAwesomeTextView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="#D85946"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@string/fa_sign_out"
+                        android:textSize="14dp" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete_message"
+                    android:textSize="14sp"
+                    android:textColor="#D85946"
+                    android:fontFamily="sans-serif-light"
+                    android:textAppearance="?attr/textAppearanceListItemSmall" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+
+            <LinearLayout
+                android:id="@+id/btn_logout"
+                style="@style/sidebar_list_item"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent">
+
+                    <io.github.yusukeiwaki.android.widget.FontAwesomeTextView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="center"
+                        android:text="@string/fa_sign_out"
+                        android:textColor="#D85946"
+                        android:textSize="14dp" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/fragment_sidebar_main_logout_title"
+                    android:textAppearance="?attr/textAppearanceListItemSmall"
+                    android:textColor="#D85946"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                android:id="@+id/exetGoogle"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:textSize="14sp"
+                android:text="@string/str_2"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#1B1B1B" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+            <TextView
+                android:id="@+id/supportConnect"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:textSize="14sp"
+                android:text="@string/str_1"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#1B1B1B" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                android:id="@+id/version_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/margin_8"
+                android:fontFamily="sans-serif-light"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="#1B1B1B"
+                tools:text="" />
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/languageLayaut"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/user_info_container"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                android:id="@+id/languagede"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/language_1"
+                android:textSize="14sp"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                android:id="@+id/languageen"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/language_2"
+                android:textSize="14sp"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                android:id="@+id/languageru"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/language_3"
+                android:textSize="14sp"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                android:id="@+id/languageua"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/language_4"
+                android:textSize="14sp"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                android:id="@+id/nazadq"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/str_7"
+                android:textSize="14sp"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/secyrityLayaut"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/user_info_container"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:drawablePadding="16dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="48dp"
+                android:ems="10"
+                android:inputType="number" />
+
+
+            <TextView
+                android:id="@+id/okKey"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/str_9"
+                android:textSize="14sp"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+            <TextView
+                android:id="@+id/noKey"
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/str_8"
+                android:textSize="14sp"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="#EFEFF4" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C8C7CB" />
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>

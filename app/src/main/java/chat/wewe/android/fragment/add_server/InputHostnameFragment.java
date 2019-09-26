@@ -1,0 +1,141 @@
+package chat.wewe.android.fragment.add_server;
+
+import android.content.Context;
+import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import chat.wewe.android.BuildConfig;
+import chat.wewe.android.LaunchUtil;
+import chat.wewe.android.R;
+import chat.wewe.android.RocketChatCache;
+import chat.wewe.android.fragment.AbstractFragment;
+import chat.wewe.android.service.ConnectivityManager;
+
+/**
+ * Input server host.
+ */
+public class InputHostnameFragment extends AbstractFragment implements InputHostnameContract.View {
+
+  private InputHostnameContract.Presenter presenter;
+  private ConstraintLayout container;
+  private View waitingView;
+
+  public InputHostnameFragment() {}
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    Context appContext = getContext().getApplicationContext();
+    presenter = new InputHostnamePresenter(new RocketChatCache(appContext), ConnectivityManager.getInstance(appContext));
+
+  /*    if(!isOnline()){
+        Toast.makeText(getActivity(), "Нету соединения с интернетом!" ,
+                Toast.LENGTH_LONG).show();
+      }*/
+
+  }
+  protected boolean isOnline() {
+      boolean success = false;
+      try {
+        URL url = new URL("https://weltwelle.com");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(5000);
+        connection.connect();
+        success = connection.getResponseCode() == 200;
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      return success;
+
+  }
+
+  @Override
+  protected int getLayout() {
+    return R.layout.fragment_input_hostname;
+  }
+
+  @Override
+  protected void onSetupView() {
+    setupVersionInfo();
+
+    container = (ConstraintLayout) rootView.findViewById(R.id.container);
+    waitingView = rootView.findViewById(R.id.waiting);
+    rootView.findViewById(R.id.btn_connect).setOnClickListener(view -> handleConnect());
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    handleConnect();
+  }
+
+  private void setupVersionInfo() {
+    TextView versionInfoView = (TextView) rootView.findViewById(R.id.version_info);
+    versionInfoView.setText(getString(R.string.version_info_text, BuildConfig.VERSION_NAME));
+  }
+
+  private void handleConnect() {
+    presenter.connectTo(getHostname());
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    presenter.bindView(this);
+  }
+
+  @Override
+  public void onDestroyView() {
+    presenter.release();
+    super.onDestroyView();
+  }
+
+  private String getHostname() {
+    final String host = "chat.weltwelle.com";
+    return host;
+  }
+
+  private void showError(String errString) {
+    Snackbar.make(rootView, errString, Snackbar.LENGTH_LONG).show();
+  }
+
+  @Override
+  public void showLoader() {
+   // container.setVisibility(View.GONE);
+   // waitingView.setVisibility(View.VISIBLE);
+  }
+
+  @Override
+  public void hideLoader() {
+   // waitingView.setVisibility(View.GONE);
+   // container.setVisibility(View.VISIBLE);
+  }
+
+  @Override
+  public void showInvalidServerError() {
+    showError(getString(R.string.input_hostname_invalid_server_message));
+  }
+
+  @Override
+  public void showConnectionError() {
+    showError(getString(R.string.connection_error_try_later));
+  }
+
+  @Override
+  public void showHome() {
+    LaunchUtil.showMainActivity(getContext());
+    getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+  }
+}

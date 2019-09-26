@@ -1,0 +1,76 @@
+apply plugin: 'com.android.library'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+    }
+}
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.0'
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1"
+
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+ext {
+    supportVersion = '28.0.0'
+    frescoVersion = '1.3.0'
+    rxbindingVersion = '2.0.0'
+}
+
+dependencies {
+    compile project(':rocket-chat-core')
+
+    compile "com.android.support:support-annotations:$supportVersion"
+    compile "com.android.support:appcompat-v7:$supportVersion"
+    compile "com.android.support:recyclerview-v7:$supportVersion"
+    compile "com.android.support:cardview-v7:$supportVersion"
+    compile "com.android.support:support-v13:$supportVersion"
+    compile "com.android.support:design:$supportVersion"
+
+    compile 'org.nibor.autolink:autolink:0.6.0'
+
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+
+    compile 'com.squareup.okhttp3:okhttp:3.8.0'
+
+    compile 'com.github.yusukeiwaki.android-widget:widget-fontawesome:0.0.1'
+
+    compile "com.facebook.fresco:fresco:$frescoVersion"
+    compile "com.facebook.fresco:animated-gif:$frescoVersion"
+    compile "com.facebook.fresco:animated-webp:$frescoVersion"
+    compile "com.facebook.fresco:webpsupport:$frescoVersion"
+    compile "com.facebook.fresco:imagepipeline-okhttp3:$frescoVersion"
+
+    compile 'de.hdodenhof:circleimageview:3.0.0'
+
+    compile 'com.caverock:androidsvg:1.2.1'
+
+    compile "com.jakewharton.rxbinding2:rxbinding:$rxbindingVersion"
+    compile "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxbindingVersion"
+
+    compile 'com.squareup.retrofit2:retrofit:2.5.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.5.0'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+
+    testCompile 'junit:junit:4.12'
+    testCompile "org.mockito:mockito-core:2.7.19"
+}

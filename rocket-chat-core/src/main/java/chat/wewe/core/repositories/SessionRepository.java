@@ -1,0 +1,14 @@
+package chat.wewe.core.repositories;
+
+import com.fernandocejas.arrow.optional.Optional;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+
+import chat.wewe.core.models.Session;
+
+public interface SessionRepository {
+
+  Flowable<Optional<Session>> getById(int id);
+
+  Single<Boolean> save(Session session);
+}

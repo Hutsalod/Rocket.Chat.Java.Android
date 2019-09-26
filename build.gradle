@@ -1,0 +1,21 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply from: rootProject.file('dependencies.gradle')
+
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url 'https://github.com/lijingle1/stetho-realm/raw/master/maven-repo' }
+        maven { url 'http://dl.bintray.com/amulyakhare/maven' } //for TextDrawable.
+        maven { url "https://clojars.org/repo/" } //for icepick.
+        maven { url 'https://jitpack.io' } //for widget-fontawesome.
+
+        maven {
+            url "https://maven.google.com"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

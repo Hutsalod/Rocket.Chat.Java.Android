@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F9F9F9"
+        android:orientation="vertical">
+
+    <chat.wewe.android.widget.DividerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+        android:background="#F9F9F9"
+            android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btn_extras"
+                android:layout_width="40dp"
+                android:layout_height="48dp"
+                android:padding="8dp"
+                app:srcCompat="@drawable/ic_add_circle_outline_black_24dp" />
+
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/emoji_keyboard_toggle"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:visibility="gone" />
+
+        <chat.wewe.android.widget.message.ImageKeyboardEditText
+                android:id="@+id/editor"
+                android:layout_width="0px"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:inputType="textCapSentences|textMultiLine"
+                android:background="@drawable/edit"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+            android:paddingLeft="10dp"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:hint="@string/message_composer_message_hint"
+                android:minLines="1"
+                android:maxLines="4" />
+
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/btn_submit"
+                android:layout_width="40dp"
+                android:layout_height="48dp"
+                android:padding="8dp"
+
+                app:srcCompat="@drawable/ic_send_black" />
+
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

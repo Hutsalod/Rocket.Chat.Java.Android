@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/message_options_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/margin_8"
+        android:visibility="gone"
+        tools:text="Edit message" />
+
+    <Button
+            android:id="@+id/message_options_edit_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+        android:background="@null"
+            android:text="@string/edit_message"
+        android:fontFamily="sans-serif-light"
+        android:textColor="#1B1B1B"
+        android:visibility="gone"
+        android:textSize="14sp"
+            tools:visibility="visible" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#C8C7CB" />
+    <Button
+        android:id="@+id/delete_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:textSize="14sp"
+        android:text="@string/delet_message"
+        android:fontFamily="sans-serif-light"
+        android:textColor="#1B1B1B"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#C8C7CB" />
+    <Button
+        android:id="@+id/coppy_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="@string/copy_message"
+        android:fontFamily="sans-serif-light"
+        android:textColor="#1B1B1B"
+        android:visibility="gone"
+        android:textSize="14sp"
+        tools:visibility="visible" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#C8C7CB" />
+
+</LinearLayout>

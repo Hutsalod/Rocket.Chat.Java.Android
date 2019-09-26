@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="message_composer_message_hint">Сообщение</string>
+    <string name="click_to_load">Нажмите, чтобы загрузить</string>
+    <string name="no_channel_found">Канал не найден</string>
+    <string name="no_user_found">Пользователь не найден</string>
+</resources>
