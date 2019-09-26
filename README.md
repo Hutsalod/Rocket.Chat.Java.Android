@@ -5,6 +5,7 @@ Wewe mobile messenger created on the basis of Rocket Chat!
 
 Rocket.Chat Native Android Application.
 
+![alt text](https://i.ibb.co/W3C3h42/RU-xsmax1.png)
 ![alt text](https://i.ibb.co/GnTZVLw/RU-xsmax3.png)
 
 ## How to build
