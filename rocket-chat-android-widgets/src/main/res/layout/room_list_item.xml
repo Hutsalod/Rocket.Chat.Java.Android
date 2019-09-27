@@ -109,12 +109,12 @@
                 android:id="@+id/message_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="3dp"
-                android:textSize="12sp"
+                android:fontFamily="sans-serif-light"
+                android:text="Прочетать"
                 android:textColor="#AEB1B6"
-                android:text="Прочетать"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <TextView

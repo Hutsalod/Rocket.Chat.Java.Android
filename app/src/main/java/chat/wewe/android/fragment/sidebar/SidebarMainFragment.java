@@ -370,6 +370,14 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       startActivity(Intent.createChooser(email, ""));
     });
 
+    rootView.findViewById(R.id.friends).setOnClickListener(view -> {
+      Uri uri = Uri.parse("smsto:");
+      Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+      intent.putExtra("sms_body", "Hey, I'm using WeWe to chat and call. Join me! Apple - https://apps.apple.com/ua/app/wewe-phone/id1386715295, Android - https://play.google.com/store/apps/details?id=chat.wewe.android");
+      startActivity(intent);
+
+    });
+
     rootView.findViewById(R.id.policy_mss).setOnClickListener(view -> {
     Intent i = new Intent(Intent.ACTION_VIEW,
             Uri.parse("https://weltwelle.com/privpolicy.html"));
@@ -572,7 +580,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   }
 
   public void getStatus(String roomName){
-      statusRoom.setImageResource(R.drawable.ic_at_white_24dp);
+      statusRoom.setImageResource(R.drawable.s000);
     mApiServiceChat.getStatus(roomName)
             .enqueue(new Callback<ResponseBody>() {
               @Override
@@ -582,7 +590,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
                     JSONObject jsonRESULTS = new JSONObject(response.body().string());
                     if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
 
-                        statusRoom.setImageResource(R.drawable.ic_at_gray_24dp);
+                        statusRoom.setImageResource(R.drawable.s222);
                     }
                   } catch (JSONException e) {
                     e.printStackTrace();

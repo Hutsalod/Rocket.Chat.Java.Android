@@ -152,6 +152,9 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   String[] mCats;
   ArrayList<String> mCatsList;
   public static int setnupad=0;
+  public static boolean active = false;
+
+
   @Override
   protected int getLayoutContainerForFragment() {
     return R.id.activity_main_container;
@@ -280,8 +283,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       public void onTextChanged(CharSequence s, int start, int before, int count) {
       }
 
-
-
       @Override
       public void afterTextChanged(Editable s) {
         if (s.length() > 0) {
@@ -293,7 +294,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         }
       }
     });
-
 
     autoCompleteTextView.setOnItemClickListener(this);
     UF_ORIGINAL_TRID("");
@@ -892,7 +892,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                 } else {
                 }
               }
-
               @Override
               public void onFailure(Call<ResponseBody> call, Throwable t) {
                 //   Log.e("debug", "onFailure: ERROR > " + t.toString());

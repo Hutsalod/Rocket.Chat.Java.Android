@@ -1,6 +1,7 @@
 package chat.wewe.android.fragment.sidebar;
 
 
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -42,7 +43,7 @@ class SwipeController extends Callback {
 
     private SwipeControllerActions buttonsActions = null;
 
-    private static final float buttonWidth = 200;
+    private static final float buttonWidth = 300;
 
     public SwipeController(SwipeControllerActions buttonsActions) {
         this.buttonsActions = buttonsActions;
@@ -150,7 +151,7 @@ class SwipeController extends Callback {
                             buttonsActions.onRightClicked(viewHolder.getAdapterPosition());
                             Log.d("SWIPE", "spotlightRoomList1 "+pos);
                          Log.d("SWIPE", "spotlightRoomList1 "+RoomListAdapter.arrayListList.get(pos));
-                            SidebarMainFragment.methodCallHelper.deleteRooms(RoomListAdapter.arrayListList.get(pos));
+                         //   SidebarMainFragment.methodCallHelper.deleteRooms(RoomListAdapter.arrayListList.get(pos));
                             RoomListAdapter.arrayListList.clear();
                             recyclerViews.setAdapter(adapter);
                             Log.d("SWIPE", "RIGHT_VISIBLE");
@@ -179,30 +180,42 @@ class SwipeController extends Callback {
 
 
 
-        RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-        p.setColor(Color.parseColor("#D81B60"));
+        RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding+140, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+        p.setColor(Color.parseColor("#EB4E3D"));
 
         c.drawRoundRect(rightButton, corners, corners, p);
-        drawText("", c, rightButton, p);
+        drawText("", c, rightButton, p,1);
+
+       RectF leftButton  = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight()-120, itemView.getBottom());
+        p.setColor(Color.parseColor("#36638C"));
+
+        c.drawRoundRect(leftButton , corners, corners, p);
+        drawText("☍", c, leftButton , p,0);
+
 
         buttonInstance = null;
 
         if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
             buttonInstance = rightButton;
+
+        }
+
+        if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {
+            buttonInstance = leftButton;
         }
 
     }
 
-    private void drawText(String text, Canvas c, RectF button, Paint p) {
+    private void drawText(String text, Canvas c, RectF button, Paint p,int set) {
 
-        float textSize = 60;
+        float textSize = 70;
         p.setColor(Color.WHITE);
         p.setAntiAlias(true);
         p.setTextSize(textSize);
 
         float textWidth = p.measureText(text);
 
-
+        if(set==1)
         c.drawBitmap(bmp, button.centerX() - (bmp.getWidth() / 2), button.centerY() - (bmp.getHeight() / 2), null);
 
 
