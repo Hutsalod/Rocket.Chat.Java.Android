@@ -96,6 +96,7 @@ import static chat.wewe.android.activity.MainActivity.nazad;
 import static chat.wewe.android.activity.MainActivity.recyclerViews;
 import static chat.wewe.android.activity.MainActivity.search_btn_users;
 import static chat.wewe.android.activity.MainActivity.statusRoom;
+import static chat.wewe.android.activity.MainActivity.statusUsers;
 import static chat.wewe.android.activity.MainActivity.switch2;
 import static chat.wewe.android.fragment.server_config.LoginFragment.TOKENwe;
 
@@ -116,7 +117,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   public static String getName;
   SharedPreferences.Editor ed;
   TextView exetGoogle;
-  NestedScrollView actionContainers,languageLayaut,secyrityLayaut;
+  NestedScrollView actionContainers,languageLayaut,secyrityLayaut,blaclistScrol;
   String getRoom;
   Context mContext;
   BaseApiService mApiServiceChat;
@@ -147,6 +148,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
     methodCallHelper = new MethodCallHelper(getContext(), hostname);
     realmSpotlightRoomRepository = new RealmSpotlightRoomRepository(hostname);
+    mApiServiceChat = UtilsApiChat.getAPIService();
 
     RealmUserRepository userRepository = new RealmUserRepository(hostname);
 
@@ -171,7 +173,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
 
     bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.delete);
-
+   Log.d("TOKENWE", "TOKENWE"+SipData.getString("TOKENWE",""));
+    getBlacklistAdd("Gucalo15");
   }
 
   @Override
@@ -200,7 +203,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     setupVersionInfo();
 
 
-    mApiServiceChat = UtilsApiChat.getAPIService();
+
     adapter = new RoomListAdapter();
     adapter.setOnItemClickListener(new RoomListAdapter.OnItemClickListener() {
 
@@ -222,6 +225,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         animateHide(search_btn_users);
         current_user_name.setText(" " +room.getName());
         animateShow(statusRoom);
+        animateShow(statusUsers);
         getName=room.getName();
 
         SipData = getContext().getSharedPreferences("NameMessage", MODE_PRIVATE);
@@ -257,6 +261,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     actionContainers = (NestedScrollView) rootView.findViewById(R.id.user_action_outer_container);
     languageLayaut = (NestedScrollView) rootView.findViewById(R.id.languageLayaut);
     secyrityLayaut = (NestedScrollView) rootView.findViewById(R.id.secyrityLayaut);
+    blaclistScrol = (NestedScrollView) rootView.findViewById(R.id.blaclistScrol);
 
     recyclerViews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
    // new ItemTouchHelper(swipeController).attachToRecyclerView(recyclerViews);
@@ -370,6 +375,14 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       startActivity(Intent.createChooser(email, ""));
     });
 
+      rootView.findViewById(R.id.blaclist).setOnClickListener(view -> {
+          getBlacklist();
+        languageLayaut.setVisibility(View.GONE);
+        actionContainers.setVisibility(View.GONE);
+        secyrityLayaut.setVisibility(View.GONE);
+        blaclistScrol.setVisibility(View.VISIBLE);
+      });
+
     rootView.findViewById(R.id.friends).setOnClickListener(view -> {
       Uri uri = Uri.parse("smsto:");
       Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
@@ -387,6 +400,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       actionContainers.setVisibility(View.GONE);
         languageLayaut.setVisibility(View.VISIBLE);
         secyrityLayaut.setVisibility(View.GONE);
+        blaclistScrol.setVisibility(View.GONE);
   });
     rootView.findViewById(R.id.switch2).setOnClickListener(view -> {
       SharedPreferences.Editor ed = SipData.edit();
@@ -401,7 +415,15 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       languageLayaut.setVisibility(View.GONE);
       actionContainers.setVisibility(View.VISIBLE);
       secyrityLayaut.setVisibility(View.GONE);
+      blaclistScrol.setVisibility(View.GONE);
     });
+
+      rootView.findViewById(R.id.nazad2).setOnClickListener(view -> {
+          languageLayaut.setVisibility(View.GONE);
+          actionContainers.setVisibility(View.VISIBLE);
+          secyrityLayaut.setVisibility(View.GONE);
+          blaclistScrol.setVisibility(View.GONE);
+      });
 
     rootView.findViewById(R.id.securityBtn).setOnClickListener(view -> {
    /*   languageLayaut.setVisibility(View.GONE);
@@ -414,12 +436,14 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       languageLayaut.setVisibility(View.GONE);
       actionContainers.setVisibility(View.VISIBLE);
       secyrityLayaut.setVisibility(View.GONE);
+      blaclistScrol.setVisibility(View.GONE);
     });
 
     rootView.findViewById(R.id.okKey).setOnClickListener(view -> {
       languageLayaut.setVisibility(View.GONE);
       actionContainers.setVisibility(View.VISIBLE);
       secyrityLayaut.setVisibility(View.GONE);
+      blaclistScrol.setVisibility(View.GONE);
     });
 
     rootView.findViewById(R.id.languagede).setOnClickListener(view -> {
@@ -580,7 +604,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   }
 
   public void getStatus(String roomName){
-      statusRoom.setImageResource(R.drawable.s000);
+      statusRoom.setImageResource(R.drawable.ic_at_white_24dp);
     mApiServiceChat.getStatus(roomName)
             .enqueue(new Callback<ResponseBody>() {
               @Override
@@ -588,10 +612,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
                 if (response.isSuccessful()){
                   try {
                     JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                    if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
-
-                        statusRoom.setImageResource(R.drawable.s222);
-                    }
+                      jsonRESULTS.getJSONArray("result").toString();
                   } catch (JSONException e) {
                     e.printStackTrace();
                   } catch (IOException e) {
@@ -609,8 +630,57 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
             });
   }
 
+    public void getBlacklist(){
+        mApiServiceChat.getBlacklist("KEY:"+SipData.getString("TOKENWE",""))
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()){
+                            try {
+                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                                if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        //   Log.e("debug", "onFailure: ERROR > " + t.toString());
 
+                    }
+                });
+    }
 
+  public void getBlacklistAdd(String UF_ROCKET_LOGIN){
+    mApiServiceChat.getBlacklistAdd("KEY:"+"9a055dbe-cbe5086c-f8bad6ee-aed30fca",UF_ROCKET_LOGIN)
+            .enqueue(new Callback<ResponseBody>() {
+              @Override
+              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                  try {
+                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
+
+                  } catch (JSONException e) {
+                    e.printStackTrace();
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                } else {
+                }
+              }
+
+              @Override
+              public void onFailure(Call<ResponseBody> call, Throwable t) {
+                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
+
+              }
+            });
+  }
 
 }

@@ -40,9 +40,7 @@ public interface BaseApiService {
     @POST("rest/user/subscription/")
     Call<ResponseBody>subscription(@Field("UF_ORIGINAL_TRID") String UF_ORIGINAL_TRID);
 
-    @FormUrlEncoded
-    @GET
-    Call<ResponseBody> getLoginChat(@Field("user") String email,@Field("password") String password);
+
 
     @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ"})
     @GET("api/v1/users.info?")
@@ -51,4 +49,12 @@ public interface BaseApiService {
     @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ","Content-type: application/json"})
     @GET("api/v1/spotlight?")
     public Call<ResponseBody>getList(@Query("query") String user);
+
+
+    @GET("rest/blacklist/get/")
+    Call<ResponseBody>getBlacklist(@Header("Authorization-Token") String Token);
+
+    @POST("rest/blacklist/add/")
+    @FormUrlEncoded
+    Call<ResponseBody>getBlacklistAdd(@Header("Authorization-Token") String Token,@Field("UF_ROCKET_LOGIN") String UF_ROCKET_LOGIN);
 }

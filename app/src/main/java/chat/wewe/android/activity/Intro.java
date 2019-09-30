@@ -14,7 +14,7 @@ public class Intro extends AppCompatActivity {
     private static final String TAG = "Intro";
     private CountDownTimer countDownTimer;
     public static String UF_userId,UF_authToken,UF_SIP_NUMBER,UF_SIP_PASSWORD,presence,TOKEN_RC;
-    public static int callstatic = 0,callCout=0;
+    public static int callstatic = 0,callCout=0,StatusU = 4;
     public static boolean callSet;
     SharedPreferences SipData;
     @Override

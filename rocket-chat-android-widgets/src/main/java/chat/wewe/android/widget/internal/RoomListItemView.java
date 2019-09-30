@@ -143,7 +143,7 @@ public class RoomListItemView extends FrameLayout {
 
 
 
-  public RoomListItemView setRoomName(String roomName) {
+  public RoomListItemView setRoomName(final String roomName) {
     this.roomName = roomName;
 
     SipData = getContext().getSharedPreferences("NameMessage", MODE_PRIVATE);
@@ -162,6 +162,7 @@ public class RoomListItemView extends FrameLayout {
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("StatusC","true"+roomName);
                 if (response.isSuccessful()){
                   try {
                     JSONObject jsonRESULTS = new JSONObject(response.body().string());

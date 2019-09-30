@@ -77,7 +77,7 @@ class SwipeController extends Callback {
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         if (actionState == ACTION_STATE_SWIPE) {
             if (buttonShowedState != ButtonsState.GONE) {
-                if (buttonShowedState == ButtonsState.LEFT_VISIBLE) dX = Math.max(dX, buttonWidth);
+                if (buttonShowedState == ButtonsState.LEFT_VISIBLE) dX = Math.max(dX, -buttonWidth);
                 if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) dX = Math.min(dX, -buttonWidth);
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
@@ -145,6 +145,7 @@ class SwipeController extends Callback {
                     if (buttonsActions != null && buttonInstance != null && buttonInstance.contains(event.getX(), event.getY())) {
                         if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {
                             buttonsActions.onLeftClicked(viewHolder.getAdapterPosition());
+                            recyclerViews.setAdapter(adapter);
                             Log.d("SWIPE", "LEFT_VISIBLE");
                         }
                         else if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
@@ -178,8 +179,6 @@ class SwipeController extends Callback {
         View itemView = viewHolder.itemView;
         Paint p = new Paint();
 
-
-
         RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding+140, itemView.getTop(), itemView.getRight(), itemView.getBottom());
         p.setColor(Color.parseColor("#EB4E3D"));
 
@@ -192,12 +191,10 @@ class SwipeController extends Callback {
         c.drawRoundRect(leftButton , corners, corners, p);
         drawText("☍", c, leftButton , p,0);
 
-
         buttonInstance = null;
 
         if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
             buttonInstance = rightButton;
-
         }
 
         if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {

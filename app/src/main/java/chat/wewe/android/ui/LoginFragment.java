@@ -27,7 +27,7 @@ import static chat.wewe.android.activity.Intro.callstatic;
 import static chat.wewe.android.activity.Intro.UF_SIP_NUMBER;
 import static chat.wewe.android.activity.Intro.UF_SIP_PASSWORD;
 import static chat.wewe.android.service.PortSipService.EXTRA_REGISTER_STATE;
-
+import static chat.wewe.android.activity.Intro.StatusU;
 public class LoginFragment extends BaseFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener,PortMessageReceiver.BroadcastListener{
     RocketChatApplication application;
     MainActivity activity;
@@ -181,6 +181,7 @@ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSel
             mtxStatus.setText(TextUtils.isEmpty(tips)?getString(R.string.online):tips);
             if (callstatic==0)
          startActivity(new Intent(getActivity(), chat.wewe.android.activity.MainActivity.class));
+            StatusU = 8;
             callstatic=1;
         } else {
             mtxStatus.setText(TextUtils.isEmpty(tips)?getString(R.string.offline):tips);

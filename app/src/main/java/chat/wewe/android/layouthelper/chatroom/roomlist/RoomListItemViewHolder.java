@@ -39,6 +39,7 @@ public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
         .setAlert(room.isAlert())
         .setUnreadCount(room.getUnread())
         .setTag(room);
+
   }
 
   public void bind(SpotlightRoom spotlightRoom) {

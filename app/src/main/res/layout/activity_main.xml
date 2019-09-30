@@ -398,6 +398,14 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/stanUsers"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/s000" />
+
+                <ImageView
                     android:id="@+id/statusRoom"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -418,7 +426,7 @@
 
             <LinearLayout
                 android:id="@+id/callUsers"
-                android:layout_width="180dp"
+                android:layout_width="130dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:orientation="horizontal"

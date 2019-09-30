@@ -102,6 +102,7 @@ import retrofit2.Response;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static chat.wewe.android.activity.ContactAdapter.a_chars;
+import static chat.wewe.android.activity.Intro.StatusU;
 import static chat.wewe.android.activity.Intro.TOKEN_RC;
 import static chat.wewe.android.activity.Intro.callCout;
 import static chat.wewe.android.activity.Intro.callstatic;
@@ -119,7 +120,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   public static LinearLayout callUsers;
   public static AppCompatAutoCompleteTextView editText;
   public static RecyclerView recyclerViews;
-  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users;
+  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users,statusUsers;
   public static   TextView current_user_name;
   private CountDownTimer countDownTimer;
   public static  FrameLayout activity_main_container;
@@ -168,6 +169,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     SharedPreferences.Editor ed =  SipData.edit();
     ed.commit();
     callInt = new Intent(this, chat.wewe.android.ui.MainActivity.class);
+
    if(SipData.getString("UF_SIP_NUMBER", "")!="" & callstatic==0) {
      ed.commit();
    startActivity(callInt);
@@ -191,6 +193,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     current_user_name = (TextView) findViewById(R.id.current_user_name);
     callUsers = (LinearLayout) findViewById(R.id.callUsers);
     BtnCall = (ImageView) findViewById(R.id.BtnCall);
+    statusUsers = (ImageView) findViewById(R.id.stanUsers);
     btnVideoCall = (ImageView) findViewById(R.id.btnVideoCall);
     searchContact =  (EditText) findViewById(R.id.searchContact);
     mAdapter = new ContactAdapter(this,contactModelList);
@@ -297,6 +300,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
     autoCompleteTextView.setOnItemClickListener(this);
     UF_ORIGINAL_TRID("");
+    UserStatus();
   }
 
   @Override
@@ -707,6 +711,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     animateHide(callUsers);
     animateShow(statusRoom);
     animateHide(statusRoom);
+    animateShow(statusUsers);
+    animateHide(statusUsers);
     current_user_name.setText("Сообщения");
 
 
@@ -900,6 +906,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             });
   }
 
+
+
     private void UF_ORIGINAL_TRID(String TOKENwe){
         Log.d("SWIPE", "onFailure: ERROR > ");
         mApiServiceChat.subscription("test")
@@ -926,5 +934,38 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                     }
                 });
     }
+
+  private void UserStatus(){
+    switch (StatusU) {
+      case 0:statusUsers.setImageResource(R.drawable.s000);
+        break;
+      case 1:statusUsers.setImageResource(R.drawable.s011);
+        break;
+      case 2:    statusUsers.setImageResource(R.drawable.s012);
+        break;
+      case 3: statusUsers.setImageResource(R.drawable.s110);
+        break;
+      case 4:statusUsers.setImageResource(R.drawable.s111);
+        break;
+      case 5:statusUsers.setImageResource(R.drawable.s112);
+        break;
+      case 6:statusUsers.setImageResource(R.drawable.s210);
+        break;
+      case 7:statusUsers.setImageResource(R.drawable.s211);
+        break;
+      case 8:statusUsers.setImageResource(R.drawable.s222);
+        break;
+
+    }
+
+
+
+
+
+
+
+
+
+  }
 
 }
