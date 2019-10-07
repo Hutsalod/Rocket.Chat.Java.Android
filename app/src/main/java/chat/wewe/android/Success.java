@@ -5,17 +5,34 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import chat.wewe.android.activity.Intro;
 import chat.wewe.android.activity.MainActivity;
+import chat.wewe.android.api.BaseApiService;
+import chat.wewe.android.api.UtilsApi;
 import chat.wewe.android.fragment.sidebar.SidebarMainContract;
 import chat.wewe.android.service.PortSipService;
 import  chat.wewe.android.util.IabBroadcastReceiver;
@@ -23,23 +40,29 @@ import  chat.wewe.android.util.IabHelper;
 import  chat.wewe.android.util.IabResult;
 import  chat.wewe.android.util.Inventory;
 import  chat.wewe.android.util.Purchase;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static  chat.wewe.android.Constants.SKU_DELAROY_MONTHLY;
 import static  chat.wewe.android.Constants.SKU_DELAROY_SIXMONTH;
 import static  chat.wewe.android.Constants.SKU_DELAROY_THREEMONTH;
 import static  chat.wewe.android.Constants.SKU_DELAROY_YEARLY;
 import static  chat.wewe.android.Constants.base64EncodedPublicKey;
-import static chat.wewe.android.activity.Intro.callstatic;
+import static chat.wewe.android.activity.Intro.subscription;
 
 
 public class Success  extends AppCompatActivity implements IabBroadcastReceiver.IabBroadcastListener,
         DialogInterface.OnClickListener {
     // Debug tag, for logging
     static final String TAG = "GooglePay";
-
+    BaseApiService mApiService;
     // Does the user have an active subscription to the delaroy plan?
     boolean mSubscribedToDelaroy = false;
 
@@ -61,9 +84,10 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
     // (arbitrary) request code for the purchase flow
     static final int RC_REQUEST = 10001;
 
-
+    SharedPreferences SipData;
     // The helper object
     IabHelper mHelper;
+    TextView textView;
     private SidebarMainContract.Presenter presenter;
     // Provides purchase notification while this app is running
     IabBroadcastReceiver mBroadcastReceiver;
@@ -76,7 +100,7 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
 
         // enable debug logging (for a production application, you should set this to false).
         mHelper.enableDebugLogging(true);
-
+        mApiService = UtilsApi.getAPIService();
         // Start setup. This is asynchronous and the specified listener
         // will be called once setup completes.
         Log.d(TAG, "Starting setup.");
@@ -107,15 +131,26 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
             }
         });
 
+        SipData = getSharedPreferences("SIP", MODE_PRIVATE);
+        UF_ORIGINAL_TRID2();
+        textView = (TextView)findViewById(R.id.textView);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+            }
+        };
+        SpannableString ss = new SpannableString(textView.getText().toString());
+        ss.setSpan(clickableSpan, 29, 48, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+        textView.setText(ss);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     public void exit(View view) {
         startActivity(new Intent(getApplication(), MainActivity.class));
     }
-
-
-
 
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
@@ -373,7 +408,8 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
     IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
         public void onConsumeFinished(Purchase purchase, IabResult result) {
             Log.d(TAG, "Consumption finished. Purchase: " + purchase + ", result: " + result);
-
+            subscription = true;
+            UF_ORIGINAL_TRID(""+result);
             updateUi();
             setWaitScreen(false);
             Log.d(TAG, "End consumption flow.");
@@ -404,8 +440,8 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
 
         Button subscribeButton = (Button) findViewById(R.id.startSubscribe);
         if (mSubscribedToDelaroy) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            subscription=true;
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         } else {
             // The user does not have rabista subscription"
@@ -431,5 +467,64 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
         bld.setNeutralButton("OK", null);
         Log.d(TAG, "Showing alert dialog: " + message);
         bld.create().show();
+    }
+
+    private void UF_ORIGINAL_TRID(String key){
+        Map<String, Object> jsonParams = new ArrayMap<>();
+//put something inside the map, could be null
+        jsonParams.put("UF_ORIGINAL_TRID", key);
+        mApiService.subscription("KEY:"+SipData.getString("TOKENWE",""),"application/json",jsonParams)
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject > response) {
+                        try{
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.e("debug", "onFailure: ERROR > " + t.toString());
+                    }
+                });
+    }
+
+    private void UF_ORIGINAL_TRID2(){
+        Map<String, Object> jsonParams = new ArrayMap<>();
+//put something inside the map, could be null
+        jsonParams.put("UF_ORIGINAL_TRID", "tt");
+        jsonParams.put("GET_USER", "1");
+        mApiService.subscription("KEY:"+SipData.getString("TOKENWE",""),"application/json",jsonParams)
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject > response) {
+                        try{
+                            if (response.body().getAsJsonObject("result").get("SUCCESS").equals("false")){
+                                Toast.makeText(getApplication(), "Покупка привязна к другому пользователю, нужно зайти под другим пользователем WeWe",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.e("debug", "onFailure: ERROR > " + t.toString());
+                    }
+                });
+    }
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_BACK:
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 }

@@ -6,15 +6,28 @@
         android:background="#F9F9F9"
         android:orientation="vertical">
 
+    <Button
+        android:id="@+id/buttonBlackList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_item"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textColor="#FFFFFF"
+        android:text="Разблокировать" />
+
     <chat.wewe.android.widget.DividerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     <LinearLayout
+            android:id="@+id/layoutBlackList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom"
-        android:background="#F9F9F9"
+            android:background="#F9F9F9"
             android:orientation="horizontal">
 
         <FrameLayout

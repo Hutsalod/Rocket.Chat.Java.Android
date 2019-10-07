@@ -13,9 +13,9 @@ import chat.wewe.android.Success;
 public class Intro extends AppCompatActivity {
     private static final String TAG = "Intro";
     private CountDownTimer countDownTimer;
-    public static String UF_userId,UF_authToken,UF_SIP_NUMBER,UF_SIP_PASSWORD,presence,TOKEN_RC;
+    public static String UF_SIP_NUMBER,UF_SIP_PASSWORD,TOKEN_RC,TOKENWE;
     public static int callstatic = 0,callCout=0,StatusU = 4;
-    public static boolean callSet;
+    public static boolean callSet,subscription;
     SharedPreferences SipData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class Intro extends AppCompatActivity {
         UF_SIP_NUMBER = SipData.getString("UF_SIP_NUMBER", null);
         ed.commit();
         UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", null);
-
+        TOKENWE = SipData.getString("TOKENWE", null);
 
             countDownTimer = new CountDownTimer(3000, 1000) {
                 @Override

@@ -1,6 +1,11 @@
 package chat.wewe.android.layouthelper.chatroom;
 
+import android.util.Log;
+
+import chat.wewe.android.activity.SettingActivity;
 import chat.wewe.android.widget.message.MessageFormLayout;
+
+import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
 
 /**
  * handling MessageForm.
@@ -12,12 +17,17 @@ public class MessageFormManager {
   public MessageFormManager(MessageFormLayout messageFormLayout,
                             MessageFormLayout.ExtraActionSelectionClickListener callback) {
     this.messageFormLayout = messageFormLayout;
+
     init(callback);
   }
 
   private void init(MessageFormLayout.ExtraActionSelectionClickListener listener) {
     messageFormLayout.setExtraActionSelectionClickListener(listener);
     messageFormLayout.setSubmitTextListener(this::sendMessage);
+    messageFormLayout.setBlocingUsers(this::sendBlocking);
+
+    final String  getBlacklist = new SettingActivity().getBlacklist();
+
   }
 
   public void setSendMessageCallback(SendMessageCallback sendMessageCallback) {
@@ -50,4 +60,13 @@ public class MessageFormManager {
   public interface SendMessageCallback {
     void onSubmitText(String messageText);
   }
+
+
+
+  private void sendBlocking() {
+    Log.d("QAZX","TRUE");
+    new SettingActivity().UF_ROCKET_LOGIN_BLOC(getName);
+  }
+
+
 }

@@ -22,6 +22,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
@@ -49,6 +50,7 @@ import android.widget.Toast;
 
 import com.fernandocejas.arrow.optional.Optional;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -61,6 +63,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import bolts.Task;
@@ -72,6 +75,7 @@ import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.MethodCallHelper;
 import chat.wewe.android.api.UtilsApi;
 import chat.wewe.android.api.UtilsApiChat;
+import chat.wewe.android.api.model.sub;
 import chat.wewe.android.fragment.chatroom.HomeFragment;
 import chat.wewe.android.fragment.chatroom.RocketChatAbsoluteUrl;
 import chat.wewe.android.fragment.chatroom.RoomFragment;
@@ -107,6 +111,7 @@ import static chat.wewe.android.activity.Intro.TOKEN_RC;
 import static chat.wewe.android.activity.Intro.callCout;
 import static chat.wewe.android.activity.Intro.callstatic;
 import static chat.wewe.android.activity.Intro.callSet;
+import static chat.wewe.android.activity.Intro.subscription;
 import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
 
 /**
@@ -120,7 +125,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   public static LinearLayout callUsers;
   public static AppCompatAutoCompleteTextView editText;
   public static RecyclerView recyclerViews;
-  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users,statusUsers;
+  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users,statusUsers,statusUsers2,statusUsers3,statusUsers4;
   public static   TextView current_user_name;
   private CountDownTimer countDownTimer;
   public static  FrameLayout activity_main_container;
@@ -130,7 +135,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   public static BottomNavigationView navigation;
   //Button openKey;
   Context mContext;
-  BaseApiService mApiServiceChat;
+  BaseApiService mApiServiceChat,mApiService;
   String device = "0";
   TextInputEditText EditTextName;
   Intent callInt;
@@ -194,6 +199,9 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     callUsers = (LinearLayout) findViewById(R.id.callUsers);
     BtnCall = (ImageView) findViewById(R.id.BtnCall);
     statusUsers = (ImageView) findViewById(R.id.stanUsers);
+    statusUsers2 = (ImageView) findViewById(R.id.stanUsers2);
+    statusUsers3 = (ImageView) findViewById(R.id.stanUsers3);
+    statusUsers4  = (ImageView) findViewById(R.id.stanUsers4);
     btnVideoCall = (ImageView) findViewById(R.id.btnVideoCall);
     searchContact =  (EditText) findViewById(R.id.searchContact);
     mAdapter = new ContactAdapter(this,contactModelList);
@@ -209,7 +217,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
    // LoginFragment SaveUserInfo = new LoginFragment();
 
-
 /*
  countDownTimer = new CountDownTimer(15000, 1000) {
       @Override
@@ -219,27 +226,36 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       public void onFinish() {
         Intent intent = new Intent(getApplicationContext(), Success.class);
         startActivity(intent);
+          countDownTimer.cancel();
       }};
     countDownTimer.start();
 */
-
+      mApiService = UtilsApi.getAPIService();
     mApiServiceChat = UtilsApiChat.getAPIService();
     navigation.setSelectedItemId(R.id.action_chat);
 
     BtnCall.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        callSet = false;
-        startActivity(callInt);
-        setnupad = 1;
+        if (subscription == true) {
+          callSet = false;
+          startActivity(callInt);
+          setnupad = 1;
+        }else{
+        startActivity(new Intent(getApplicationContext(), Success.class));
+        }
       }
     });
     btnVideoCall.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        callSet = true;
-        startActivity(callInt);
-        setnupad = 2;
+        if (subscription == true) {
+          callSet = true;
+          startActivity(callInt);
+          setnupad = 2;
+        }else{
+          startActivity(new Intent(getApplicationContext(), Success.class));
+        }
       }
     });
 
@@ -299,8 +315,25 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     });
 
     autoCompleteTextView.setOnItemClickListener(this);
-    UF_ORIGINAL_TRID("");
+    UF_ORIGINAL_TRID();
     UserStatus();
+
+    countDownTimer = new CountDownTimer(15000, 1000) {
+      @Override
+      public void onTick(long millisUntilFinished) {
+          getStatus();
+      }
+
+      @Override
+      public void onFinish() {
+
+        countDownTimer.start();
+      }
+    };
+    countDownTimer.start();
+
+
+
   }
 
   @Override
@@ -711,8 +744,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     animateHide(callUsers);
     animateShow(statusRoom);
     animateHide(statusRoom);
-    animateShow(statusUsers);
-    animateHide(statusUsers);
+
     current_user_name.setText("Сообщения");
 
 
@@ -869,7 +901,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
 
   public void getList(){
-
     mApiServiceChat.getList(autoCompleteTextView.getText().toString())
             .enqueue(new Callback<ResponseBody>() {
               @Override
@@ -906,65 +937,106 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             });
   }
 
-
-
-    private void UF_ORIGINAL_TRID(String TOKENwe){
-        Log.d("SWIPE", "onFailure: ERROR > ");
-        mApiServiceChat.subscription("test")
-                .enqueue(new Callback<ResponseBody>() {
+    private void UF_ORIGINAL_TRID(){
+      Map<String, Object> jsonParams = new ArrayMap<>();
+//put something inside the map, could be null
+      jsonParams.put("UF_ORIGINAL_TRID", "tt");
+        jsonParams.put("GET_USER", "1");
+        mApiService.subscription("KEY:"+SipData.getString("TOKENWE",""),"application/json",jsonParams)
+                .enqueue(new Callback<JsonObject>() {
                     @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                      Log.d("SWIPE", "onFailure: ERROR > ");
-                        if (response.isSuccessful()){
-                            try {
-                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                            Log.d("SWIPE", "onFailure: ERROR > " + jsonRESULTS.toString());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject > response) {
+                      try{
+                        if (response.body().getAsJsonObject("result").get("SUCCESS").equals("false")){
+                          Toast.makeText(getApplication(), "Покупка привязна к другому пользователю, нужно зайти под другим пользователем WeWe",
+                                  Toast.LENGTH_SHORT).show();
                         }
+                      }catch (Exception e){
+                        e.printStackTrace();
+                      }
+
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
                         Log.e("debug", "onFailure: ERROR > " + t.toString());
                     }
                 });
     }
 
+  public void getStatus(){
+    mApiService.getStatusUsers()
+            .enqueue(new Callback<ResponseBody>() {
+              @Override
+              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                  StatusU=8;
+                } else {
+                  StatusU=0;
+                }
+              }
+              @Override
+              public void onFailure(Call<ResponseBody> call, Throwable t) {
+                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
+                StatusU=0;
+
+              }
+            });
+    UserStatus();
+  }
+
+
+
+
   private void UserStatus(){
     switch (StatusU) {
       case 0:statusUsers.setImageResource(R.drawable.s000);
+        statusUsers2.setImageResource(R.drawable.s000);
+        statusUsers3.setImageResource(R.drawable.s000);
+        statusUsers4.setImageResource(R.drawable.s000);
         break;
       case 1:statusUsers.setImageResource(R.drawable.s011);
+        statusUsers2.setImageResource(R.drawable.s011);
+        statusUsers3.setImageResource(R.drawable.s011);
+        statusUsers4.setImageResource(R.drawable.s011);
         break;
       case 2:    statusUsers.setImageResource(R.drawable.s012);
+        statusUsers2.setImageResource(R.drawable.s012);
+        statusUsers3.setImageResource(R.drawable.s012);
+        statusUsers4.setImageResource(R.drawable.s012);
         break;
       case 3: statusUsers.setImageResource(R.drawable.s110);
+        statusUsers2.setImageResource(R.drawable.s110);
+        statusUsers3.setImageResource(R.drawable.s110);
+        statusUsers4.setImageResource(R.drawable.s110);
         break;
       case 4:statusUsers.setImageResource(R.drawable.s111);
+        statusUsers2.setImageResource(R.drawable.s111);
+        statusUsers3.setImageResource(R.drawable.s111);
+        statusUsers4.setImageResource(R.drawable.s111);
         break;
       case 5:statusUsers.setImageResource(R.drawable.s112);
+        statusUsers2.setImageResource(R.drawable.s112);
+        statusUsers3.setImageResource(R.drawable.s112);
+        statusUsers4.setImageResource(R.drawable.s112);
         break;
       case 6:statusUsers.setImageResource(R.drawable.s210);
+        statusUsers2.setImageResource(R.drawable.s210);
+        statusUsers3.setImageResource(R.drawable.s210);
+        statusUsers4.setImageResource(R.drawable.s210);
         break;
       case 7:statusUsers.setImageResource(R.drawable.s211);
+        statusUsers2.setImageResource(R.drawable.s211);
+        statusUsers3.setImageResource(R.drawable.s211);
+        statusUsers4.setImageResource(R.drawable.s211);
         break;
       case 8:statusUsers.setImageResource(R.drawable.s222);
+        statusUsers2.setImageResource(R.drawable.s222);
+        statusUsers3.setImageResource(R.drawable.s222);
+        statusUsers4.setImageResource(R.drawable.s222);
         break;
 
     }
-
-
-
-
-
-
-
-
 
   }
 

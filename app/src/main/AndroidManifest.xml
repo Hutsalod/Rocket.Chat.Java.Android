@@ -1,80 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="chat.wewe.android">
-    <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
-    <eat-comment />
-
-    <permission-group
-        android:name="android.permission-group.MICROPHONE"
-        android:description="@string/permgroupdesc_microphone"
-        android:icon="@drawable/perm_group_microphone"
-        android:label="@string/permgrouplab_microphone"
-        android:priority="600" />
-
-    <permission
-        android:name="android.permission.RECORD_AUDIO"
-        android:description="@string/permdesc_recordAudio"
-        android:label="@string/permlab_recordAudio"
-        android:permissionGroup="android.permission-group.MICROPHONE"
-        android:protectionLevel="dangerous" />
-
-    <eat-comment />
-
-    <permission-group
-        android:name="android.permission-group.CAMERA"
-        android:description="@string/permgroupdesc_camera"
-        android:icon="@drawable/perm_group_camera"
-        android:label="@string/permgrouplab_camera"
-        android:priority="700" />
-
-    <permission
-        android:name="android.permission.CAMERA"
-        android:description="@string/permdesc_camera"
-        android:label="@string/permlab_camera"
-        android:permissionGroup="android.permission-group.CAMERA"
-        android:protectionLevel="dangerous" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.RAISED_THREAD_PRIORITY" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <uses-feature
-        android:name="android.hardware.camera.autofocus"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.camera.full"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.telephony"
-        android:required="false" />
-
-    <permission
-        android:name="chat.wewe.android.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
-    <uses-permission android:name="chat.rocket.android.permission.C2D_MESSAGE" />
 
     <application
         android:name=".RocketChatApplication"
@@ -85,8 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-
+        <activity android:name=".activity.SettingActivity"></activity>
         <activity
             android:name=".activity.Intro"
             android:configChanges="orientation|screenSize"
@@ -123,12 +48,11 @@
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".Success" />
-        <activity android:name=".activity.SecondActivity"></activity>
-
+        <activity android:name=".activity.SecondActivity" />
         <activity
             android:name=".ui.MainActivity"
             android:launchMode="singleInstance"
-            android:noHistory="true"></activity>
+            android:noHistory="true" />
         <activity
             android:name=".ui.IncomingActivity"
             android:launchMode="singleInstance"
@@ -144,26 +68,95 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".service.RocketChatService" />
-
         <service android:name=".service.PortSipService" /> <!-- [START firebase_service] -->
-
-        <service
-            android:name=".service.MyFirebaseMessagingService">
+        <service android:name=".service.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service> <!-- [END firebase_service] -->
+        <service android:name=".service.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <!-- [END firebase_service] -->
-        <service
-            android:name=".service.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
-
-
     </application>
+    <eat-comment />
+    <eat-comment />
+    <permission
+        android:name="android.permission.RECORD_AUDIO"
+        android:description="@string/permdesc_recordAudio"
+        android:label="@string/permlab_recordAudio"
+        android:permissionGroup="android.permission-group.MICROPHONE"
+        android:protectionLevel="dangerous" />
+    <permission
+        android:name="android.permission.CAMERA"
+        android:description="@string/permdesc_camera"
+        android:label="@string/permlab_camera"
+        android:permissionGroup="android.permission-group.CAMERA"
+        android:protectionLevel="dangerous" />
+    <permission
+        android:name="chat.wewe.android.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <permission-group
+        android:name="android.permission-group.MICROPHONE"
+        android:description="@string/permgroupdesc_microphone"
+        android:icon="@drawable/perm_group_microphone"
+        android:label="@string/permgrouplab_microphone"
+        android:priority="600" />
+    <permission-group
+        android:name="android.permission-group.CAMERA"
+        android:description="@string/permgroupdesc_camera"
+        android:icon="@drawable/perm_group_camera"
+        android:label="@string/permgrouplab_camera"
+        android:priority="700" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.full"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.RAISED_THREAD_PRIORITY" />
+
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <uses-permission android:name="chat.rocket.android.permission.C2D_MESSAGE" />
 
 </manifest>

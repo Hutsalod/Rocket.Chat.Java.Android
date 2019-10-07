@@ -1,19 +1,31 @@
 package chat.wewe.android.api;
 
+import com.google.gson.JsonObject;
+
+import java.util.Map;
+
+import chat.wewe.android.api.model.sub;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface BaseApiService {
 
-    // Fungsi ini untuk memanggil API http://10.0.2.2/mahasiswa/login.php
+
+    @POST("rest_api/auth/")
+    public Call<ResponseBody> getStatusUsers();
+
     @FormUrlEncoded
     @POST("rest_api/auth/")
     public Call<ResponseBody> loginRequest(@Field("USER_LOGIN") String email,
@@ -35,10 +47,13 @@ public interface BaseApiService {
     @POST("rest/user/access_device/")
     Call<ResponseBody>postDevice(@Header("Authorization-Token") String authKeys,@Field("UF_ACCESS_OTH_DEVICE") String DEVICE);
 
-    @Headers({"Authorization-Token: KEY:9a055dbe-cbe5086c-f8bad6ee-aed30fca","Content-Type: application/json"})
-    @FormUrlEncoded
+
+
     @POST("rest/user/subscription/")
-    Call<ResponseBody>subscription(@Field("UF_ORIGINAL_TRID") String UF_ORIGINAL_TRID);
+    Call<JsonObject>subscription(@Header("Authorization-Token") String Token,@Header("Content-Type") String Type,@Body Map<String, Object> params);
+
+    @GET("rest/user/remove_transactionid/")
+    Call<ResponseBody>removeTransactionid(@Header("Authorization-Token") String Token);
 
 
 
@@ -55,6 +70,9 @@ public interface BaseApiService {
     Call<ResponseBody>getBlacklist(@Header("Authorization-Token") String Token);
 
     @POST("rest/blacklist/add/")
-    @FormUrlEncoded
-    Call<ResponseBody>getBlacklistAdd(@Header("Authorization-Token") String Token,@Field("UF_ROCKET_LOGIN") String UF_ROCKET_LOGIN);
+    Call<ResponseBody>getBlacklistAdd(@Header("Authorization-Token") String Token,@Body Map<String, Object> params);
+
+    @Headers({"Content-Type: application/json"})
+    @POST("rest/blacklist/delete/")
+    Call<JsonObject>getBlacklistDell(@Header("Authorization-Token") String Token,@Body Map<String, Object> params);
 }

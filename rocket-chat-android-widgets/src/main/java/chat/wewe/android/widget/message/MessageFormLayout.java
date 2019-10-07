@@ -2,19 +2,23 @@ package chat.wewe.android.widget.message;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v13.view.inputmethod.InputContentInfoCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -31,14 +35,18 @@ public class MessageFormLayout extends LinearLayout {
   private View btnExtra;
   private View btnSubmit;
   private MediaPlayer song;
+  private LinearLayout layoutBlackList;
+  private Button buttonBlackList;
   SharedPreferences SipData,SipDatas;
   private ExtraActionSelectionClickListener extraActionSelectionClickListener;
   private SubmitTextListener submitTextListener;
+  private  BlocingUsers blocingUsers;
   private ImageKeyboardEditText.OnCommitContentListener listener;
 
   public MessageFormLayout(Context context) {
     super(context);
     init();
+
   }
 
   public MessageFormLayout(Context context, AttributeSet attrs) {
@@ -58,10 +66,12 @@ public class MessageFormLayout extends LinearLayout {
   }
 
   private void init() {
+
     composer = (ViewGroup) LayoutInflater.from(getContext())
         .inflate(R.layout.message_composer, this, false);
     song = (MediaPlayer) MediaPlayer.create(getContext(), R.raw.msg);
     btnExtra = composer.findViewById(R.id.btn_extras);
+    layoutBlackList = composer.findViewById(R.id.layoutBlackList);
 
     btnExtra.setOnClickListener(new OnClickListener() {
       @Override
@@ -71,7 +81,14 @@ public class MessageFormLayout extends LinearLayout {
     });
 
     btnSubmit = composer.findViewById(R.id.btn_submit);
+    buttonBlackList = composer.findViewById(R.id.buttonBlackList);
 
+
+Boolean s = true;
+  // s = getblocingUsers.onSubmitText();
+
+
+    Log.d("getsendBlocking",""+s);
     btnSubmit.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -84,7 +101,6 @@ public class MessageFormLayout extends LinearLayout {
           String time = datas.format(date);
           SipData = getContext().getSharedPreferences("NameMessage", MODE_PRIVATE);
           SharedPreferences.Editor ed = SipData.edit();
-          ed.commit();
           ed.putString(SipData.getString("getName", null), messageText);
           ed.commit();
           SipDatas = getContext().getSharedPreferences("TimeMessage", MODE_PRIVATE);
@@ -97,6 +113,34 @@ public class MessageFormLayout extends LinearLayout {
     });
 
 
+    buttonBlackList.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+              case DialogInterface.BUTTON_POSITIVE:
+                blocingUsers.onSubmitText();
+                layoutBlackList.setVisibility(VISIBLE);
+                buttonBlackList.setVisibility(GONE);
+                break;
+
+              case DialogInterface.BUTTON_NEGATIVE:
+                //No button clicked
+                break;
+            }
+          }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Внимание").setMessage("Розблокировать пользователя?").setPositiveButton("Да", dialogClickListener)
+                .setNegativeButton("Нет", dialogClickListener).show();
+
+      }
+        });
+
+    buttonBlackList.setVisibility(GONE);
 
     btnSubmit.setScaleX(0);
     btnSubmit.setScaleY(0);
@@ -151,6 +195,12 @@ public class MessageFormLayout extends LinearLayout {
     this.submitTextListener = submitTextListener;
   }
 
+  public void setBlocingUsers(BlocingUsers blocingUsers) {
+    this.blocingUsers = blocingUsers;
+  }
+
+
+
   private void onExtraActionSelectionClick() {
     if (extraActionSelectionClickListener != null) {
       extraActionSelectionClickListener.onClick();
@@ -191,6 +241,13 @@ public class MessageFormLayout extends LinearLayout {
     composer.findViewById(R.id.btn_submit).setEnabled(enabled);
   }
 
+  public void setBlocing(boolean enabled) {
+    if(enabled==true)
+    layoutBlackList.setVisibility(VISIBLE);
+    else
+    buttonBlackList.setVisibility(GONE);
+  }
+
   public void setEditTextCommitContentListener(
       ImageKeyboardEditText.OnCommitContentListener listener) {
     this.listener = listener;
@@ -221,4 +278,10 @@ public class MessageFormLayout extends LinearLayout {
   public interface SubmitTextListener {
     void onSubmitText(String message);
   }
+
+  public interface BlocingUsers {
+    void onSubmitText();
+  }
+
+
 }

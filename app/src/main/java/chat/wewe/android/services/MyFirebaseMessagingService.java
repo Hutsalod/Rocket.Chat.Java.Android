@@ -36,7 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             Map<String, String> data = remoteMessage.getData();
-           // handleData(data);
+           handleData(data);
 
 
 
@@ -75,11 +75,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationVO.setIconUrl(iconUrl);
         notificationVO.setAction(action);
 
+
         notificationVO.setActionDestination(actionDestination);
 
         Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
 
         NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
+
         notificationUtils.displayNotification(notificationVO, resultIntent);
 
 

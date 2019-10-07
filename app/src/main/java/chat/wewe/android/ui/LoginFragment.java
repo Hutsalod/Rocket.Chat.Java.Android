@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import chat.wewe.android.R;
 import chat.wewe.android.RocketChatApplication;
@@ -186,6 +187,10 @@ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSel
         } else {
             mtxStatus.setText(TextUtils.isEmpty(tips)?getString(R.string.offline):tips);
         startActivity(new Intent(getActivity(), chat.wewe.android.activity.MainActivity.class));
+        }
+        if(mtxStatus.getText().equals("No DNS results")){
+            callstatic=1;
+            startActivity(new Intent(getActivity(), chat.wewe.android.activity.MainActivity.class));
         }
     }
 

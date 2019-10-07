@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 
@@ -51,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import chat.wewe.android.BuildConfig;
 import chat.wewe.android.R;
@@ -120,7 +123,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   NestedScrollView actionContainers,languageLayaut,secyrityLayaut,blaclistScrol;
   String getRoom;
   Context mContext;
-  BaseApiService mApiServiceChat;
+  BaseApiService mApiServiceChat,mApiService;
   String device = "0";
   public static   Bitmap bmp;
   public SidebarMainFragment() {
@@ -149,7 +152,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     methodCallHelper = new MethodCallHelper(getContext(), hostname);
     realmSpotlightRoomRepository = new RealmSpotlightRoomRepository(hostname);
     mApiServiceChat = UtilsApiChat.getAPIService();
-
+    mApiService = UtilsApi.getAPIService();
     RealmUserRepository userRepository = new RealmUserRepository(hostname);
 
     AbsoluteUrlHelper absoluteUrlHelper = new AbsoluteUrlHelper(
@@ -209,7 +212,9 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
       @Override
       public void onItemClick(Room room) {
+
         getRoom = room.getRoomId();
+
         searchView.clearFocus();
         presenter.onRoomSelected(room);
         Log.i("Test","Yo project");
@@ -225,7 +230,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         animateHide(search_btn_users);
         current_user_name.setText(" " +room.getName());
         animateShow(statusRoom);
-        animateShow(statusUsers);
         getName=room.getName();
 
         SipData = getContext().getSharedPreferences("NameMessage", MODE_PRIVATE);
@@ -239,6 +243,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         getStatus(getName);
         animateShow(activity_main_container);
 
+      //  UF_ROCKET_LOGIN_BLOC(room.getName());
       }
 
       @Override
@@ -359,11 +364,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       postDevice();
     });
 
-
-
     rootView.findViewById(R.id.exetGoogle).setOnClickListener(view -> {
-      Toast.makeText(getActivity(), "Текущий пользователь WeWe успешно отвязан от Appleid" ,
-              Toast.LENGTH_SHORT).show();
+     DeleteGooglePay();
     });
 
     rootView.findViewById(R.id.supportConnect).setOnClickListener(view -> {
@@ -376,7 +378,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     });
 
       rootView.findViewById(R.id.blaclist).setOnClickListener(view -> {
-          getBlacklist();
+
         languageLayaut.setVisibility(View.GONE);
         actionContainers.setVisibility(View.GONE);
         secyrityLayaut.setVisibility(View.GONE);
@@ -630,42 +632,52 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
             });
   }
 
-    public void getBlacklist(){
-        mApiServiceChat.getBlacklist("KEY:"+SipData.getString("TOKENWE",""))
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()){
-                            try {
-                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                                if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                        }
+
+  public void DeleteGooglePay(){
+    mApiService.removeTransactionid("KEY:"+SipData.getString("TOKENWE",""))
+            .enqueue(new Callback<ResponseBody>() {
+              @Override
+              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("jsonRESULTS",""+response.toString());
+                if (response.isSuccessful()){
+                  try {
+                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                    if (jsonRESULTS.getJSONObject("result").getString("SUCCESS").equals("true")){
+                      Toast.makeText(getActivity(), "Текущий пользователь WeWe успешно отвязан от Appleid",
+                              Toast.LENGTH_SHORT).show();
                     }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        //   Log.e("debug", "onFailure: ERROR > " + t.toString());
+                  } catch (JSONException e) {
+                    e.printStackTrace();
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                } else {
+                }
+              }
+              @Override
+              public void onFailure(Call<ResponseBody> call, Throwable t) {
+                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
 
-                    }
-                });
-    }
+              }
+            });
+  }
 
   public void getBlacklistAdd(String UF_ROCKET_LOGIN){
-    mApiServiceChat.getBlacklistAdd("KEY:"+"9a055dbe-cbe5086c-f8bad6ee-aed30fca",UF_ROCKET_LOGIN)
+      SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
+      Map<String, Object> jsonParams = new ArrayMap<>();
+      jsonParams.put("UF_ROCKET_ID", "null");
+    jsonParams.put("UF_ROCKET_LOGIN", "null");
+    jsonParams.put("UF_USER_ID_BLOCKED", "null");
+    jsonParams.put("UF_ROCKET_ID_BLOCKED", "null");
+    jsonParams.put("UF_ROCKET_LOGIN_BLOC", UF_ROCKET_LOGIN);
+    mApiService.getBlacklistAdd("KEY:"+SipData.getString("TOKENWE",""),jsonParams)
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()){
                   try {
                     JSONObject jsonRESULTS = new JSONObject(response.body().string());
-
                   } catch (JSONException e) {
                     e.printStackTrace();
                   } catch (IOException e) {
@@ -677,8 +689,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
               @Override
               public void onFailure(Call<ResponseBody> call, Throwable t) {
-                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
-
               }
             });
   }

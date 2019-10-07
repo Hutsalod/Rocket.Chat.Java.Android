@@ -20,13 +20,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import chat.wewe.android.R;
+import chat.wewe.android.Success;
 import chat.wewe.android.receiver.PortMessageReceiver;
+
+import static chat.wewe.android.activity.Intro.subscription;
 
 public class PrivaryPolicy extends AppCompatActivity {
     private final int REQ_DANGERS_PERMISSION = 2;
 
     SwitchCompat privary;
-    SharedPreferences sPref,sPrefs;
+    SharedPreferences sPref,sPrefs,SipData;
     String code;
     TextView textView;
     @Override
@@ -37,6 +40,7 @@ public class PrivaryPolicy extends AppCompatActivity {
         privary = (SwitchCompat)findViewById(R.id.switch1);
         textView = (TextView)findViewById(R.id.textView);
         SpannableString ss = new SpannableString(textView.getText().toString());
+        SipData = getSharedPreferences("SIP", MODE_PRIVATE);
         sPref = getSharedPreferences("Setting", MODE_PRIVATE);
         sPrefs = getSharedPreferences("pin", MODE_PRIVATE);
         SharedPreferences.Editor eds =  sPrefs.edit();
@@ -46,8 +50,14 @@ public class PrivaryPolicy extends AppCompatActivity {
         ed.commit();
         if(sPref.getInt("privary", '0')=='1'){
             if(code=="") {
+                if(SipData.getString("INNER_GROUP", "false").equals("true")){
+                    subscription=true;
                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-             finish();
+             finish();}
+                else {
+                    startActivity(new Intent(getApplicationContext(), Success.class));
+                    finish();
+                }
             } else{
            startActivity(new Intent(getApplicationContext(), PinCodeLong.class));
                finish();
@@ -79,8 +89,14 @@ public class PrivaryPolicy extends AppCompatActivity {
         ed.commit();
         if (privary.isChecked()){
             if(code=="") {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                finish();
+                if(SipData.getString("INNER_GROUP", "false").equals("true")){
+                    subscription=true;
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();}
+                else {
+                    startActivity(new Intent(getApplicationContext(), Success.class));
+                    finish();
+                }
             }else{
                 startActivity(new Intent(getApplicationContext(), PinCodeLong.class));
                 finish();}

@@ -1,6 +1,10 @@
 package chat.wewe.android.layouthelper.extra_action.upload;
 
+import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 
 import chat.wewe.android.R;
 
@@ -16,8 +20,11 @@ public class ImageUploadActionItem extends AbstractUploadActionItem {
     Intent intent = new Intent();
     intent.setType("image/*");
     intent.setAction(Intent.ACTION_GET_CONTENT);
+ //   intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
     return Intent.createChooser(intent, "Select Picture to Upload");
-  }
+   }
+
+
 
   @Override
   public int getIcon() {

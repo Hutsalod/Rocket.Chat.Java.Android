@@ -80,20 +80,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         }*/
     }
 
-    protected boolean isOnline() {
-        boolean success = false;
-        try {
-            URL url = new URL("https://weltwelle.com");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setConnectTimeout(5000);
-            connection.connect();
-            success = connection.getResponseCode() == 200;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return success;
 
-    }
 
     @Override
     protected void onResume() {

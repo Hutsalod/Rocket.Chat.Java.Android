@@ -118,6 +118,8 @@ public class NotificationUtils {
                         .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                         .setContentText(message)
                         .setVisibility(VISIBILITY_PUBLIC).build();
+                playNotificationSound();
+
             }else{
                 notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0).setPriority(NotificationCompat.PRIORITY_MAX)
                         .setCategory(Notification.CATEGORY_MESSAGE)
@@ -129,6 +131,7 @@ public class NotificationUtils {
                         .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                         .setContentText(message)
                         .setVisibility(VISIBILITY_PUBLIC).build();
+                playNotificationSound();
             }
 
 
