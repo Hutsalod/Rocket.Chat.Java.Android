@@ -83,12 +83,6 @@ public class MessageFormLayout extends LinearLayout {
     btnSubmit = composer.findViewById(R.id.btn_submit);
     buttonBlackList = composer.findViewById(R.id.buttonBlackList);
 
-
-Boolean s = true;
-  // s = getblocingUsers.onSubmitText();
-
-
-    Log.d("getsendBlocking",""+s);
     btnSubmit.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -242,10 +236,15 @@ Boolean s = true;
   }
 
   public void setBlocing(boolean enabled) {
-    if(enabled==true)
-    layoutBlackList.setVisibility(VISIBLE);
-    else
-    buttonBlackList.setVisibility(GONE);
+
+    Log.d("TEST23",""+enabled);
+    if(enabled==true){
+      buttonBlackList.setVisibility(VISIBLE);
+    layoutBlackList.setVisibility(GONE);}
+    else {
+      layoutBlackList.setVisibility(VISIBLE);
+      buttonBlackList.setVisibility(GONE);
+    }
   }
 
   public void setEditTextCommitContentListener(

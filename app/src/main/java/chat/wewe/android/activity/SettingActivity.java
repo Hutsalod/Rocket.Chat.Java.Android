@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.JsonObject;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,7 +21,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static chat.wewe.android.activity.Intro.TOKENWE;
-
+import static chat.wewe.android.layouthelper.chatroom.MessageFormManager.nameBlack;
 public class SettingActivity extends Activity {
 
     String name = "SIP";
@@ -53,17 +54,17 @@ public class SettingActivity extends Activity {
                 });
     }
 
-    public String getBlacklist(){
-        final String[] name = new String[1];
+    public void getBlacklist(){
         mApiService.getBlacklist("KEY:"+TOKENWE)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
                             try {
+                                nameBlack = "";
                                 JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                                Log.d("jsonRESULTS",""+jsonRESULTS.getJSONObject("result").getJSONArray("USERS").getJSONObject(0).getString("UF_ROCKET_LOGIN_BLOC"));
-                                name[0] = jsonRESULTS.getJSONObject("result").getJSONArray("USERS").getJSONObject(0).getString("UF_ROCKET_LOGIN_BLOC");
+
+                                nameBlack = jsonRESULTS.getJSONObject("result").getJSONArray("USERS").getJSONObject(0).getString("UF_ROCKET_LOGIN_BLOC");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             } catch (IOException e) {
@@ -78,7 +79,5 @@ public class SettingActivity extends Activity {
 
                     }
                 });
-
-        return name[0];
     }
 }

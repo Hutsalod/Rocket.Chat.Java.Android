@@ -43,7 +43,7 @@ class SwipeController extends Callback {
 
     private SwipeControllerActions buttonsActions = null;
 
-    private static final float buttonWidth = 300;
+    private static final float buttonWidth = 200;
 
     public SwipeController(SwipeControllerActions buttonsActions) {
         this.buttonsActions = buttonsActions;
@@ -153,7 +153,7 @@ class SwipeController extends Callback {
                             buttonsActions.onRightClicked(viewHolder.getAdapterPosition());
                             Log.d("SWIPE", "spotlightRoomList1 "+pos);
                          Log.d("SWIPE", "spotlightRoomList1 "+RoomListAdapter.arrayListList.get(pos));
-                         //   SidebarMainFragment.methodCallHelper.deleteRooms(RoomListAdapter.arrayListList.get(pos));
+                           SidebarMainFragment.methodCallHelper.deleteRooms(RoomListAdapter.arrayListList.get(pos));
                             RoomListAdapter.arrayListList.clear();
                             recyclerViews.setAdapter(adapter);
                             Log.d("SWIPE", "RIGHT_VISIBLE");
@@ -180,17 +180,13 @@ class SwipeController extends Callback {
         View itemView = viewHolder.itemView;
         Paint p = new Paint();
 
-        RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding+140, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+        RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
         p.setColor(Color.parseColor("#EB4E3D"));
 
         c.drawRoundRect(rightButton, corners, corners, p);
         drawText("", c, rightButton, p,1);
 
-       RectF leftButton  = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight()-120, itemView.getBottom());
-        p.setColor(Color.parseColor("#36638C"));
 
-        c.drawRoundRect(leftButton , corners, corners, p);
-        drawText("☍", c, leftButton , p,0);
 
         buttonInstance = null;
 
@@ -198,9 +194,7 @@ class SwipeController extends Callback {
             buttonInstance = rightButton;
         }
 
-        if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {
-            buttonInstance = leftButton;
-        }
+
 
     }
 

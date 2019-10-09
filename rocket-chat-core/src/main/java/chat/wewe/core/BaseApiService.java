@@ -15,7 +15,7 @@ public interface BaseApiService {
 
     @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ"})
     @GET("api/v1/users.info?")
-    public Call<ResponseBody>getList(@Query("username") String user);
+    Call<ResponseBody>getList(@Query("username") String user);
 
 
     @POST("api/v1/users.delete")

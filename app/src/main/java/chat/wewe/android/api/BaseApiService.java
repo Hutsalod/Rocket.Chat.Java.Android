@@ -69,6 +69,7 @@ public interface BaseApiService {
     @GET("rest/blacklist/get/")
     Call<ResponseBody>getBlacklist(@Header("Authorization-Token") String Token);
 
+    @Headers({"Content-Type: application/json"})
     @POST("rest/blacklist/add/")
     Call<ResponseBody>getBlacklistAdd(@Header("Authorization-Token") String Token,@Body Map<String, Object> params);
 

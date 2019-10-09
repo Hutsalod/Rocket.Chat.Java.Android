@@ -6,8 +6,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -92,6 +94,8 @@ import io.reactivex.disposables.Disposable;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Chat room screen.
  */
@@ -106,7 +110,7 @@ public class RoomFragment extends AbstractChatRoomFragment implements
   private static final int DIALOG_ID = 1;
   private static final String HOSTNAME = "hostname";
   private static final String ROOM_ID = "roomId";
-
+  public SharedPreferences SipDataVideo;
   private String hostname;
   private String roomId;
   private LoadMoreScrollListener scrollListener;
@@ -130,7 +134,7 @@ public class RoomFragment extends AbstractChatRoomFragment implements
   private AbsoluteUrlHelper absoluteUrlHelper;
 
   private Message edittingMessage = null;
-
+  List<String> imagesEncodedList;
   public RoomFragment() {}
 
   /**
@@ -150,7 +154,7 @@ public class RoomFragment extends AbstractChatRoomFragment implements
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+    SipDataVideo = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
     Bundle args = getArguments();
     hostname = args.getString(HOSTNAME);
     roomId = args.getString(ROOM_ID);
@@ -254,7 +258,7 @@ public class RoomFragment extends AbstractChatRoomFragment implements
     extraActionItems = new ArrayList<>(4); // fixed number as of now
     extraActionItems.add(new ImageUploadActionItem());
     extraActionItems.add(new AudioUploadActionItem());
-    extraActionItems.add(new VideoUploadActionItem());
+    extraActionItems.add(new VideoUploadActionItem(SipDataVideo.getBoolean("VIDEO_C", true)));
     extraActionItems.add(new FileUploadActionItem());
   }
 
@@ -423,15 +427,29 @@ Log.d("MSG1","MSGLOG");
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
+    Log.d("ImageUploadActionItem", "TE"+data.getData()+"QQ" +requestCode+"RR"+ resultCode+"ff"+data);
     if (requestCode != AbstractUploadActionItem.RC_UPL || resultCode != Activity.RESULT_OK) {
+      Log.d("ImageUploadActionItem1", "Yes");
       return;
     }
 
     if (data == null || data.getData() == null) {
-      return;
+      Log.d("ImageUploadActionItem2", "Yes");
+      ClipData mClipData = data.getClipData();
+      ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+      for (int i = 0; i < mClipData.getItemCount(); i++) {
+
+        ClipData.Item item = mClipData.getItemAt(i);
+        Uri uri = item.getUri();
+          uploadFile(uri);
+      }
+
+
+    }else{
+      uploadFile(data.getData());
     }
 
-    uploadFile(data.getData());
+
   }
 
   private void uploadFile(Uri uri) {

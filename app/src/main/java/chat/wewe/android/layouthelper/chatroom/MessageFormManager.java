@@ -13,6 +13,7 @@ import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
 public class MessageFormManager {
   private final MessageFormLayout messageFormLayout;
   private SendMessageCallback sendMessageCallback;
+  public  static String  nameBlack = "";
 
   public MessageFormManager(MessageFormLayout messageFormLayout,
                             MessageFormLayout.ExtraActionSelectionClickListener callback) {
@@ -25,9 +26,12 @@ public class MessageFormManager {
     messageFormLayout.setExtraActionSelectionClickListener(listener);
     messageFormLayout.setSubmitTextListener(this::sendMessage);
     messageFormLayout.setBlocingUsers(this::sendBlocking);
-
-    final String  getBlacklist = new SettingActivity().getBlacklist();
-
+  /*  new SettingActivity().getBlacklist();
+    Log.d("TEST23",""+getName+"ку"+nameBlack);
+   if(getName.equals(nameBlack)) {
+     messageFormLayout.setBlocing(true);
+   }else
+   {messageFormLayout.setBlocing(false);}*/
   }
 
   public void setSendMessageCallback(SendMessageCallback sendMessageCallback) {

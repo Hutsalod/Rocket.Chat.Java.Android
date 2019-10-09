@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
 import chat.wewe.android.widget.R;
 import chat.wewe.core.BaseApiService;
 import chat.wewe.core.UtilsApi;
@@ -50,9 +53,9 @@ public class RoomListItemView extends FrameLayout {
   private String roomId;
   private String roomName;
   private MediaPlayer song;
-
-  public  int a_chars = 0;
-  SharedPreferences SipData,SipDataq;
+  private CountDownTimer countDownTimer;
+  public TextView text;
+  SharedPreferences SipData, SipDataq;
 
   public RoomListItemView(Context context) {
     super(context);
@@ -93,7 +96,6 @@ public class RoomListItemView extends FrameLayout {
   }
 
 
-
   public RoomListItemView setRoomId(String roomId) {
     this.roomId = roomId;
     return this;
@@ -114,62 +116,66 @@ public class RoomListItemView extends FrameLayout {
     song = (MediaPlayer) MediaPlayer.create(getContext(), R.raw.msg);
     TextView alertCount = (TextView) findViewById(R.id.alert_count);
 
-
-    final ImageView statusConnect = (ImageView)findViewById(R.id.statusConnect);
     if (count > 0) {
       alertCount.setText(Integer.toString(count));
       alertCountContainer.setVisibility(View.VISIBLE);
-      statusConnect.setImageResource(R.drawable.userstatus_online);
+
     } else {
       alertCountContainer.setVisibility(View.GONE);
+
     }
 
     return this;
   }
 
   public RoomListItemView setAlert(boolean alert) {
-   // setAlpha(alert ? 1.0f : 0.62f);
+    // setAlpha(alert ? 1.0f : 0.62f);
 
     return this;
   }
-  public void soungPlay(MediaPlayer sound){
+
+  public void soungPlay(MediaPlayer sound) {
     sound.start();
   }
+
   public String getRoomName() {
     return roomName;
   }
-
-
-
-
 
   public RoomListItemView setRoomName(final String roomName) {
     this.roomName = roomName;
 
     SipData = getContext().getSharedPreferences("NameMessage", MODE_PRIVATE);
     SipDataq = getContext().getSharedPreferences("TimeMessage", MODE_PRIVATE);
-    TextView  message_out  = (TextView) findViewById(R.id.message_out);
-    TextView text = (TextView) findViewById(R.id.text);
+    TextView message_out = (TextView) findViewById(R.id.message_out);
+    text = (TextView) findViewById(R.id.text);
     TextView timemessage = (TextView) findViewById(R.id.textView2);
     TextView iconText = (TextView) findViewById(R.id.iconText);
-    message_out.setText( SipData.getString(roomName, ""));
-    timemessage.setText( SipDataq.getString(roomName, ""));
+    message_out.setText(SipData.getString(roomName, ""));
+    timemessage.setText(SipDataq.getString(roomName, ""));
     text.setText(roomName);
 
+    ImageView statusConnect = (ImageView) findViewById(R.id.statusConnect);
 
-    final ImageView statusConnect = (ImageView)findViewById(R.id.statusConnect);
+
+    if(roomName.equals("kvs")) {
+      text.setText(text.getText() + " 1");
+      statusConnect.setImageResource(R.drawable.userstatus_online);
+    }
+
     mApiService.getList(roomName)
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.d("StatusC","true"+roomName);
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                   try {
                     JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                    if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
+                    if (jsonRESULTS.getJSONObject("user").getString("status").equals("online")) {
+                      ImageView statusConnect = (ImageView) findViewById(R.id.statusConnect);
                       statusConnect.setImageResource(R.drawable.userstatus_online);
-                      Log.d("Status","true");}
-
+                      text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userstatus_online, 0, 0, 0);
+                      Log.d("Status5", "" + roomName);
+                    }
                   } catch (JSONException e) {
                     e.printStackTrace();
                   } catch (IOException e) {
@@ -181,10 +187,9 @@ public class RoomListItemView extends FrameLayout {
 
               @Override
               public void onFailure(Call<ResponseBody> call, Throwable t) {
-                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
-
               }
             });
+
 
     new DownloadImageFromInternet((ImageView)findViewById(R.id.avatarUser)).execute("https://chat.weltwelle.com/avatar/"+roomName);
 
@@ -204,6 +209,7 @@ public class RoomListItemView extends FrameLayout {
     protected Bitmap doInBackground(String... urls) {
       String imageURL = urls[0];
       Bitmap bimage = null;
+
       try {
         InputStream in = new java.net.URL(imageURL).openStream();
         bimage = BitmapFactory.decodeStream(in);
@@ -212,8 +218,6 @@ public class RoomListItemView extends FrameLayout {
         e.printStackTrace();
       }
       return bimage;
-
-
     }
 
     protected void onPostExecute(Bitmap result) {
@@ -227,6 +231,5 @@ public class RoomListItemView extends FrameLayout {
       }
     }
   }
-
 
 }

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class FileUploadProgressDialogFragment extends AbstractChatRoomDialogFrag
     fileUploadingObserver = realmHelper
         .createObjectObserver(realm -> realm.where(FileUploading.class).equalTo("uplId", uplId))
         .setOnUpdateListener(this::onRenderFileUploadingState);
+
   }
 
   @Override

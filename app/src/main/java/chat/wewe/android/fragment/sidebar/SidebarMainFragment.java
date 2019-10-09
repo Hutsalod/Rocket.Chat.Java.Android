@@ -117,7 +117,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   private RealmSpotlightRoomRepository realmSpotlightRoomRepository;
   private SearchView searchView;
   private  SwitchCompat switch1;
-  public static String getName;
+  public static String getName = "";
   SharedPreferences.Editor ed;
   TextView exetGoogle;
   NestedScrollView actionContainers,languageLayaut,secyrityLayaut,blaclistScrol;
@@ -386,11 +386,10 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       });
 
     rootView.findViewById(R.id.friends).setOnClickListener(view -> {
-      Uri uri = Uri.parse("smsto:");
+     /* Uri uri = Uri.parse("smsto:1111");
       Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
       intent.putExtra("sms_body", "Hey, I'm using WeWe to chat and call. Join me! Apple - https://apps.apple.com/ua/app/wewe-phone/id1386715295, Android - https://play.google.com/store/apps/details?id=chat.wewe.android");
-      startActivity(intent);
-
+      startActivity(intent);*/
     });
 
     rootView.findViewById(R.id.policy_mss).setOnClickListener(view -> {
@@ -410,6 +409,15 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         ed.putString("INNER_GROUP", "false");
       else
         ed.putString("INNER_GROUP", "true");
+      ed.commit();
+    });
+
+    rootView.findViewById(R.id.switch3).setOnClickListener(view -> {
+      SharedPreferences.Editor ed = SipData.edit();
+      if(SipData.getBoolean("VIDEO_C", false)==true)
+        ed.putBoolean("VIDEO_C", false);
+      else
+        ed.putBoolean("VIDEO_C", true);
       ed.commit();
     });
 
@@ -606,6 +614,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   }
 
   public void getStatus(String roomName){
+    Log.d("Status3","true"+roomName);
       statusRoom.setImageResource(R.drawable.ic_at_white_24dp);
     mApiServiceChat.getStatus(roomName)
             .enqueue(new Callback<ResponseBody>() {
@@ -614,7 +623,10 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
                 if (response.isSuccessful()){
                   try {
                     JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                      jsonRESULTS.getJSONArray("result").toString();
+                    Log.d("Status3","true");
+                    if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
+                      statusRoom.setImageResource(R.drawable.ic_at_gray_24dp);
+                      Log.d("Status3","true");}
                   } catch (JSONException e) {
                     e.printStackTrace();
                   } catch (IOException e) {

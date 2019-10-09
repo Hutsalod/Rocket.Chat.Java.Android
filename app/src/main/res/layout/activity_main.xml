@@ -426,6 +426,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:onClick="showPopup"
                     android:layout_marginRight="@dimen/margin_8"
                     android:gravity="center"
                     android:text="Сообщения"

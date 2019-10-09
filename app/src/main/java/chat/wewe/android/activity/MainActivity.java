@@ -45,6 +45,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -117,7 +118,7 @@ import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
 /**
  * Entry-point for Rocket.Chat.Android application.
  */
-public class MainActivity extends AbstractAuthedActivity implements MainContract.View,AdapterView.OnItemClickListener {
+public class MainActivity extends AbstractAuthedActivity implements MainContract.View,AdapterView.OnItemClickListener,PopupMenu.OnMenuItemClickListener {
 
   private StatusTicker statusTicker;
   private MainContract.Presenter presenter;
@@ -334,6 +335,25 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
 
 
+  }
+
+  public void showPopup(View v) {
+    PopupMenu popup = new PopupMenu(this, v);
+    popup.setOnMenuItemClickListener(this);
+    popup.inflate(R.menu.menu_users);
+    popup.show();
+  }
+
+
+  @Override
+  public boolean onMenuItemClick(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.item1:
+        getBlacklistAdd(getName);
+        return true;
+      default:
+        return false;
+    }
   }
 
   @Override
@@ -646,6 +666,10 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           call.setVisibility(VISIBLE);
           contacts.setVisibility(GONE);
           setting.setVisibility(GONE);
+          if(SipData.getString("INNER_GROUP", "false").equals("false")){
+            startActivity(new Intent(getApplicationContext(), Success.class));
+            finish();
+          }
           return true;
         case R.id.action_group:
           chat.setVisibility(GONE);
@@ -654,6 +678,10 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           setting.setVisibility(GONE);
           contactModelList.clear();
           requestContactsPermissions();
+          if(SipData.getString("INNER_GROUP", "false").equals("false")){
+            startActivity(new Intent(getApplicationContext(), Success.class));
+            finish();
+          }
           return true;
         case R.id.action_setting:
           chat.setVisibility(GONE);
@@ -665,7 +693,14 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             SwitchCompat switch2 = (SwitchCompat)findViewById(R.id.switch2);
             switch2.setChecked(true);
           }
+          SwitchCompat switch3 = (SwitchCompat)findViewById(R.id.switch3);
+          if(SipData.getBoolean("VIDEO_C", true)==true){
+            switch3.setChecked(true);
+          }else{
+           switch3.setChecked(false);
+          }
 
+          Log.d("TEST22",""+SipData.getBoolean("VIDEO_C", true));
           TextView textView6 = (TextView)findViewById(R.id.textView6);
           if(callstatic==1)
             textView6.setText("Chat: Онлайн SIP: Онлайн");
@@ -985,7 +1020,35 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     UserStatus();
   }
 
+  public void getBlacklistAdd(String UF_ROCKET_LOGIN){
+    SipData = getSharedPreferences("SIP", MODE_PRIVATE);
+    Map<String, Object> jsonParams = new ArrayMap<>();
+    jsonParams.put("UF_ROCKET_ID", "null");
+    jsonParams.put("UF_ROCKET_LOGIN", "null");
+    jsonParams.put("UF_USER_ID_BLOCKED", "null");
+    jsonParams.put("UF_ROCKET_ID_BLOCKED", "null");
+    jsonParams.put("UF_ROCKET_LOGIN_BLOC", UF_ROCKET_LOGIN);
+    mApiService.getBlacklistAdd("KEY:"+SipData.getString("TOKENWE",""),jsonParams)
+            .enqueue(new Callback<ResponseBody>() {
+              @Override
+              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                  try {
+                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                  } catch (JSONException e) {
+                    e.printStackTrace();
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                } else {
+                }
+              }
 
+              @Override
+              public void onFailure(Call<ResponseBody> call, Throwable t) {
+              }
+            });
+  }
 
 
   private void UserStatus(){

@@ -50,14 +50,8 @@ public class PrivaryPolicy extends AppCompatActivity {
         ed.commit();
         if(sPref.getInt("privary", '0')=='1'){
             if(code=="") {
-                if(SipData.getString("INNER_GROUP", "false").equals("true")){
-                    subscription=true;
                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-             finish();}
-                else {
-                    startActivity(new Intent(getApplicationContext(), Success.class));
-                    finish();
-                }
+             finish();
             } else{
            startActivity(new Intent(getApplicationContext(), PinCodeLong.class));
                finish();
@@ -89,14 +83,9 @@ public class PrivaryPolicy extends AppCompatActivity {
         ed.commit();
         if (privary.isChecked()){
             if(code=="") {
-                if(SipData.getString("INNER_GROUP", "false").equals("true")){
-                    subscription=true;
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();}
-                else {
-                    startActivity(new Intent(getApplicationContext(), Success.class));
                     finish();
-                }
+
             }else{
                 startActivity(new Intent(getApplicationContext(), PinCodeLong.class));
                 finish();}
