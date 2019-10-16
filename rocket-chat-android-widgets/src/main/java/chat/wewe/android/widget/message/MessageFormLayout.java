@@ -237,7 +237,7 @@ public class MessageFormLayout extends LinearLayout {
 
   public void setBlocing(boolean enabled) {
 
-    Log.d("TEST23",""+enabled);
+
     if(enabled==true){
       buttonBlackList.setVisibility(VISIBLE);
     layoutBlackList.setVisibility(GONE);}

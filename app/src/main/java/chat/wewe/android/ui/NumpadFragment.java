@@ -130,7 +130,7 @@ private int st = 0;
             currentLine.hasVideo = callSet;
             showTips(currentLine.lineName + ": Calling...");
            setnupad = 0;
-           getName=null;
+           //getName=null;
 
        }
         if(callstatic==1 && setnupad==2) {
@@ -171,7 +171,7 @@ private int st = 0;
             showTips(currentLine.lineName + ": Calling...");
             callstatic=1;
             setnupad = 0;
-            getName=null;
+          //  getName=null;
 
         }
 

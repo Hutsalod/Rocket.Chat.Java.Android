@@ -1,6 +1,7 @@
 package chat.wewe.android.fragment.add_server;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +23,8 @@ import chat.wewe.android.RocketChatCache;
 import chat.wewe.android.fragment.AbstractFragment;
 import chat.wewe.android.service.ConnectivityManager;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Input server host.
  */
@@ -30,36 +33,18 @@ public class InputHostnameFragment extends AbstractFragment implements InputHost
   private InputHostnameContract.Presenter presenter;
   private ConstraintLayout container;
   private View waitingView;
-
+  SharedPreferences SipData;
   public InputHostnameFragment() {}
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+    SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
     Context appContext = getContext().getApplicationContext();
     presenter = new InputHostnamePresenter(new RocketChatCache(appContext), ConnectivityManager.getInstance(appContext));
 
-  /*    if(!isOnline()){
-        Toast.makeText(getActivity(), "Нету соединения с интернетом!" ,
-                Toast.LENGTH_LONG).show();
-      }*/
-
   }
-  protected boolean isOnline() {
-      boolean success = false;
-      try {
-        URL url = new URL("https://weltwelle.com");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(5000);
-        connection.connect();
-        success = connection.getResponseCode() == 200;
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      return success;
 
-  }
 
   @Override
   protected int getLayout() {
@@ -69,7 +54,6 @@ public class InputHostnameFragment extends AbstractFragment implements InputHost
   @Override
   protected void onSetupView() {
     setupVersionInfo();
-
     container = (ConstraintLayout) rootView.findViewById(R.id.container);
     waitingView = rootView.findViewById(R.id.waiting);
     rootView.findViewById(R.id.btn_connect).setOnClickListener(view -> handleConnect());
@@ -103,8 +87,8 @@ public class InputHostnameFragment extends AbstractFragment implements InputHost
   }
 
   private String getHostname() {
-    final String host = "chat.weltwelle.com";
-    return host;
+    final String host = SipData.getString("UF_ROCKET_SERVER", "chat.weltwelle.com");
+    return host.toString();
   }
 
   private void showError(String errString) {

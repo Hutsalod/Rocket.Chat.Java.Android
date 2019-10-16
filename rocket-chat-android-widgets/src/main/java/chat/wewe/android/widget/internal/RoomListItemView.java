@@ -25,7 +25,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import chat.wewe.android.widget.R;
@@ -53,9 +56,9 @@ public class RoomListItemView extends FrameLayout {
   private String roomId;
   private String roomName;
   private MediaPlayer song;
-  private CountDownTimer countDownTimer;
-  public TextView text;
-  SharedPreferences SipData, SipDataq;
+ SharedPreferences SipData, SipDataq;
+  public ArrayList<String> arrayListLists = new ArrayList<>();
+    TextView text;
 
   public RoomListItemView(Context context) {
     super(context);
@@ -78,6 +81,8 @@ public class RoomListItemView extends FrameLayout {
     initialize(context);
   }
 
+
+
   private void initialize(Context context) {
     setLayoutParams(new LinearLayout.LayoutParams(
             LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -87,6 +92,7 @@ public class RoomListItemView extends FrameLayout {
     });
     setBackground(array2.getDrawable(0));
     array2.recycle();
+
 
     View.inflate(context, R.layout.room_list_item, this);
   }
@@ -144,7 +150,7 @@ public class RoomListItemView extends FrameLayout {
 
   public RoomListItemView setRoomName(final String roomName) {
     this.roomName = roomName;
-
+   // getStart(roomName);
     SipData = getContext().getSharedPreferences("NameMessage", MODE_PRIVATE);
     SipDataq = getContext().getSharedPreferences("TimeMessage", MODE_PRIVATE);
     TextView message_out = (TextView) findViewById(R.id.message_out);
@@ -155,40 +161,6 @@ public class RoomListItemView extends FrameLayout {
     timemessage.setText(SipDataq.getString(roomName, ""));
     text.setText(roomName);
 
-    ImageView statusConnect = (ImageView) findViewById(R.id.statusConnect);
-
-
-    if(roomName.equals("kvs")) {
-      text.setText(text.getText() + " 1");
-      statusConnect.setImageResource(R.drawable.userstatus_online);
-    }
-
-    mApiService.getList(roomName)
-            .enqueue(new Callback<ResponseBody>() {
-              @Override
-              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                  try {
-                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                    if (jsonRESULTS.getJSONObject("user").getString("status").equals("online")) {
-                      ImageView statusConnect = (ImageView) findViewById(R.id.statusConnect);
-                      statusConnect.setImageResource(R.drawable.userstatus_online);
-                      text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userstatus_online, 0, 0, 0);
-                      Log.d("Status5", "" + roomName);
-                    }
-                  } catch (JSONException e) {
-                    e.printStackTrace();
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                  }
-                } else {
-                }
-              }
-
-              @Override
-              public void onFailure(Call<ResponseBody> call, Throwable t) {
-              }
-            });
 
 
     new DownloadImageFromInternet((ImageView)findViewById(R.id.avatarUser)).execute("https://chat.weltwelle.com/avatar/"+roomName);
@@ -198,18 +170,27 @@ public class RoomListItemView extends FrameLayout {
     return this;
   }
 
+    public void  showOnlineUserStatusIcon() {
+        ImageView statusConnects =  findViewById(R.id.statusConnect);
+        statusConnects.setImageResource(R.drawable.userstatus_online);
+
+    }
+    public void  showOfflineUserStatusIcon() {
+        ImageView statusConnects =  findViewById(R.id.statusConnect);
+        statusConnects.setImageResource(R.drawable.userstatus_offline);
+
+    }
+
+
+
   private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
     ImageView imageView;
-
-
     public DownloadImageFromInternet(ImageView imageView) {
       this.imageView = imageView;
     }
-
     protected Bitmap doInBackground(String... urls) {
       String imageURL = urls[0];
       Bitmap bimage = null;
-
       try {
         InputStream in = new java.net.URL(imageURL).openStream();
         bimage = BitmapFactory.decodeStream(in);
@@ -219,7 +200,6 @@ public class RoomListItemView extends FrameLayout {
       }
       return bimage;
     }
-
     protected void onPostExecute(Bitmap result) {
       TextView iconText = (TextView) findViewById(R.id.iconText);
       if(result==null){
@@ -231,5 +211,6 @@ public class RoomListItemView extends FrameLayout {
       }
     }
   }
+
 
 }

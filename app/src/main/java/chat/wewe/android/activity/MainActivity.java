@@ -172,14 +172,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     SipData = getSharedPreferences("SIP", MODE_PRIVATE);
-    SharedPreferences.Editor ed =  SipData.edit();
-    ed.commit();
-    callInt = new Intent(this, chat.wewe.android.ui.MainActivity.class);
-
-   if(SipData.getString("UF_SIP_NUMBER", "")!="" & callstatic==0) {
-     ed.commit();
-   startActivity(callInt);
-   }
+    callInt = new Intent(getApplicationContext(), chat.wewe.android.ui.MainActivity.class);
 
 
     navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -213,24 +206,11 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     waitingView = findViewById(R.id.waiting_serch);
 
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+
     statusTicker = new StatusTicker();
     setupSidebar();
-
-   // LoginFragment SaveUserInfo = new LoginFragment();
-
-/*
- countDownTimer = new CountDownTimer(15000, 1000) {
-      @Override
-      public void onTick(long millisUntilFinished) {
-      }
-      @Override
-      public void onFinish() {
-        Intent intent = new Intent(getApplicationContext(), Success.class);
-        startActivity(intent);
-          countDownTimer.cancel();
-      }};
-    countDownTimer.start();
-*/
       mApiService = UtilsApi.getAPIService();
     mApiServiceChat = UtilsApiChat.getAPIService();
     navigation.setSelectedItemId(R.id.action_chat);
@@ -238,12 +218,20 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     BtnCall.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
+
         if (subscription == true) {
           callSet = false;
           startActivity(callInt);
           setnupad = 1;
         }else{
-        startActivity(new Intent(getApplicationContext(), Success.class));
+          if(SipData.getString("INNER_GROUP", "false").equals("false")){
+            startActivity(new Intent(getApplicationContext(), Success.class));
+
+          }else {
+            callSet = false;
+            startActivity(callInt);
+            setnupad = 1;
+          }
         }
       }
     });
@@ -255,8 +243,14 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           startActivity(callInt);
           setnupad = 2;
         }else{
-          startActivity(new Intent(getApplicationContext(), Success.class));
-        }
+          if(SipData.getString("INNER_GROUP", "false").equals("false")){
+            startActivity(new Intent(getApplicationContext(), Success.class));
+
+          }else {
+            callSet = true;
+            startActivity(callInt);
+            setnupad = 2;
+          }}
       }
     });
 
@@ -334,14 +328,18 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     countDownTimer.start();
 
 
-
+   if(SipData.getString("UF_SIP_NUMBER", "")!="" & callstatic==0) {
+      startActivity(new Intent(getApplicationContext(), chat.wewe.android.ui.MainActivity.class));
+    }
   }
 
   public void showPopup(View v) {
-    PopupMenu popup = new PopupMenu(this, v);
-    popup.setOnMenuItemClickListener(this);
-    popup.inflate(R.menu.menu_users);
-    popup.show();
+    if(!current_user_name.getText().equals("Сообщения")) {
+      PopupMenu popup = new PopupMenu(this, v);
+      popup.setOnMenuItemClickListener(this);
+      popup.inflate(R.menu.menu_users);
+      popup.show();
+    }
   }
 
 
@@ -350,6 +348,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     switch (item.getItemId()) {
       case R.id.item1:
         getBlacklistAdd(getName);
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
         return true;
       default:
         return false;
@@ -507,6 +506,13 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   }
 
   @Override
+  protected Task<Void> getMethodCallForSubmitAction() {
+    String username =
+            ((AppCompatAutoCompleteTextView) findViewById(R.id.editText)).getText().toString();
+    return methodCall.createDirectMessage(username);
+  }
+
+  @Override
   protected void onResume() {
     super.onResume();
     if (presenter != null) {
@@ -521,13 +527,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     }
 
     super.onPause();
-  }
-
-  @Override
-  protected Task<Void> getMethodCallForSubmitAction() {
-    String username =
-            ((AppCompatAutoCompleteTextView) findViewById(R.id.editText)).getText().toString();
-    return methodCall.createDirectMessage(username);
   }
 
   private void setupSidebar() {
@@ -689,10 +688,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           contacts.setVisibility(GONE);
           setting.setVisibility(VISIBLE);
 
-          if(SipData.getString("INNER_GROUP", "false").equals("true")){
-            SwitchCompat switch2 = (SwitchCompat)findViewById(R.id.switch2);
-            switch2.setChecked(true);
-          }
+
           SwitchCompat switch3 = (SwitchCompat)findViewById(R.id.switch3);
           if(SipData.getBoolean("VIDEO_C", true)==true){
             switch3.setChecked(true);
@@ -711,46 +707,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       return false;
     }
   };
-
-  @Override
-  public void showUnreadCount(long roomsCount, int mentionsCount) {
-    RoomToolbar toolbar = (RoomToolbar) findViewById(R.id.activity_main_toolbar);
-    if (toolbar != null) {
-      toolbar.setUnreadBudge((int) roomsCount, mentionsCount);
-    }
-  }
-
-  @Override
-  public void showAddServerScreen() {
-    LaunchUtil.showAddServerActivity(this);
-  }
-
-  @Override
-  public void showLoginScreen() {
-    LaunchUtil.showLoginActivity(this, hostname);
-    statusTicker.updateStatus(StatusTicker.STATUS_DISMISS, null);
-  }
-
-  @Override
-  public void showConnectionError() {
-    statusTicker.updateStatus(StatusTicker.STATUS_CONNECTION_ERROR,
-            Snackbar.make(findViewById(getLayoutContainerForFragment()),
-                    R.string.fragment_retry_login_error_title, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.fragment_retry_login_retry_title, view ->
-                            presenter.onRetryLogin()));
-  }
-
-  @Override
-  public void showConnecting() {
-    statusTicker.updateStatus(StatusTicker.STATUS_TOKEN_LOGIN,null);
-
-
-  }
-
-  @Override
-  public void showConnectionOk() {
-    statusTicker.updateStatus(StatusTicker.STATUS_DISMISS, null);
-  }
 
   public void kayboard(View view) {
     animateShow(kayboardLayout);
@@ -786,6 +742,45 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   }
 
 
+  @Override
+  public void showUnreadCount(long roomsCount, int mentionsCount) {
+    RoomToolbar toolbar = (RoomToolbar) findViewById(R.id.activity_main_toolbar);
+    if (toolbar != null) {
+      toolbar.setUnreadBudge((int) roomsCount, mentionsCount);
+    }
+  }
+
+  @Override
+  public void showAddServerScreen() {
+    LaunchUtil.showAddServerActivity(this);
+  }
+
+  @Override
+  public void showLoginScreen() {
+    LaunchUtil.showLoginActivity(this, hostname);
+    statusTicker.updateStatus(StatusTicker.STATUS_DISMISS, null);
+  }
+
+  @Override
+  public void showConnectionError() {
+    statusTicker.updateStatus(StatusTicker.STATUS_CONNECTION_ERROR,
+            Snackbar.make(findViewById(getLayoutContainerForFragment()),
+                    R.string.fragment_retry_login_error_title, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.fragment_retry_login_retry_title, view ->
+                            presenter.onRetryLogin()));
+  }
+
+  @Override
+  public void showConnecting() {
+    StatusU=4;
+    UserStatus();
+  }
+
+  @Override
+  public void showConnectionOk() {
+    statusTicker.updateStatus(StatusTicker.STATUS_DISMISS, null);
+  }
+
   //TODO: consider this class to define in layouthelper for more complicated operation.
   private static class StatusTicker {
     public static final int STATUS_DISMISS = 0;
@@ -815,8 +810,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       }
     }
   }
-
-
 
   private void setDataToAdapter(){
     contactAdapter = new ContactAdapter(this,contactModelList);
@@ -903,16 +896,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   }
 
 
-  @Override
-  public boolean dispatchKeyEvent(KeyEvent event) {
-    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-      switch (event.getKeyCode()) {
-        case KeyEvent.KEYCODE_BACK:
-          return true;
-      }
-    }
-    return super.dispatchKeyEvent(event);
-  }
+
 
   private void setupView(Optional<RocketChatAbsoluteUrl> rocketChatAbsoluteUrlOptional) {
     compositeDisposable.clear();

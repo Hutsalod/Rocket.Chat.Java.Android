@@ -10,10 +10,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import chat.wewe.android.R;
+import chat.wewe.android.fragment.chatroom.RoomFragment;
 import chat.wewe.core.SyncState;
 import chat.wewe.persistence.realm.models.internal.FileUploading;
 import chat.wewe.persistence.realm.RealmObjectObserver;
 import chat.wewe.android.renderer.FileUploadingRenderer;
+
+import static chat.wewe.android.fragment.chatroom.RoomFragment.updat;
 
 /**
  * dialog fragment to display progress of file uploading.
@@ -73,9 +76,11 @@ public class FileUploadProgressDialogFragment extends AbstractChatRoomDialogFrag
     int syncstate = state.getSyncState();
     if (syncstate == SyncState.SYNCED) {
       dismiss();
+      updat=true;
     } else if (syncstate == SyncState.FAILED) {
       Toast.makeText(getContext(), state.getError(), Toast.LENGTH_SHORT).show();
       //TODO: prompt retry.
+
       dismiss();
     } else {
       new FileUploadingRenderer(getContext(), state)

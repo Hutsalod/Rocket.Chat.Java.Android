@@ -21,6 +21,7 @@ public class ImageUploadActionItem extends AbstractUploadActionItem {
     intent.setType("image/*");
       intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
     intent.setAction(Intent.ACTION_GET_CONTENT);
+
     return Intent.createChooser(intent, "Select Picture to Upload");
    }
 

@@ -99,18 +99,15 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
     if (mode == MODE_ROOM) {
       if (getItemViewType(position) == VIEW_TYPE_HEADER) {
-        ((RoomListHeaderViewHolder) holder)
-            .bind(headersPosition.get(position));
+        ((RoomListHeaderViewHolder) holder).bind(headersPosition.get(position));
         return;
       }
 
-      ((RoomListItemViewHolder) holder)
-          .bind(roomList.get(position - getTotalHeadersBeforePosition(position)));
+      ((RoomListItemViewHolder) holder).bind(roomList.get(position - getTotalHeadersBeforePosition(position)));
       Log.d("SWIPE", "spotlightRoomList " + roomList.get(position - getTotalHeadersBeforePosition(position)).getName());
       arrayListList.add(roomList.get(position - getTotalHeadersBeforePosition(position)).getRoomId());
     } else if (mode == MODE_SPOTLIGHT_ROOM) {
-      ((RoomListItemViewHolder) holder)
-          .bind(spotlightRoomList.get(position));
+      ((RoomListItemViewHolder) holder).bind(spotlightRoomList.get(position));
     }
   }
 
@@ -140,7 +137,6 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       sortRoomList();
    calculateHeadersPosition();
     }
-    Log.d("SWIPE", "YES! ");
     notifyDataSetChanged();
 
   }
@@ -154,6 +150,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       for (int i = 0; i < totalHeaders; i++) {
         arrayListList.clear();
         final RoomListHeader header = roomListHeaders.get(i);
+
         if (header.owns(room) && !header.owns(anotherRoom)) {
           return -1;
         } else if (!header.owns(room) && header.owns(anotherRoom)) {

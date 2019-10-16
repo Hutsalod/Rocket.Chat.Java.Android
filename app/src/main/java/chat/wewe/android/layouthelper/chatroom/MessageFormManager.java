@@ -2,6 +2,8 @@ package chat.wewe.android.layouthelper.chatroom;
 
 import android.util.Log;
 
+import java.util.Arrays;
+
 import chat.wewe.android.activity.SettingActivity;
 import chat.wewe.android.widget.message.MessageFormLayout;
 
@@ -13,8 +15,7 @@ import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
 public class MessageFormManager {
   private final MessageFormLayout messageFormLayout;
   private SendMessageCallback sendMessageCallback;
-  public  static String  nameBlack = "";
-
+  public static String[] mnameBlack = { "id" };
   public MessageFormManager(MessageFormLayout messageFormLayout,
                             MessageFormLayout.ExtraActionSelectionClickListener callback) {
     this.messageFormLayout = messageFormLayout;
@@ -26,12 +27,14 @@ public class MessageFormManager {
     messageFormLayout.setExtraActionSelectionClickListener(listener);
     messageFormLayout.setSubmitTextListener(this::sendMessage);
     messageFormLayout.setBlocingUsers(this::sendBlocking);
-  /*  new SettingActivity().getBlacklist();
-    Log.d("TEST23",""+getName+"ку"+nameBlack);
-   if(getName.equals(nameBlack)) {
+   new SettingActivity().getBlacklist();
+
+ if( Arrays.asList(mnameBlack).contains(getName))
      messageFormLayout.setBlocing(true);
-   }else
-   {messageFormLayout.setBlocing(false);}*/
+   else
+   messageFormLayout.setBlocing(false);
+
+
   }
 
   public void setSendMessageCallback(SendMessageCallback sendMessageCallback) {

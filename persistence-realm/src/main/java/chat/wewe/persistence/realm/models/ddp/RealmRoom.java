@@ -1,5 +1,7 @@
 package chat.wewe.persistence.realm.models.ddp;
 
+import android.util.Log;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import org.json.JSONException;
@@ -139,6 +141,7 @@ public class RealmRoom extends RealmObject {
   }
 
   public Room asRoom() {
+
     return Room.builder()
         .setId(_id)
         .setRoomId(rid)
@@ -151,5 +154,6 @@ public class RealmRoom extends RealmObject {
         .setLastSeen(ls)
         .setFavorite(f)
         .build();
+
   }
 }

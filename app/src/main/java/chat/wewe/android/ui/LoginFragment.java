@@ -46,6 +46,8 @@ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSel
     private Spinner spTransport;
     private Spinner spSRTP;
     private TextView mtxStatus;
+
+    private  String UF_SIP_SERVER;
     SharedPreferences SipData;
     Intent callInt;
 
@@ -61,6 +63,8 @@ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSel
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
         mtxStatus = (TextView) view.findViewById(R.id.txtips);
 
         etUsername = (EditText) view.findViewById(R.id.etusername);
@@ -85,12 +89,10 @@ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSel
 
         LoadUserInfo();
         setOnlineStatus(null);
-        SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
-        SharedPreferences.Editor ed =  SipData.edit();
-        ed.commit();
+        ;
         UF_SIP_NUMBER = SipData.getString("UF_SIP_NUMBER", null);
-        ed.commit();
         UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", null);
+        UF_SIP_SERVER = SipData.getString("UF_SIP_SERVER", "sip.weltwelle.com");
 
         activity.receiver.broadcastReceiver = this;
         view.findViewById(R.id.btonline).setOnClickListener(this);
@@ -134,9 +136,9 @@ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSel
     private void LoadUserInfo() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        etUsername.setText(preferences.getString(PortSipService.USER_NAME, UF_SIP_PASSWORD));
+        etUsername.setText(preferences.getString(PortSipService.USER_NAME, UF_SIP_NUMBER));
         etPassword.setText(preferences.getString(PortSipService.USER_PWD, UF_SIP_PASSWORD));
-        etSipServer.setText(preferences.getString(PortSipService.SVR_HOST, "sip.weltwelle.com"));
+        etSipServer.setText(preferences.getString(PortSipService.SVR_HOST, UF_SIP_SERVER));
         etSipServerPort.setText(preferences.getString(PortSipService.SVR_PORT, "5061"));
 
         etDisplayname.setText(preferences.getString(PortSipService.USER_DISPALYNAME, null));
@@ -153,7 +155,7 @@ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSel
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
         editor.putString(PortSipService.USER_NAME, UF_SIP_NUMBER);
         editor.putString(PortSipService.USER_PWD, UF_SIP_PASSWORD);
-        editor.putString(PortSipService.SVR_HOST, "sip.weltwelle.com");
+        editor.putString(PortSipService.SVR_HOST, UF_SIP_SERVER);
         editor.putString(PortSipService.SVR_PORT, "5061");
 
         editor.putString(PortSipService.USER_DISPALYNAME, null);

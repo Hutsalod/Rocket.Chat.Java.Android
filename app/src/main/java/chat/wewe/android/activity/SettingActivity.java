@@ -7,10 +7,12 @@ import android.util.Log;
 import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 import chat.wewe.android.api.BaseApiService;
@@ -21,7 +23,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static chat.wewe.android.activity.Intro.TOKENWE;
-import static chat.wewe.android.layouthelper.chatroom.MessageFormManager.nameBlack;
+import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
+import static chat.wewe.android.layouthelper.chatroom.MessageFormManager.mnameBlack;
+
 public class SettingActivity extends Activity {
 
     String name = "SIP";
@@ -61,10 +65,16 @@ public class SettingActivity extends Activity {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
                             try {
-                                nameBlack = "";
-                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
 
-                                nameBlack = jsonRESULTS.getJSONObject("result").getJSONArray("USERS").getJSONObject(0).getString("UF_ROCKET_LOGIN_BLOC");
+                                JSONObject json = new JSONObject(response.body().string());
+                                JSONArray values = json.getJSONObject("result").getJSONArray("USERS");
+                                mnameBlack = new String[values .length()];
+                                for (int i = 0; i < values .length(); i++) {
+                                    JSONObject jsonobject = values .getJSONObject(i);
+                                    mnameBlack[i] = jsonobject.getString("UF_ROCKET_LOGIN_BLOC");
+
+                                }
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             } catch (IOException e) {

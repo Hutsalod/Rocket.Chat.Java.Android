@@ -1,5 +1,7 @@
 package chat.wewe.core;
 
+import com.google.gson.JsonObject;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -20,8 +22,14 @@ public interface BaseApiService {
 
     @POST("api/v1/users.delete")
     @FormUrlEncoded
-    Call<ResponseBody> deleteUsers(@Header("Authorization-Token") String token,@Header("X-User-Id") String id,@Header("Content-type") String type,
-                                                   @Field("username") String docId
+    Call<JsonObject> deleteUsers(@Header("Authorization-Token") String token, @Header("X-User-Id") String id, @Header("Content-type") String type,
+                                 @Field("username") String docId
 
     );
+
+    @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ","Content-type: application/json"})
+    @GET("api/v1/spotlight?")
+    public Call<ResponseBody>getListStatus(@Query("query") String user);
+
+
 }

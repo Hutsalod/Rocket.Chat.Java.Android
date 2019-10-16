@@ -6,8 +6,4 @@
         android:icon="@drawable/ic_right_black"
         android:title="Добавить в ЧС" />
 
-
-
-
-
 </menu>

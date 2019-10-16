@@ -53,7 +53,7 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
   private TextView txtPasswd;
   private String model;
   public static  SwitchCompat switchServer;
-  public static String TOKENwe,UF_SIP_SERVER,UF_SIP_LOGIN,UF_ACCESS_OTH_DEVICE,INNER_GROUP;
+  public static String TOKENwe,UF_SIP_SERVER,UF_SIP_LOGIN,UF_ACCESS_OTH_DEVICE,INNER_GROUP,UF_ROCKET_SERVER;
   ProgressDialog loading;
   SharedPreferences SipData;
   Context mContext;
@@ -242,6 +242,7 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
                       UF_SIP_NUMBER = jsonRESULTS.getJSONObject("result").getString("UF_SIP_NUMBER");
                       UF_ACCESS_OTH_DEVICE = jsonRESULTS.getJSONObject("result").getString("UF_ACCESS_OTH_DEVICE");
                       INNER_GROUP = jsonRESULTS.getJSONObject("result").getString("INNER_GROUP");
+                      UF_ROCKET_SERVER = jsonRESULTS.getJSONObject("result").getString("UF_ROCKET_SERVER");
                       presenter.login(UF_ROCKET_LOGIN, UF_ROCKET_PASSWORD);
                       SharedPreferences.Editor ed = SipData.edit();
                       ed.putString("UF_SIP_NUMBER", UF_SIP_NUMBER);
@@ -250,6 +251,17 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
                       ed.commit();
                       ed.putString("INNER_GROUP", INNER_GROUP);
                       ed.commit();
+                      if(switchServer.isChecked()) {
+                        ed.putString("UF_ROCKET_SERVER", UF_ROCKET_SERVER);
+                        ed.commit();
+                        ed.putString("UF_SIP_SERVER", UF_SIP_SERVER);
+                        ed.commit();
+                      }else {
+                        ed.putString("UF_ROCKET_SERVER", "chat.weltwelle.com");
+                        ed.commit();
+                        ed.putString("UF_SIP_SERVER", "sip.weltwelle.com");
+                        ed.commit();
+                      }
                       if(SipData.getString("UF_SIP_NUMBER", null)!=null & callstatic==0) {
                         ed.commit();
                         startActivity(new Intent(getActivity(), chat.wewe.android.ui.MainActivity.class));

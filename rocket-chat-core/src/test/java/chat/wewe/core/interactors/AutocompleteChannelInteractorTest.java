@@ -18,6 +18,7 @@ import chat.wewe.core.models.SpotlightRoom;
 import chat.wewe.core.repositories.RoomRepository;
 import chat.wewe.core.repositories.SpotlightRoomRepository;
 import chat.wewe.core.temp.TempSpotlightRoomCaller;
+import sun.rmi.runtime.Log;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AutocompleteChannelInteractorTest {
@@ -136,7 +137,9 @@ public class AutocompleteChannelInteractorTest {
   }
 
   private SpotlightRoom getSpotlightRoom(String id, String name, String type) {
+
     return SpotlightRoom.builder()
         .setId(id).setName(name).setType(type).build();
+
   }
 }

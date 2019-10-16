@@ -24,14 +24,7 @@ public class LoginActivity extends AbstractFragmentActivity implements LoginCont
   public static final String KEY_HOSTNAME = "hostname";
 
   private LoginContract.Presenter presenter;
-  EditText etEmail;
-  EditText etPassword;
-  Button btnLogin;
-  Button btnRegister;
-  ProgressDialog loading;
 
-  Context mContext;
-  BaseApiService mApiService;
 
   @Override
   protected int getLayoutContainerForFragment() {
@@ -49,12 +42,11 @@ public class LoginActivity extends AbstractFragmentActivity implements LoginCont
     }
 
     presenter = new LoginPresenter(
-        hostname,
-        new SessionInteractor(new RealmSessionRepository(hostname)),
-        ConnectivityManager.getInstance(getApplicationContext())
+            hostname,
+            new SessionInteractor(new RealmSessionRepository(hostname)),
+            ConnectivityManager.getInstance(getApplicationContext())
     );
   }
-
 
   @Override
   protected void onResume() {
@@ -103,6 +95,5 @@ public class LoginActivity extends AbstractFragmentActivity implements LoginCont
     finish();
     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
   }
-
 
 }

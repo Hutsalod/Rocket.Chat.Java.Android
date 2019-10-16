@@ -139,6 +139,8 @@ public class UserRegistrationDialogFragment extends DialogFragment {
       email = txtEmail.getText().toString();
       password = txtPasswd.getText().toString();
       mApiService = UtilsApi.getAPIService();
+      if(username.length()<=3)
+        Toast.makeText(getActivity(), "Имя меньше 3 символов", Toast.LENGTH_SHORT).show();
       if(email.equals(password)){
       if (switchServer.isChecked()) {
 

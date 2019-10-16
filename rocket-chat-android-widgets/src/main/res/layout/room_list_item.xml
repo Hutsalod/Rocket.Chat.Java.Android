@@ -101,7 +101,6 @@
                     android:layout_marginLeft="7dp"
                     android:drawablePadding="14dp"
                     android:text="[Name]"
-                    android:drawableLeft="@drawable/userstatus_offline"
                     android:textColor="#333333"
                     android:textSize="14sp" />
             </LinearLayout>

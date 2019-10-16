@@ -148,6 +148,7 @@ public class RealmRoomRepository extends RealmRepository implements RoomReposito
 
   @Override
   public Flowable<List<Room>> getSortedLikeName(String name, SortDirection direction, int limit) {
+
     return Flowable.defer(() -> Flowable.using(
         () -> new Pair<>(RealmStore.getRealm(hostname), Looper.myLooper()),
         pair -> RxJavaInterop.toV2Flowable(
@@ -167,6 +168,7 @@ public class RealmRoomRepository extends RealmRepository implements RoomReposito
         .filter(roomSubscriptions -> roomSubscriptions != null && roomSubscriptions.isLoaded()
             && roomSubscriptions.isValid())
         .map(realmRooms -> toList(safeSubList(realmRooms, 0, limit))));
+
   }
 
   @Override
@@ -198,7 +200,7 @@ public class RealmRoomRepository extends RealmRepository implements RoomReposito
  for (int i = 0; i < total; i++) {
     roomList.add(realmRooms.get(i).asRoom());
 
-      Log.d("Lol",""+i+"test"+roomList);
+
 
 
   }

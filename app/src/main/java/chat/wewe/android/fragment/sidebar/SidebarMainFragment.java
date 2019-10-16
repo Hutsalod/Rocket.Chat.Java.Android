@@ -117,7 +117,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   private RealmSpotlightRoomRepository realmSpotlightRoomRepository;
   private SearchView searchView;
   private  SwitchCompat switch1;
-  public static String getName = "";
+  public static String getName;
   SharedPreferences.Editor ed;
   TextView exetGoogle;
   NestedScrollView actionContainers,languageLayaut,secyrityLayaut,blaclistScrol;
@@ -177,7 +177,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
     bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.delete);
    Log.d("TOKENWE", "TOKENWE"+SipData.getString("TOKENWE",""));
-    getBlacklistAdd("Gucalo15");
   }
 
   @Override
@@ -243,7 +242,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         getStatus(getName);
         animateShow(activity_main_container);
 
-      //  UF_ROCKET_LOGIN_BLOC(room.getName());
       }
 
       @Override
@@ -317,7 +315,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
             Logger::report
         );
 
-
   }
 
   @SuppressLint("RxLeakedSubscription")
@@ -386,10 +383,10 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       });
 
     rootView.findViewById(R.id.friends).setOnClickListener(view -> {
-     /* Uri uri = Uri.parse("smsto:1111");
+      Uri uri = Uri.parse("smsto:");
       Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
       intent.putExtra("sms_body", "Hey, I'm using WeWe to chat and call. Join me! Apple - https://apps.apple.com/ua/app/wewe-phone/id1386715295, Android - https://play.google.com/store/apps/details?id=chat.wewe.android");
-      startActivity(intent);*/
+      startActivity(intent);
     });
 
     rootView.findViewById(R.id.policy_mss).setOnClickListener(view -> {
@@ -404,12 +401,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         blaclistScrol.setVisibility(View.GONE);
   });
     rootView.findViewById(R.id.switch2).setOnClickListener(view -> {
-      SharedPreferences.Editor ed = SipData.edit();
-      if(SipData.getString("INNER_GROUP", "false").equals("true"))
-        ed.putString("INNER_GROUP", "false");
-      else
-        ed.putString("INNER_GROUP", "true");
-      ed.commit();
+      Toast.makeText(getActivity(), ""+getString(R.string.str_12),
+              Toast.LENGTH_SHORT).show();
     });
 
     rootView.findViewById(R.id.switch3).setOnClickListener(view -> {
@@ -503,7 +496,10 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
   private void setupLogoutButton() {
     rootView.findViewById(R.id.btn_logout).setOnClickListener(view -> {
-      Intent offLineIntent = new Intent(getActivity(), PortSipService.class);
+      presenter.onLogout();
+      closeUserActionContainer();
+      getActivity().finish();
+        Intent offLineIntent = new Intent(getActivity(), PortSipService.class);
       offLineIntent.setAction(PortSipService.ACTION_SIP_UNREGIEST);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         getActivity().startForegroundService(offLineIntent);
@@ -512,13 +508,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       }
       ed.putString("UF_SIP_NUMBER", null);
       ed.commit();
-      presenter.onLogout();
-      closeUserActionContainer();
-      // destroy Activity on logout to be able to recreate most of the environment
-  //    this.getActivity().finish();
-      startActivity(new Intent(getActivity(),Intro.class));
-      finish();
       callstatic=0;
+
 
     });
 

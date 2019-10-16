@@ -29,7 +29,7 @@ public class Intro extends AppCompatActivity {
         UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", null);
         TOKENWE = SipData.getString("TOKENWE", null);
 
-            countDownTimer = new CountDownTimer(3000, 1000) {
+            countDownTimer = new CountDownTimer(2000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                 }

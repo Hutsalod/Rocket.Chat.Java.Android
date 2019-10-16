@@ -65,7 +65,7 @@ public class RocketChatMessageUrlsLayout extends LinearLayout {
     removeAllViews();
 
     for (int i = 0, size = webContents.size(); i < size; i++) {
-      appendUrlView(webContents.get(i), autoloadImages);
+      appendUrlView(webContents.get(i), true);
     }
   }
 
@@ -151,12 +151,11 @@ public class RocketChatMessageUrlsLayout extends LinearLayout {
     load.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        load.setVisibility(GONE);
         load.setOnClickListener(null);
-        FrescoHelper.loadImage(url, drawee);
+        FrescoHelper.setupDraweeAndLoadImage(url, drawee);
       }
     });
-    load.setVisibility(GONE);
-    load.setOnClickListener(null);
-    FrescoHelper.loadImage(url, drawee);
+
   }
 }

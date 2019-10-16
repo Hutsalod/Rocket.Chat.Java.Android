@@ -162,7 +162,7 @@
           android:layout_marginBottom="24dp"
           android:checked="false"
           android:fontFamily="sans-serif-light"
-          android:text="Альтернатывный сервер"
+          android:text="Альтернативный сервер"
           android:textColor="#FFFFFF"
           android:textSize="16sp"
           android:theme="@style/MySwitch"
