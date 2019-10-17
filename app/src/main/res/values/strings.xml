@@ -9,9 +9,10 @@
     <string name="user_status_invisible">Невидимый</string>
     <string name="fragment_sidebar_main_logout_title">Выйти</string>
     <string name="delete_message">Удалить личною переписку</string>
-    <string name="dialog_add_channel_name">название</string>
-    <string name="dialog_add_channel_private">частный</string>
-    <string name="dialog_add_channel_read_only">только для чтения</string>
+    <string name="dialog_add_channel_name_title">НАЗВАНИЕ КАНАЛА</string>
+    <string name="dialog_add_channel_name">Название канала</string>
+    <string name="dialog_add_channel_private">Публичный канал</string>
+    <string name="dialog_add_channel_read_only">Канал только для чтения</string>
     <string name="menu_1">Чаты</string>
     <string name="menu_2">Звонки</string>
     <string name="menu_3">Контакты</string>

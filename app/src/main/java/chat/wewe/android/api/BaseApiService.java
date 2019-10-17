@@ -76,4 +76,9 @@ public interface BaseApiService {
     @Headers({"Content-Type: application/json"})
     @POST("rest/blacklist/delete/")
     Call<JsonObject>getBlacklistDell(@Header("Authorization-Token") String Token,@Body Map<String, Object> params);
+
+
+    @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ"})
+    @GET("api/v1/users.list?count=0")
+    public Call<ResponseBody>getListStatus();
 }

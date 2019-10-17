@@ -78,7 +78,7 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 		scalingType = PortSIPVideoRenderer.ScalingType.SCALE_ASPECT_FIT;//
 		remoteRenderScreen.setScalingType(scalingType);
 		activity.receiver.broadcastReceiver =this ;
-		callCout=1;
+
 
 		Handler handler = new Handler();
 

@@ -35,6 +35,7 @@ import chat.wewe.android.util.Ring;
 import chat.wewe.android.util.Session;
 
 
+import static chat.wewe.android.activity.Intro.callCout;
 import static chat.wewe.android.activity.Intro.callSet;
 import static chat.wewe.android.activity.Intro.callstatic;
 import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
@@ -131,7 +132,7 @@ private int st = 0;
             showTips(currentLine.lineName + ": Calling...");
            setnupad = 0;
            //getName=null;
-
+           callCout=1;
        }
         if(callstatic==1 && setnupad==2) {
             if (application.mEngine == null)
@@ -172,7 +173,7 @@ private int st = 0;
             callstatic=1;
             setnupad = 0;
           //  getName=null;
-
+            callCout=1;
         }
 
 

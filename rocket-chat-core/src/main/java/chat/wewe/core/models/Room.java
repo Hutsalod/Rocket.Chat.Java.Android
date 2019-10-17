@@ -17,6 +17,7 @@ public abstract class Room {
 
   public abstract String getType();
 
+
   public abstract boolean isOpen();
 
   public abstract boolean isAlert();
@@ -55,6 +56,7 @@ public abstract class Room {
     public abstract Builder setName(String name);
 
     public abstract Builder setType(String type);
+
 
     public abstract Builder setOpen(boolean open);
 

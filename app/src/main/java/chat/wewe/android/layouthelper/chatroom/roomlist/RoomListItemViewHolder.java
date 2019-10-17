@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,10 +31,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static chat.wewe.android.activity.Intro.ListGetStatus;
+
+
 public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
-  private final RealmHelper realmHelper;
-  
-  
 
   
   BaseApiService mApiService = UtilsApi.getAPIService();
@@ -52,7 +53,7 @@ public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
         }
       }
     });
-    realmHelper = null;
+
   }
 
 
@@ -64,11 +65,7 @@ public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
         .setAlert(room.isAlert())
         .setUnreadCount(room.getUnread())
         .setTag(room);
-  getStart(room.getName());///Статуси
-    Log.d("Status55", "r " + room.getName());
-
-
-
+    getListStatus(room.getName());///Статуси
   }
   
   public void bind(SpotlightRoom spotlightRoom) {
@@ -79,30 +76,56 @@ public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
         .setAlert(false)
         .setUnreadCount(0)
         .setTag(spotlightRoom);
+
+    getListStatus(spotlightRoom.getName());///Статуси
   }
 
 
-  private void showUserStatusIcon(Boolean userStatus) {
+  private void showUserStatusIcon(final Boolean userStatus) {
     if (userStatus) {
       ((RoomListItemView) itemView). showOnlineUserStatusIcon();
+      Log.d("getListStatus", "ONLINE ");
     } else {
-      ((RoomListItemView) itemView).showOfflineUserStatusIcon();
+     ((RoomListItemView) itemView).showOfflineUserStatusIcon();
+      Log.d("getListStatus", "OFF ");
+    }
+  }
+
+  public void getListStatus(final String roomNames){
+
+   for (int i = 0; i < ListGetStatus.length; i++) {
+
+      if (roomNames.equals(ListGetStatus[i])) {
+        Log.d("getListStatus", "OFF "+ListGetStatus[i]+"  "+ roomNames + "TRUE");
+        showUserStatusIcon(true);
+      }else{
+     // showUserStatusIcon(false);
+      }
+
+
     }
   }
 
   public void getStart(String roomNames){
-    mApiService.getList(roomNames)
+    mApiService.getList()
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                   try {
                     JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                    if (jsonRESULTS.getJSONObject("user").getString("status").equals("online")) {
-                      Log.d("Status5", "" + roomNames);
+                    JSONArray values = jsonRESULTS.getJSONArray("users");
+                    for (int i = 0; i < values .length(); i++) {
+                      JSONObject jsonobject = values .getJSONObject(i);
+                      Log.d("Status5", "" + jsonobject.getString("status"));
+                      Log.d("Status5", "" + jsonobject.getString("name"));
+
+                      if (jsonobject.getString("status").equals("online")) {
+                        Log.d("Status5", "" + roomNames);
                         showUserStatusIcon(true);
-                    }else{
-                      showUserStatusIcon(false);
+                      }else{
+                        showUserStatusIcon(false);
+                      }
                     }
                   } catch (JSONException e) {
                     e.printStackTrace();
@@ -117,5 +140,7 @@ public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
               public void onFailure(Call<ResponseBody> call, Throwable t) {
               }
             });
+
+
   }
 }

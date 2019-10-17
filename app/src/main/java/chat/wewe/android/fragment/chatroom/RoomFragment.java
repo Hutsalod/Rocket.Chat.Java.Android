@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 import chat.wewe.android.BackgroundLooper;
 import chat.wewe.android.R;
 import chat.wewe.android.api.MethodCallHelper;
@@ -142,7 +143,9 @@ public class RoomFragment extends AbstractChatRoomFragment implements
   private Message edittingMessage = null;
   List<String> imagesEncodedList;
   public RoomFragment() {}
-
+  private String token;
+  private String userId;
+  private String roomType;
   /**
    * create fragment with roomId.
    */
@@ -610,13 +613,20 @@ Log.d("MSG1","MSGLOG");
   }
 
   @Override
-  public void setupWith(RocketChatAbsoluteUrl rocketChatAbsoluteUrl) {
+  public void setupWith(@NonNull RocketChatAbsoluteUrl rocketChatAbsoluteUrl) {
     messageListAdapter.setAbsoluteUrl(rocketChatAbsoluteUrl);
+
+    if (rocketChatAbsoluteUrl != null) {
+      token = rocketChatAbsoluteUrl.getToken();
+      userId = rocketChatAbsoluteUrl.getUserId();
+      messageListAdapter.setAbsoluteUrl(rocketChatAbsoluteUrl);
+    }
   }
 
   @Override
   public void render(Room room) {
     String type = room.getType();
+    roomType = room.getType();
     if (Room.TYPE_CHANNEL.equals(type)) {
       setToolbarRoomIcon(R.drawable.ic_hashtag_gray_24dp);
     } else if (Room.TYPE_PRIVATE.equals(type)) {
@@ -710,4 +720,6 @@ Log.d("MSG1","MSGLOG");
     }
 
   }
+
+
 }

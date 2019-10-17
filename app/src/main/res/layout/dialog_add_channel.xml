@@ -4,43 +4,84 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="288dp"
-        android:padding="@dimen/margin_24">
 
-    <android.support.design.widget.TextInputLayout
-            android:id="@+id/text_input_channel_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:minWidth="288dp">
 
-        <android.support.design.widget.TextInputEditText
+
+
+    <android.support.design.widget.TextInputEditText
                 android:id="@+id/editor_channel_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textWebEmailAddress"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="@dimen/margin_16"
+        android:layout_marginRight="@dimen/margin_16"
+        android:layout_marginBottom="8dp"
+            android:background="@null"
                 android:hint="@string/dialog_add_channel_name" />
-    </android.support.design.widget.TextInputLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="@dimen/margin_16"
+        android:layout_marginRight="@dimen/margin_16"
+        android:layout_marginBottom="8dp"
+        android:background="#C8C7CB" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_16"
-        android:layout_marginEnd="@dimen/margin_8"
         android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginBottom="8dp"
+            android:background="#C8C7CB" />
 
-        <CheckBox
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/checkbox_private"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/dialog_add_channel_private" />
+            android:drawablePadding="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/dialog_add_channel_private"
+            android:layout_marginLeft="@dimen/margin_16"
+            android:layout_marginRight="@dimen/margin_16"
+            android:textAppearance="?attr/textAppearanceListItemSmall"
+            android:textColor="#1B1B1B"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"
+            android:theme="@style/MySwitch" />
 
-        <CheckBox
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#C8C7CB" />
+
+
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/checkbox_read_only"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/dialog_add_channel_read_only" />
+            android:layout_marginTop="8dp"
+            android:drawablePadding="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/dialog_add_channel_read_only"
+            android:layout_marginLeft="@dimen/margin_16"
+            android:layout_marginRight="@dimen/margin_16"
+            android:textAppearance="?attr/textAppearanceListItemSmall"
+            android:textColor="#1B1B1B"
+            android:textSize="18sp"
+            android:theme="@style/MySwitch" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="8dp"
+            android:background="#C8C7CB" />
     </LinearLayout>
 
     <Space
@@ -51,9 +92,10 @@
         android:id="@+id/btn_add_channel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
+        android:layout_gravity="bottom|center"
         app:elevation="2dp"
         app:fabSize="mini"
+        android:layout_marginBottom="16dp"
         app:srcCompat="@drawable/ic_arrow_forward_white_24dp" />
 
     <chat.wewe.android.widget.WaitingView

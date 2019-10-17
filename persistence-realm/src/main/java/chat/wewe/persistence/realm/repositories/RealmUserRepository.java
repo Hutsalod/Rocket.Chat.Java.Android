@@ -2,6 +2,8 @@ package chat.wewe.persistence.realm.repositories;
 
 import android.os.Looper;
 import android.support.v4.util.Pair;
+import android.util.Log;
+
 import com.fernandocejas.arrow.optional.Optional;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -65,6 +67,8 @@ public class RealmUserRepository extends RealmRepository implements UserReposito
         .filter(realmUsers -> realmUsers != null && realmUsers.isLoaded()
             && realmUsers.isValid())
         .map(realmUsers -> toList(safeSubList(realmUsers, 0, limit))));
+
+
   }
 
   private List<User> toList(RealmResults<RealmUser> realmUsers) {
@@ -74,6 +78,7 @@ public class RealmUserRepository extends RealmRepository implements UserReposito
 
     for (int i = 0; i < total; i++) {
       userList.add(realmUsers.get(i).asUser());
+
     }
 
     return userList;
@@ -86,6 +91,7 @@ public class RealmUserRepository extends RealmRepository implements UserReposito
 
     for (int i = 0; i < total; i++) {
       userList.add(realmUsers.get(i).asUser());
+
     }
 
     return userList;

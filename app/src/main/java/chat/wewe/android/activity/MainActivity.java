@@ -84,7 +84,9 @@ import chat.wewe.android.fragment.sidebar.SidebarMainFragment;
 import chat.wewe.android.fragment.sidebar.dialog.AddChannelDialogFragment;
 import chat.wewe.android.helper.AbsoluteUrlHelper;
 import chat.wewe.android.helper.KeyboardHelper;
+import chat.wewe.android.layouthelper.chatroom.dialog.RoomUserAdapter;
 import chat.wewe.android.layouthelper.sidebar.dialog.SuggestUserAdapter;
+import chat.wewe.core.SyncState;
 import chat.wewe.core.interactors.CanCreateRoomInteractor;
 import chat.wewe.core.interactors.RoomInteractor;
 import chat.wewe.core.interactors.SessionInteractor;
@@ -92,6 +94,7 @@ import chat.wewe.android.service.ConnectivityManager;
 import chat.wewe.android.widget.RoomToolbar;
 import chat.wewe.persistence.realm.RealmAutoCompleteAdapter;
 import chat.wewe.persistence.realm.models.ddp.RealmUser;
+import chat.wewe.persistence.realm.models.internal.FileUploading;
 import chat.wewe.persistence.realm.repositories.RealmRoomRepository;
 import chat.wewe.persistence.realm.repositories.RealmServerInfoRepository;
 import chat.wewe.persistence.realm.repositories.RealmSessionRepository;
@@ -114,6 +117,7 @@ import static chat.wewe.android.activity.Intro.callstatic;
 import static chat.wewe.android.activity.Intro.callSet;
 import static chat.wewe.android.activity.Intro.subscription;
 import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
+import static java.security.AccessController.getContext;
 
 /**
  * Entry-point for Rocket.Chat.Android application.
@@ -134,32 +138,27 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   private ContactAdapter mAdapter;
   public static String getUserNameCall;
   public static BottomNavigationView navigation;
-  //Button openKey;
-  Context mContext;
-  BaseApiService mApiServiceChat,mApiService;
-  String device = "0";
-  TextInputEditText EditTextName;
-  Intent callInt;
-  ArrayList<ExampleItem> mExampleList;
-  SharedPreferences SipData;
   public static SwitchCompat switch2;
   private RecyclerView mRecyclerView;
   private ExampleAdapter mAdapters;
   private RecyclerView.LayoutManager mLayoutManager;
   static View waitingView;
-  String name;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-  AutoCompleteTextView autoCompleteTextView;
-  ///Контакти
-  RecyclerView recyclerView;
-  private List<ContactModel> contactModelList = new ArrayList<>();
-  ContactAdapter contactAdapter;
+  private CompositeDisposable compositeDisposable = new CompositeDisposable();
   private static String[] PERMISSION_CONTACT = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
   private static final int REQUEST_CONTACT = 1;
+  public static int setnupad=0;
+  private List<ContactModel> contactModelList = new ArrayList<>();
+  BaseApiService mApiServiceChat,mApiService;
+  TextInputEditText EditTextName;
+  Intent callInt;
+  ArrayList<ExampleItem> mExampleList;
+  SharedPreferences SipData;
+  String name;
+  AutoCompleteTextView autoCompleteTextView;
+  ContactAdapter contactAdapter;
+  RecyclerView recyclerView;
   String[] mCats;
   ArrayList<String> mCatsList;
-  public static int setnupad=0;
-  public static boolean active = false;
 
 
   @Override
@@ -171,6 +170,9 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    mApiService = UtilsApi.getAPIService();
+    mApiServiceChat = UtilsApiChat.getAPIService();
     SipData = getSharedPreferences("SIP", MODE_PRIVATE);
     callInt = new Intent(getApplicationContext(), chat.wewe.android.ui.MainActivity.class);
 
@@ -202,17 +204,14 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     EditTextName = (TextInputEditText)findViewById(R.id.EditTextName);
     switch2 = (SwitchCompat)findViewById(R.id.switch2);
     recyclerView = (RecyclerView)findViewById(R.id.rv);
-    setDataToAdapter();
     waitingView = findViewById(R.id.waiting_serch);
-
     navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
 
     statusTicker = new StatusTicker();
     setupSidebar();
-      mApiService = UtilsApi.getAPIService();
-    mApiServiceChat = UtilsApiChat.getAPIService();
+    setDataToAdapter();
     navigation.setSelectedItemId(R.id.action_chat);
 
     BtnCall.setOnClickListener(new View.OnClickListener() {
@@ -223,7 +222,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           callSet = false;
           startActivity(callInt);
           setnupad = 1;
-        }else{
+        }else{//INNER_GROUP Для теста
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
 
@@ -236,13 +235,14 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       }
     });
     btnVideoCall.setOnClickListener(new View.OnClickListener() {
+
       @Override
       public void onClick(View view) {
         if (subscription == true) {
           callSet = true;
           startActivity(callInt);
           setnupad = 2;
-        }else{
+        }else{//INNER_GROUP Для теста
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
 
@@ -256,18 +256,22 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
     loadData();
     buildRecyclerView();
+
     if(callCout==1) {
       setInsertButton();
       saveData();
       callCout=0;
     }
     btnCreate.setOnClickListener(new View.OnClickListener() {
+
       @Override
       public void onClick(View view) {
      openDialog();
       }
+
     });
     search_btn_users.setOnClickListener(new View.OnClickListener() {
+
       @Override
       public void onClick(View view) {
         waitingView.setVisibility(VISIBLE);
@@ -276,8 +280,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     }
     });
 
-     autoCompleteTextView =
-            (AutoCompleteTextView) findViewById(R.id.editText);
+    autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.editText);
 
     AbsoluteUrlHelper absoluteUrlHelper = new AbsoluteUrlHelper(
             hostname,
@@ -285,8 +288,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             new RealmUserRepository(hostname),
             new SessionInteractor(new RealmSessionRepository(hostname))
     );
-
-
 
     autoCompleteTextView.addTextChangedListener(new TextWatcher() {
       @Override
@@ -318,10 +319,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       public void onTick(long millisUntilFinished) {
           getStatus();
       }
-
       @Override
       public void onFinish() {
-
         countDownTimer.start();
       }
     };
@@ -331,6 +330,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
    if(SipData.getString("UF_SIP_NUMBER", "")!="" & callstatic==0) {
       startActivity(new Intent(getApplicationContext(), chat.wewe.android.ui.MainActivity.class));
     }
+   
   }
 
   public void showPopup(View v) {
@@ -419,7 +419,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     String json = sharedPreferences.getString("task list", null);
     Type type = new TypeToken<ArrayList<ExampleItem>>() {}.getType();
     mExampleList = gson.fromJson(json, type);
-  //  Log.d("yrdd",TOKEN_RC);
     if (mExampleList == null) {
       mExampleList = new ArrayList<>();
     }
@@ -669,6 +668,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             startActivity(new Intent(getApplicationContext(), Success.class));
             finish();
           }
+
           return true;
         case R.id.action_group:
           chat.setVisibility(GONE);
@@ -737,7 +737,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     animateHide(statusRoom);
 
     current_user_name.setText("Сообщения");
-
 
   }
 
@@ -895,9 +894,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     }
   }
 
-
-
-
   private void setupView(Optional<RocketChatAbsoluteUrl> rocketChatAbsoluteUrlOptional) {
     compositeDisposable.clear();
 
@@ -935,11 +931,9 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                       name = jsonobject.getString("username");
                       mCats[i] = ""+name;
                     }
-                    Log.d("TST",""+mCats);
                     mCatsList = new ArrayList<String>(Arrays.asList(mCats));
                     autoCompleteTextView.setAdapter(new ArrayAdapter<String>(MainActivity.this,
                             android.R.layout.simple_dropdown_item_1line, mCats));
-
                   } catch (JSONException e) {
                     e.printStackTrace();
                   } catch (IOException e) {
@@ -950,8 +944,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
               }
               @Override
               public void onFailure(Call<ResponseBody> call, Throwable t) {
-                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
-
               }
             });
   }
@@ -973,9 +965,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                       }catch (Exception e){
                         e.printStackTrace();
                       }
-
                     }
-
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
                         Log.e("debug", "onFailure: ERROR > " + t.toString());
@@ -1086,5 +1076,4 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     }
 
   }
-
 }
