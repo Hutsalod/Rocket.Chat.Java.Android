@@ -177,6 +177,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     callInt = new Intent(getApplicationContext(), chat.wewe.android.ui.MainActivity.class);
 
 
+
     navigation = (BottomNavigationView) findViewById(R.id.navigation);
     chat = (LinearLayout) findViewById(R.id.chat);
     call = (LinearLayout) findViewById(R.id.call);
