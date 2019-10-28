@@ -1,0 +1,692 @@
+Index: app/src/main/java/chat/wewe/android/activity/Intro.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/chat/wewe/android/activity/Intro.java	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/java/chat/wewe/android/activity/Intro.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -14,7 +14,7 @@
+     private static final String TAG = "Intro";
+     private CountDownTimer countDownTimer;
+     public static String UF_userId,UF_authToken,UF_SIP_NUMBER,UF_SIP_PASSWORD,presence,TOKEN_RC;
+-    public static int callstatic = 0,callCout=0;
++    public static int callstatic = 0,callCout=0,StatusU = 4;
+     public static boolean callSet;
+     SharedPreferences SipData;
+     @Override
+Index: app/src/main/java/chat/wewe/android/activity/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/chat/wewe/android/activity/MainActivity.java	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/java/chat/wewe/android/activity/MainActivity.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -102,6 +102,7 @@
+ import static android.view.View.GONE;
+ import static android.view.View.VISIBLE;
+ import static chat.wewe.android.activity.ContactAdapter.a_chars;
++import static chat.wewe.android.activity.Intro.StatusU;
+ import static chat.wewe.android.activity.Intro.TOKEN_RC;
+ import static chat.wewe.android.activity.Intro.callCout;
+ import static chat.wewe.android.activity.Intro.callstatic;
+@@ -119,7 +120,7 @@
+   public static LinearLayout callUsers;
+   public static AppCompatAutoCompleteTextView editText;
+   public static RecyclerView recyclerViews;
+-  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users;
++  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users,statusUsers;
+   public static   TextView current_user_name;
+   private CountDownTimer countDownTimer;
+   public static  FrameLayout activity_main_container;
+@@ -168,6 +169,7 @@
+     SharedPreferences.Editor ed =  SipData.edit();
+     ed.commit();
+     callInt = new Intent(this, chat.wewe.android.ui.MainActivity.class);
++
+    if(SipData.getString("UF_SIP_NUMBER", "")!="" & callstatic==0) {
+      ed.commit();
+    startActivity(callInt);
+@@ -191,6 +193,7 @@
+     current_user_name = (TextView) findViewById(R.id.current_user_name);
+     callUsers = (LinearLayout) findViewById(R.id.callUsers);
+     BtnCall = (ImageView) findViewById(R.id.BtnCall);
++    statusUsers = (ImageView) findViewById(R.id.stanUsers);
+     btnVideoCall = (ImageView) findViewById(R.id.btnVideoCall);
+     searchContact =  (EditText) findViewById(R.id.searchContact);
+     mAdapter = new ContactAdapter(this,contactModelList);
+@@ -297,6 +300,7 @@
+ 
+     autoCompleteTextView.setOnItemClickListener(this);
+     UF_ORIGINAL_TRID("");
++    UserStatus();
+   }
+ 
+   @Override
+@@ -707,6 +711,8 @@
+     animateHide(callUsers);
+     animateShow(statusRoom);
+     animateHide(statusRoom);
++    animateShow(statusUsers);
++    animateHide(statusUsers);
+     current_user_name.setText("Сообщения");
+ 
+ 
+@@ -900,6 +906,8 @@
+             });
+   }
+ 
++
++
+     private void UF_ORIGINAL_TRID(String TOKENwe){
+         Log.d("SWIPE", "onFailure: ERROR > ");
+         mApiServiceChat.subscription("test")
+@@ -927,4 +935,37 @@
+                 });
+     }
+ 
++  private void UserStatus(){
++    switch (StatusU) {
++      case 0:statusUsers.setImageResource(R.drawable.s000);
++        break;
++      case 1:statusUsers.setImageResource(R.drawable.s011);
++        break;
++      case 2:    statusUsers.setImageResource(R.drawable.s012);
++        break;
++      case 3: statusUsers.setImageResource(R.drawable.s110);
++        break;
++      case 4:statusUsers.setImageResource(R.drawable.s111);
++        break;
++      case 5:statusUsers.setImageResource(R.drawable.s112);
++        break;
++      case 6:statusUsers.setImageResource(R.drawable.s210);
++        break;
++      case 7:statusUsers.setImageResource(R.drawable.s211);
++        break;
++      case 8:statusUsers.setImageResource(R.drawable.s222);
++        break;
++
++    }
++
++
++
++
++
++
++
++
++
++  }
++
+ }
+Index: app/src/main/java/chat/wewe/android/api/BaseApiService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/chat/wewe/android/api/BaseApiService.java	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/java/chat/wewe/android/api/BaseApiService.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -40,9 +40,7 @@
+     @POST("rest/user/subscription/")
+     Call<ResponseBody>subscription(@Field("UF_ORIGINAL_TRID") String UF_ORIGINAL_TRID);
+ 
+-    @FormUrlEncoded
+-    @GET
+-    Call<ResponseBody> getLoginChat(@Field("user") String email,@Field("password") String password);
++
+ 
+     @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ"})
+     @GET("api/v1/users.info?")
+@@ -51,4 +49,12 @@
+     @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ","Content-type: application/json"})
+     @GET("api/v1/spotlight?")
+     public Call<ResponseBody>getList(@Query("query") String user);
++
++
++    @GET("rest/blacklist/get/")
++    Call<ResponseBody>getBlacklist(@Header("Authorization-Token") String Token);
++
++    @POST("rest/blacklist/add/")
++    @FormUrlEncoded
++    Call<ResponseBody>getBlacklistAdd(@Header("Authorization-Token") String Token,@Field("UF_ROCKET_LOGIN") String UF_ROCKET_LOGIN);
+ }
+Index: app/src/main/java/chat/wewe/android/fragment/chatroom/RoomFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/chat/wewe/android/fragment/chatroom/RoomFragment.java	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/java/chat/wewe/android/fragment/chatroom/RoomFragment.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -58,6 +58,7 @@
+ import chat.wewe.android.layouthelper.extra_action.MessageExtraActionBehavior;
+ import chat.wewe.android.layouthelper.extra_action.upload.AbstractUploadActionItem;
+ import chat.wewe.android.layouthelper.extra_action.upload.AudioUploadActionItem;
++import chat.wewe.android.layouthelper.extra_action.upload.FileUploadActionItem;
+ import chat.wewe.android.layouthelper.extra_action.upload.ImageUploadActionItem;
+ import chat.wewe.android.layouthelper.extra_action.upload.VideoUploadActionItem;
+ import chat.wewe.android.log.RCLog;
+@@ -250,10 +251,11 @@
+   }
+ 
+   private void setupMessageActions() {
+-    extraActionItems = new ArrayList<>(3); // fixed number as of now
++    extraActionItems = new ArrayList<>(4); // fixed number as of now
+     extraActionItems.add(new ImageUploadActionItem());
+     extraActionItems.add(new AudioUploadActionItem());
+     extraActionItems.add(new VideoUploadActionItem());
++    extraActionItems.add(new FileUploadActionItem());
+   }
+ 
+   private void scrollToLatestMessage() {
+Index: app/src/main/java/chat/wewe/android/fragment/sidebar/SidebarMainFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/chat/wewe/android/fragment/sidebar/SidebarMainFragment.java	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/java/chat/wewe/android/fragment/sidebar/SidebarMainFragment.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -96,6 +96,7 @@
+ import static chat.wewe.android.activity.MainActivity.recyclerViews;
+ import static chat.wewe.android.activity.MainActivity.search_btn_users;
+ import static chat.wewe.android.activity.MainActivity.statusRoom;
++import static chat.wewe.android.activity.MainActivity.statusUsers;
+ import static chat.wewe.android.activity.MainActivity.switch2;
+ import static chat.wewe.android.fragment.server_config.LoginFragment.TOKENwe;
+ 
+@@ -116,7 +117,7 @@
+   public static String getName;
+   SharedPreferences.Editor ed;
+   TextView exetGoogle;
+-  NestedScrollView actionContainers,languageLayaut,secyrityLayaut;
++  NestedScrollView actionContainers,languageLayaut,secyrityLayaut,blaclistScrol;
+   String getRoom;
+   Context mContext;
+   BaseApiService mApiServiceChat;
+@@ -147,6 +148,7 @@
+ 
+     methodCallHelper = new MethodCallHelper(getContext(), hostname);
+     realmSpotlightRoomRepository = new RealmSpotlightRoomRepository(hostname);
++    mApiServiceChat = UtilsApiChat.getAPIService();
+ 
+     RealmUserRepository userRepository = new RealmUserRepository(hostname);
+ 
+@@ -171,7 +173,8 @@
+ 
+ 
+     bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.delete);
+-
++   Log.d("TOKENWE", "TOKENWE"+SipData.getString("TOKENWE",""));
++    getBlacklistAdd("Gucalo15");
+   }
+ 
+   @Override
+@@ -200,7 +203,7 @@
+     setupVersionInfo();
+ 
+ 
+-    mApiServiceChat = UtilsApiChat.getAPIService();
++
+     adapter = new RoomListAdapter();
+     adapter.setOnItemClickListener(new RoomListAdapter.OnItemClickListener() {
+ 
+@@ -222,6 +225,7 @@
+         animateHide(search_btn_users);
+         current_user_name.setText(" " +room.getName());
+         animateShow(statusRoom);
++        animateShow(statusUsers);
+         getName=room.getName();
+ 
+         SipData = getContext().getSharedPreferences("NameMessage", MODE_PRIVATE);
+@@ -257,6 +261,7 @@
+     actionContainers = (NestedScrollView) rootView.findViewById(R.id.user_action_outer_container);
+     languageLayaut = (NestedScrollView) rootView.findViewById(R.id.languageLayaut);
+     secyrityLayaut = (NestedScrollView) rootView.findViewById(R.id.secyrityLayaut);
++    blaclistScrol = (NestedScrollView) rootView.findViewById(R.id.blaclistScrol);
+ 
+     recyclerViews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+    // new ItemTouchHelper(swipeController).attachToRecyclerView(recyclerViews);
+@@ -370,6 +375,14 @@
+       startActivity(Intent.createChooser(email, ""));
+     });
+ 
++      rootView.findViewById(R.id.blaclist).setOnClickListener(view -> {
++          getBlacklist();
++        languageLayaut.setVisibility(View.GONE);
++        actionContainers.setVisibility(View.GONE);
++        secyrityLayaut.setVisibility(View.GONE);
++        blaclistScrol.setVisibility(View.VISIBLE);
++      });
++
+     rootView.findViewById(R.id.friends).setOnClickListener(view -> {
+       Uri uri = Uri.parse("smsto:");
+       Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+@@ -387,6 +400,7 @@
+       actionContainers.setVisibility(View.GONE);
+         languageLayaut.setVisibility(View.VISIBLE);
+         secyrityLayaut.setVisibility(View.GONE);
++        blaclistScrol.setVisibility(View.GONE);
+   });
+     rootView.findViewById(R.id.switch2).setOnClickListener(view -> {
+       SharedPreferences.Editor ed = SipData.edit();
+@@ -401,7 +415,15 @@
+       languageLayaut.setVisibility(View.GONE);
+       actionContainers.setVisibility(View.VISIBLE);
+       secyrityLayaut.setVisibility(View.GONE);
++      blaclistScrol.setVisibility(View.GONE);
+     });
++
++      rootView.findViewById(R.id.nazad2).setOnClickListener(view -> {
++          languageLayaut.setVisibility(View.GONE);
++          actionContainers.setVisibility(View.VISIBLE);
++          secyrityLayaut.setVisibility(View.GONE);
++          blaclistScrol.setVisibility(View.GONE);
++      });
+ 
+     rootView.findViewById(R.id.securityBtn).setOnClickListener(view -> {
+    /*   languageLayaut.setVisibility(View.GONE);
+@@ -414,12 +436,14 @@
+       languageLayaut.setVisibility(View.GONE);
+       actionContainers.setVisibility(View.VISIBLE);
+       secyrityLayaut.setVisibility(View.GONE);
++      blaclistScrol.setVisibility(View.GONE);
+     });
+ 
+     rootView.findViewById(R.id.okKey).setOnClickListener(view -> {
+       languageLayaut.setVisibility(View.GONE);
+       actionContainers.setVisibility(View.VISIBLE);
+       secyrityLayaut.setVisibility(View.GONE);
++      blaclistScrol.setVisibility(View.GONE);
+     });
+ 
+     rootView.findViewById(R.id.languagede).setOnClickListener(view -> {
+@@ -580,7 +604,7 @@
+   }
+ 
+   public void getStatus(String roomName){
+-      statusRoom.setImageResource(R.drawable.s000);
++      statusRoom.setImageResource(R.drawable.ic_at_white_24dp);
+     mApiServiceChat.getStatus(roomName)
+             .enqueue(new Callback<ResponseBody>() {
+               @Override
+@@ -588,10 +612,60 @@
+                 if (response.isSuccessful()){
+                   try {
+                     JSONObject jsonRESULTS = new JSONObject(response.body().string());
+-                    if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
++                      jsonRESULTS.getJSONArray("result").toString();
++                  } catch (JSONException e) {
++                    e.printStackTrace();
++                  } catch (IOException e) {
++                    e.printStackTrace();
++                  }
++                } else {
++                }
++              }
++
++              @Override
++              public void onFailure(Call<ResponseBody> call, Throwable t) {
++                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
++
++              }
++            });
++  }
++
++    public void getBlacklist(){
++        mApiServiceChat.getBlacklist("KEY:"+SipData.getString("TOKENWE",""))
++                .enqueue(new Callback<ResponseBody>() {
++                    @Override
++                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
++                        if (response.isSuccessful()){
++                            try {
++                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
++                                if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
++                                }
++                            } catch (JSONException e) {
++                                e.printStackTrace();
++                            } catch (IOException e) {
++                                e.printStackTrace();
++                            }
++                        } else {
++                        }
++                    }
++
++                    @Override
++                    public void onFailure(Call<ResponseBody> call, Throwable t) {
++                        //   Log.e("debug", "onFailure: ERROR > " + t.toString());
+ 
+-                        statusRoom.setImageResource(R.drawable.s222);
+                     }
++                });
++    }
++
++  public void getBlacklistAdd(String UF_ROCKET_LOGIN){
++    mApiServiceChat.getBlacklistAdd("KEY:"+"9a055dbe-cbe5086c-f8bad6ee-aed30fca",UF_ROCKET_LOGIN)
++            .enqueue(new Callback<ResponseBody>() {
++              @Override
++              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
++                if (response.isSuccessful()){
++                  try {
++                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
++
+                   } catch (JSONException e) {
+                     e.printStackTrace();
+                   } catch (IOException e) {
+@@ -609,8 +683,4 @@
+             });
+   }
+ 
+-
+-
+-
+-
+ }
+Index: app/src/main/java/chat/wewe/android/fragment/sidebar/SwipeController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/chat/wewe/android/fragment/sidebar/SwipeController.java	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/java/chat/wewe/android/fragment/sidebar/SwipeController.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -77,7 +77,7 @@
+     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+         if (actionState == ACTION_STATE_SWIPE) {
+             if (buttonShowedState != ButtonsState.GONE) {
+-                if (buttonShowedState == ButtonsState.LEFT_VISIBLE) dX = Math.max(dX, buttonWidth);
++                if (buttonShowedState == ButtonsState.LEFT_VISIBLE) dX = Math.max(dX, -buttonWidth);
+                 if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) dX = Math.min(dX, -buttonWidth);
+                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+             }
+@@ -145,6 +145,7 @@
+                     if (buttonsActions != null && buttonInstance != null && buttonInstance.contains(event.getX(), event.getY())) {
+                         if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {
+                             buttonsActions.onLeftClicked(viewHolder.getAdapterPosition());
++                            recyclerViews.setAdapter(adapter);
+                             Log.d("SWIPE", "LEFT_VISIBLE");
+                         }
+                         else if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
+@@ -178,8 +179,6 @@
+         View itemView = viewHolder.itemView;
+         Paint p = new Paint();
+ 
+-
+-
+         RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding+140, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+         p.setColor(Color.parseColor("#EB4E3D"));
+ 
+@@ -192,12 +191,10 @@
+         c.drawRoundRect(leftButton , corners, corners, p);
+         drawText("☍", c, leftButton , p,0);
+ 
+-
+         buttonInstance = null;
+ 
+         if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
+             buttonInstance = rightButton;
+-
+         }
+ 
+         if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {
+Index: app/src/main/java/chat/wewe/android/layouthelper/chatroom/roomlist/RoomListItemViewHolder.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/chat/wewe/android/layouthelper/chatroom/roomlist/RoomListItemViewHolder.java	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/java/chat/wewe/android/layouthelper/chatroom/roomlist/RoomListItemViewHolder.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -39,6 +39,7 @@
+         .setAlert(room.isAlert())
+         .setUnreadCount(room.getUnread())
+         .setTag(room);
++
+   }
+ 
+   public void bind(SpotlightRoom spotlightRoom) {
+Index: app/src/main/java/chat/wewe/android/layouthelper/extra_action/upload/FileUploadActionItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/chat/wewe/android/layouthelper/extra_action/upload/FileUploadActionItem.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
++++ app/src/main/java/chat/wewe/android/layouthelper/extra_action/upload/FileUploadActionItem.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -0,0 +1,31 @@
++package chat.wewe.android.layouthelper.extra_action.upload;
++
++import android.content.Intent;
++
++import chat.wewe.android.R;
++
++public class FileUploadActionItem extends AbstractUploadActionItem {
++
++  @Override
++  public int getItemId() {
++    return 13;
++  }
++
++  @Override
++  protected Intent getIntentForPickFile() {
++    Intent intent = new Intent();
++    intent.setType("*/*");
++    intent.setAction(Intent.ACTION_GET_CONTENT);
++    return Intent.createChooser(intent, "Select File to Upload");
++  }
++
++  @Override
++  public int getIcon() {
++    return R.drawable.ic_insert_drive_file_white_24dp;
++  }
++
++  @Override
++  public int getTitle() {
++    return R.string.doc_upload_message_spec_title;
++  }
++}
+Index: app/src/main/java/chat/wewe/android/ui/LoginFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/chat/wewe/android/ui/LoginFragment.java	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/java/chat/wewe/android/ui/LoginFragment.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -27,7 +27,7 @@
+ import static chat.wewe.android.activity.Intro.UF_SIP_NUMBER;
+ import static chat.wewe.android.activity.Intro.UF_SIP_PASSWORD;
+ import static chat.wewe.android.service.PortSipService.EXTRA_REGISTER_STATE;
+-
++import static chat.wewe.android.activity.Intro.StatusU;
+ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener,PortMessageReceiver.BroadcastListener{
+     RocketChatApplication application;
+     MainActivity activity;
+@@ -181,6 +181,7 @@
+             mtxStatus.setText(TextUtils.isEmpty(tips)?getString(R.string.online):tips);
+             if (callstatic==0)
+          startActivity(new Intent(getActivity(), chat.wewe.android.activity.MainActivity.class));
++            StatusU = 8;
+             callstatic=1;
+         } else {
+             mtxStatus.setText(TextUtils.isEmpty(tips)?getString(R.string.offline):tips);
+Index: app/src/main/res/drawable/ic_insert_drive_file_white_24dp.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/ic_insert_drive_file_white_24dp.xml	(revision dac36abf9416ff11f321c65e629122b7feea876f)
++++ app/src/main/res/drawable/ic_insert_drive_file_white_24dp.xml	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -0,0 +1,9 @@
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++        android:width="24dp"
++        android:height="24dp"
++        android:viewportWidth="24.0"
++        android:viewportHeight="24.0">
++    <path
++        android:fillColor="#FFFFFFFF"
++        android:pathData="M6,2c-1.1,0 -1.99,0.9 -1.99,2L4,20c0,1.1 0.89,2 1.99,2L18,22c1.1,0 2,-0.9 2,-2L20,8l-6,-6L6,2zM13,9L13,3.5L18.5,9L13,9z"/>
++</vector>
+Index: app/src/main/res/layout-w720dp/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout-w720dp/activity_main.xml	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/res/layout-w720dp/activity_main.xml	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -397,10 +397,18 @@
+                 android:gravity="center"
+                 android:orientation="horizontal">
+ 
++                <ImageView
++                    android:id="@+id/stanUsers"
++                    android:layout_width="24dp"
++                    android:layout_height="24dp"
++                    android:layout_weight="1"
++                    android:visibility="visible"
++                    app:srcCompat="@drawable/s000" />
++
+                 <ImageView
+                     android:id="@+id/statusRoom"
+-                    android:layout_width="wrap_content"
+-                    android:layout_height="wrap_content"
++                    android:layout_width="24dp"
++                    android:layout_height="24dp"
+                     android:visibility="gone"
+                     app:srcCompat="@drawable/ic_at_gray_24dp" />
+ 
+@@ -418,7 +426,7 @@
+ 
+             <LinearLayout
+                 android:id="@+id/callUsers"
+-                android:layout_width="180dp"
++                android:layout_width="130dp"
+                 android:layout_height="match_parent"
+                 android:layout_gravity="center"
+                 android:orientation="horizontal"
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main.xml	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/res/layout/activity_main.xml	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -397,6 +397,14 @@
+                 android:gravity="center"
+                 android:orientation="horizontal">
+ 
++                <ImageView
++                    android:id="@+id/stanUsers"
++                    android:layout_width="24dp"
++                    android:layout_height="24dp"
++                    android:layout_weight="1"
++                    android:visibility="gone"
++                    app:srcCompat="@drawable/s000" />
++
+                 <ImageView
+                     android:id="@+id/statusRoom"
+                     android:layout_width="24dp"
+@@ -418,7 +426,7 @@
+ 
+             <LinearLayout
+                 android:id="@+id/callUsers"
+-                android:layout_width="180dp"
++                android:layout_width="130dp"
+                 android:layout_height="match_parent"
+                 android:layout_gravity="center"
+                 android:orientation="horizontal"
+Index: app/src/main/res/layout/fragment_sidebar_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/fragment_sidebar_main.xml	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ app/src/main/res/layout/fragment_sidebar_main.xml	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -715,5 +715,70 @@
+                 android:background="#C8C7CB" />
+         </LinearLayout>
+ 
++    </android.support.v4.widget.NestedScrollView>
++
++    <android.support.v4.widget.NestedScrollView
++        android:id="@+id/blaclistScrol"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:layout_below="@+id/user_info_container"
++        android:layout_alignParentBottom="true"
++        android:background="#FFFFFF"
++        android:elevation="2dp"
++        android:visibility="gone">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="vertical">
++
++        <View
++            android:layout_width="match_parent"
++            android:layout_height="1dp"
++            android:background="#C8C7CB" />
++
++        <View
++            android:layout_width="match_parent"
++            android:layout_height="28dp"
++            android:background="#EFEFF4" />
++
++        <View
++            android:layout_width="match_parent"
++            android:layout_height="1dp"
++            android:background="#C8C7CB" />
++
++        <TextView
++            android:id="@+id/nazad2"
++            style="@style/sidebar_list_item"
++            android:layout_marginLeft="16dp"
++            android:drawablePadding="16dp"
++            android:fontFamily="sans-serif-light"
++            android:text="@string/str_7"
++            android:textSize="14sp"
++            android:textAppearance="?attr/textAppearanceListItemSmall"
++            android:textColor="#1B1B1B" />
++
++        <View
++            android:layout_width="match_parent"
++            android:layout_height="1dp"
++            android:background="#C8C7CB" />
++
++        <View
++            android:layout_width="match_parent"
++            android:layout_height="28dp"
++            android:background="#EFEFF4" />
++
++        <View
++            android:layout_width="match_parent"
++            android:layout_height="1dp"
++            android:background="#C8C7CB" />
++
++    <View
++        android:layout_width="match_parent"
++        android:layout_height="1dp"
++        android:background="#C8C7CB" />
++
++    </LinearLayout>
++
+     </android.support.v4.widget.NestedScrollView>
+ </RelativeLayout>
+Index: rocket-chat-android-widgets/src/main/java/chat/wewe/android/widget/internal/RoomListItemView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- rocket-chat-android-widgets/src/main/java/chat/wewe/android/widget/internal/RoomListItemView.java	(revision c4a9df62694e173570de4f0ff5b3173125d709e0)
++++ rocket-chat-android-widgets/src/main/java/chat/wewe/android/widget/internal/RoomListItemView.java	(revision dac36abf9416ff11f321c65e629122b7feea876f)
+@@ -143,7 +143,7 @@
+ 
+ 
+ 
+-  public RoomListItemView setRoomName(String roomName) {
++  public RoomListItemView setRoomName(final String roomName) {
+     this.roomName = roomName;
+ 
+     SipData = getContext().getSharedPreferences("NameMessage", MODE_PRIVATE);
+@@ -162,6 +162,7 @@
+             .enqueue(new Callback<ResponseBody>() {
+               @Override
+               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
++                Log.d("StatusC","true"+roomName);
+                 if (response.isSuccessful()){
+                   try {
+                     JSONObject jsonRESULTS = new JSONObject(response.body().string());
