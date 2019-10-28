@@ -160,8 +160,8 @@ public class RoomListItemView extends FrameLayout {
     message_out.setText(SipData.getString(roomName, ""));
     timemessage.setText(SipDataq.getString(roomName, ""));
     text.setText(roomName);
-      ImageView statusConnects =  findViewById(R.id.statusConnect);
-      statusConnects.setImageResource(R.drawable.userstatus_offline);
+    ImageView statusConnects =  findViewById(R.id.statusConnect);
+    statusConnects.setImageResource(R.drawable.userstatus_offline);
 
 
 

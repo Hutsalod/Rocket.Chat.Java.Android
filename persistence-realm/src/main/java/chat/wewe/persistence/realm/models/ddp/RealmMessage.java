@@ -1,5 +1,7 @@
 package chat.wewe.persistence.realm.models.ddp;
 
+import android.util.Log;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import org.json.JSONArray;
@@ -125,6 +127,7 @@ public class RealmMessage extends RealmObject {
   }
 
   public void setMessage(String msg) {
+    Log.d("TESQS",msg);
     this.msg = msg;
   }
 

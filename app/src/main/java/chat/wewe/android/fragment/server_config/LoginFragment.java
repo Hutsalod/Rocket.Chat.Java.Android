@@ -262,10 +262,10 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
                         ed.putString("UF_SIP_SERVER", "sip.weltwelle.com");
                         ed.commit();
                       }
-                      if(SipData.getString("UF_SIP_NUMBER", null)!=null & callstatic==0) {
+                   /*   if(SipData.getString("UF_SIP_NUMBER", null)!=null & callstatic==0) {
                         ed.commit();
                         startActivity(new Intent(getActivity(), chat.wewe.android.ui.MainActivity.class));
-                      }
+                      }*/
                      // getLoginChat();
                     }
                   } catch (JSONException e) {

@@ -14,6 +14,7 @@ import chat.wewe.android.api.MethodCallHelper;
 import chat.wewe.android.helper.LogIfError;
 import chat.wewe.android.helper.TextUtils;
 import chat.wewe.android.log.RCLog;
+import chat.wewe.android.service.observer.DeletedMessageObserver;
 import chat.wewe.core.models.ServerInfo;
 import chat.wewe.persistence.realm.models.internal.RealmSession;
 import chat.wewe.persistence.realm.RealmHelper;
@@ -48,6 +49,7 @@ public class RocketChatWebSocketThread extends HandlerThread {
       SessionObserver.class,
       LoadMessageProcedureObserver.class,
       GetUsersOfRoomsProcedureObserver.class,
+          DeletedMessageObserver.class,
       NewMessageObserver.class,
       CurrentUserObserver.class,
       FileUploadingToUrlObserver.class,

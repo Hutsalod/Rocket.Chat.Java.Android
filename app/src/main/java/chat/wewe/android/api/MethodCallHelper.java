@@ -395,6 +395,17 @@ public class MethodCallHelper {
     }
   }
 
+  public Task<Void> deleteMessage(String messageID) {
+    try {
+      JSONObject messageJson = new JSONObject()
+              .put("_id", messageID);
+
+      return deleteMessage(messageJson);
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
   /**
    * Send message object.
    */

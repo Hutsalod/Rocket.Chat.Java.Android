@@ -31,7 +31,7 @@ public class Intro extends AppCompatActivity {
     public static boolean callSet,subscription;
     SharedPreferences SipData;
     BaseApiService mApiServiceChat;
-    public static String[]ListGetStatus;
+    public static String[]ListGetStatus = new String[1];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

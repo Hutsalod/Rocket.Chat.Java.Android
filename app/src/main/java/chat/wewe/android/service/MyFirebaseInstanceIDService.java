@@ -5,6 +5,15 @@ import android.content.Intent;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import java.util.List;
+
+import chat.wewe.android.helper.GcmPushSettingHelper;
+import chat.wewe.core.models.ServerInfo;
+import chat.wewe.persistence.realm.RealmHelper;
+import chat.wewe.persistence.realm.RealmStore;
+import chat.wewe.persistence.realm.models.ddp.RealmPublicSetting;
+import chat.wewe.persistence.realm.models.internal.GcmPushRegistration;
+
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     /**
@@ -15,28 +24,24 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     // [START refresh_token]
     @Override
     public void onTokenRefresh() {
-        // Get updated InstanceID token.
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken);
-    }
-    // [END refresh_token]
-
-    /**
-     * Persist token to third-party servers.
-     *
-     * Modify this method to associate the user's FCM InstanceID token with any server-side account
-     * maintained by your application.
-     *
-     * @param token The new token.
-     */
-    private void sendRegistrationToServer(String token) {
-        Intent srvIntent = new Intent(this, PortSipService.class);
-        srvIntent.setAction(PortSipService.ACTION_PUSH_TOKEN);
-        srvIntent.putExtra(PortSipService.EXTRA_PUSHTOKEN, token);
-        startService(srvIntent);
+        List<ServerInfo> serverInfoList = ConnectivityManager.getInstance(getApplicationContext())
+                .getServerList();
+        for (ServerInfo serverInfo : serverInfoList) {
+            RealmHelper realmHelper = RealmStore.get(serverInfo.getHostname());
+            if (realmHelper != null) {
+                updateGcmToken(realmHelper);
+            }
+        }
     }
 
+    private void updateGcmToken(RealmHelper realmHelper) {
+        final List<RealmPublicSetting> results = realmHelper.executeTransactionForReadResults(
+                GcmPushSettingHelper::queryForGcmPushEnabled);
+        final boolean gcmPushEnabled = GcmPushSettingHelper.isGcmPushEnabled(results);
+
+        if (gcmPushEnabled) {
+            realmHelper.executeTransaction(realm ->
+                    GcmPushRegistration.updateGcmPushEnabled(realm, gcmPushEnabled));
+        }
+    }
 }

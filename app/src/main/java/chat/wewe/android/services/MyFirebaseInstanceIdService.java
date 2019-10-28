@@ -1,5 +1,6 @@
 package chat.wewe.android.services;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -19,7 +20,10 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
-
+        SharedPreferences SipData = getSharedPreferences("SIP", MODE_PRIVATE);
+        SharedPreferences.Editor ed = SipData.edit();
+        ed.putString("TOKEN_PUSH", refreshedToken);
+        ed.commit();
         // now subscribe to `global` topic to receive app wide notifications
         FirebaseMessaging.getInstance().subscribeToTopic(TOPIC_GLOBAL);
 

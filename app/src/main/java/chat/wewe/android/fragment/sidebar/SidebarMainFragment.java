@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -31,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.common.file.FileUtils;
 import com.google.gson.JsonObject;
 import com.jakewharton.rxbinding2.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
@@ -44,10 +46,13 @@ import chat.wewe.android.activity.PinCode;
 import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.UtilsApi;
 import chat.wewe.android.api.UtilsApiChat;
+import chat.wewe.android.log.RCLog;
 import chat.wewe.android.service.PortSipService;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,11 +86,16 @@ import chat.wewe.persistence.realm.repositories.RealmSessionRepository;
 import chat.wewe.persistence.realm.repositories.RealmSpotlightRoomRepository;
 import chat.wewe.persistence.realm.repositories.RealmUserRepository;
 import chat.wewe.android.widget.RocketChatAvatar;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
+
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -99,8 +109,6 @@ import static chat.wewe.android.activity.MainActivity.nazad;
 import static chat.wewe.android.activity.MainActivity.recyclerViews;
 import static chat.wewe.android.activity.MainActivity.search_btn_users;
 import static chat.wewe.android.activity.MainActivity.statusRoom;
-import static chat.wewe.android.activity.MainActivity.statusUsers;
-import static chat.wewe.android.activity.MainActivity.switch2;
 import static chat.wewe.android.fragment.server_config.LoginFragment.TOKENwe;
 
 public class SidebarMainFragment extends AbstractFragment implements SidebarMainContract.View {
@@ -126,6 +134,12 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   BaseApiService mApiServiceChat,mApiService;
   String device = "0";
   public static   Bitmap bmp;
+  private Uri mFileUri;
+  public static final Integer REQUEST_GET_SINGLE_FILE = 51;
+
+  private String token;
+  private String userId;
+
   public SidebarMainFragment() {
   }
 
@@ -405,6 +419,10 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
               Toast.LENGTH_SHORT).show();
     });
 
+    rootView.findViewById(R.id.current_user_avatar).setOnClickListener(view -> {
+      openAvatarFile();
+    });
+
     rootView.findViewById(R.id.switch3).setOnClickListener(view -> {
       SharedPreferences.Editor ed = SipData.edit();
       if(SipData.getBoolean("VIDEO_C", false)==true)
@@ -496,20 +514,23 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
   private void setupLogoutButton() {
     rootView.findViewById(R.id.btn_logout).setOnClickListener(view -> {
-      presenter.onLogout();
-      closeUserActionContainer();
-      getActivity().finish();
-        Intent offLineIntent = new Intent(getActivity(), PortSipService.class);
+    /*    Intent offLineIntent = new Intent(getActivity(), PortSipService.class);
       offLineIntent.setAction(PortSipService.ACTION_SIP_UNREGIEST);
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         getActivity().startForegroundService(offLineIntent);
       }else{
         getActivity().startService(offLineIntent);
-      }
-      ed.putString("UF_SIP_NUMBER", null);
+      }*/
+      ed.putString("UF_SIP_NUMBER", "");
+      ed.putString("UF_SIP_PASSWORD", "");
       ed.commit();
+      presenter.onLogout();
+      closeUserActionContainer();
+      // destroy Activity on logout to be able to recreate most of the environment
+        this.getActivity().finish();
+     // startActivity(new Intent(getActivity(),Intro.class));
+     // finish();
       callstatic=0;
-
 
     });
 
@@ -552,6 +573,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   public void show(User user, RocketChatAbsoluteUrl absoluteUrl) {
     onRenderCurrentUser(user, absoluteUrl);
     updateRoomListMode(user);
+    token = absoluteUrl.getToken();
+    userId = absoluteUrl.getUserId();
   }
 
   private void showSearchSuggestions(List<SpotlightRoom> spotlightRooms) {
@@ -666,34 +689,75 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
             });
   }
 
-  public void getBlacklistAdd(String UF_ROCKET_LOGIN){
-      SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
-      Map<String, Object> jsonParams = new ArrayMap<>();
-      jsonParams.put("UF_ROCKET_ID", "null");
-    jsonParams.put("UF_ROCKET_LOGIN", "null");
-    jsonParams.put("UF_USER_ID_BLOCKED", "null");
-    jsonParams.put("UF_ROCKET_ID_BLOCKED", "null");
-    jsonParams.put("UF_ROCKET_LOGIN_BLOC", UF_ROCKET_LOGIN);
-    mApiService.getBlacklistAdd("KEY:"+SipData.getString("TOKENWE",""),jsonParams)
-            .enqueue(new Callback<ResponseBody>() {
-              @Override
-              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()){
-                  try {
-                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                  } catch (JSONException e) {
-                    e.printStackTrace();
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                  }
-                } else {
-                }
-              }
 
-              @Override
-              public void onFailure(Call<ResponseBody> call, Throwable t) {
-              }
-            });
+  public void openAvatarFile() {
+    Intent intent=new Intent(Intent.ACTION_PICK);
+    // Sets the type as image/*. This ensures only components of type image are selected
+    intent.setType("image/*");
+    //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
+    String[] mimeTypes = {"image/jpeg", "image/png"};
+    intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+
+    startActivityForResult(intent, REQUEST_GET_SINGLE_FILE);
+  }
+
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode == RESULT_OK && requestCode == REQUEST_GET_SINGLE_FILE) {
+      if (data != null) {
+        mFileUri = data.getData();
+        setAvatarFile(mFileUri);
+
+
+      }
+    }
+  }
+
+  public void setAvatarFile(Uri fileUri) {
+
+    File sourceFile = new File(fileUri.getPath());
+    Boolean isfile = false;
+    if (sourceFile.isFile()) {
+      isfile = true;
+    } else {
+      sourceFile = new File(getMediaPath(getContext(), fileUri));
+      if (sourceFile.isFile()) {
+        isfile = true;
+      }
+    }
+    if (isfile) {
+      RequestBody requestFile = RequestBody.create(
+              MediaType.parse(getActivity().getContentResolver().getType(fileUri)),
+              sourceFile
+      );
+      MultipartBody.Part body = MultipartBody.Part.createFormData("image", sourceFile.getName(), requestFile);
+      String descriptionString = "this is description speaking";
+      RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+
+      Log.d("DEBUQ", "onFailure: ERROR > " + token + " . " + userId + " . " + body);
+
+      mApiServiceChat.setAvatarFile(token, userId, body)
+              .enqueue(new Callback<ResponseBody>() {
+
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                  Log.d("DEBUQ", "TT");
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                  Log.d("DEBUQ", "NO" + call + t);
+                }
+              });
+    }
+  }
+
+  public String getMediaPath(Context ctx, Uri uri) {
+    String path = "";
+    path = RealPathUtil.getPath(ctx, uri);
+    return path;
   }
 
 }

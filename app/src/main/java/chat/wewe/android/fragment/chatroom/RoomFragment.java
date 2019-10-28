@@ -18,6 +18,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.os.BuildCompat;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -33,16 +34,23 @@ import android.widget.Toast;
 import com.fernandocejas.arrow.optional.Optional;
 import com.jakewharton.rxbinding2.support.v4.widget.RxDrawerLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 import chat.wewe.android.BackgroundLooper;
 import chat.wewe.android.R;
+import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.MethodCallHelper;
+import chat.wewe.android.api.UtilsApiChat;
 import chat.wewe.android.fragment.chatroom.dialog.FileUploadProgressDialogFragment;
 import chat.wewe.android.fragment.chatroom.dialog.MessageOptionsDialogFragment;
 import chat.wewe.android.fragment.chatroom.dialog.UsersOfRoomDialogFragment;
@@ -94,8 +102,12 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import okhttp3.ResponseBody;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -139,16 +151,21 @@ public class RoomFragment extends AbstractChatRoomFragment implements
   private RealmUserRepository userRepository;
   private MethodCallHelper methodCallHelper;
   private AbsoluteUrlHelper absoluteUrlHelper;
-
+  SharedPreferences SipData;
   private Message edittingMessage = null;
   List<String> imagesEncodedList;
+
+
   public RoomFragment() {}
-  private String token;
-  private String userId;
+
+  public String token;
+  public String userId;
   private String roomType;
+
   /**
    * create fragment with roomId.
    */
+
   public static RoomFragment create(String hostname, String roomId) {
     Bundle args = new Bundle();
     args.putString(HOSTNAME, hostname);
@@ -199,6 +216,8 @@ public class RoomFragment extends AbstractChatRoomFragment implements
     if (savedInstanceState == null) {
       presenter.loadMessages();
     }
+
+    SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
 
 
   }
@@ -620,8 +639,15 @@ Log.d("MSG1","MSGLOG");
       token = rocketChatAbsoluteUrl.getToken();
       userId = rocketChatAbsoluteUrl.getUserId();
       messageListAdapter.setAbsoluteUrl(rocketChatAbsoluteUrl);
+
+      getActivity().getSharedPreferences("SIP", MODE_PRIVATE)
+              .edit()
+              .putString("TOKEN_RC", token)
+              .putString("ID_RC", userId)
+              .commit();
+
     }
-  }
+ }
 
   @Override
   public void render(Room room) {
@@ -720,6 +746,7 @@ Log.d("MSG1","MSGLOG");
     }
 
   }
+
 
 
 }

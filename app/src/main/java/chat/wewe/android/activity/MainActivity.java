@@ -22,9 +22,12 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,6 +62,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -78,6 +83,9 @@ import chat.wewe.android.api.UtilsApi;
 import chat.wewe.android.api.UtilsApiChat;
 import chat.wewe.android.api.model.sub;
 import chat.wewe.android.fragment.chatroom.HomeFragment;
+import chat.wewe.android.fragment.chatroom.ListFileFragment;
+import chat.wewe.android.fragment.chatroom.ListMessageFragment;
+import chat.wewe.android.fragment.chatroom.NotificationFragment;
 import chat.wewe.android.fragment.chatroom.RocketChatAbsoluteUrl;
 import chat.wewe.android.fragment.chatroom.RoomFragment;
 import chat.wewe.android.fragment.sidebar.SidebarMainFragment;
@@ -130,7 +138,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   public static LinearLayout callUsers;
   public static AppCompatAutoCompleteTextView editText;
   public static RecyclerView recyclerViews;
-  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users,statusUsers,statusUsers2,statusUsers3,statusUsers4;
+  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users;
+  public  ImageView statusUsers,statusUsers2,statusUsers3,statusUsers4, btnSearch;
   public static   TextView current_user_name;
   private CountDownTimer countDownTimer;
   public static  FrameLayout activity_main_container;
@@ -177,6 +186,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     callInt = new Intent(getApplicationContext(), chat.wewe.android.ui.MainActivity.class);
 
 
+
     navigation = (BottomNavigationView) findViewById(R.id.navigation);
     chat = (LinearLayout) findViewById(R.id.chat);
     call = (LinearLayout) findViewById(R.id.call);
@@ -194,6 +204,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     current_user_name = (TextView) findViewById(R.id.current_user_name);
     callUsers = (LinearLayout) findViewById(R.id.callUsers);
     BtnCall = (ImageView) findViewById(R.id.BtnCall);
+    btnSearch = (ImageView) findViewById(R.id.btnSearch);
     statusUsers = (ImageView) findViewById(R.id.stanUsers);
     statusUsers2 = (ImageView) findViewById(R.id.stanUsers2);
     statusUsers3 = (ImageView) findViewById(R.id.stanUsers3);
@@ -251,6 +262,14 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             startActivity(callInt);
             setnupad = 2;
           }}
+      }
+    });
+
+    btnSearch.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        ListMessageFragment exampleDialog = ListMessageFragment.create(hostname,roomId);
+        exampleDialog.show(getSupportFragmentManager(), "example dialog");
       }
     });
 
@@ -327,10 +346,10 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     countDownTimer.start();
 
 
-   if(SipData.getString("UF_SIP_NUMBER", "")!="" & callstatic==0) {
+   if(SipData.getString("UF_SIP_NUMBER", "")!="" && callstatic==0 && StatusU>=4) {
       startActivity(new Intent(getApplicationContext(), chat.wewe.android.ui.MainActivity.class));
     }
-   
+
   }
 
   public void showPopup(View v) {
@@ -338,7 +357,30 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       PopupMenu popup = new PopupMenu(this, v);
       popup.setOnMenuItemClickListener(this);
       popup.inflate(R.menu.menu_users);
+      setForceShowIcon(popup);
       popup.show();
+
+
+    }
+  }
+
+  public static void setForceShowIcon(PopupMenu popupMenu) {
+    try {
+      Field[] fields = popupMenu.getClass().getDeclaredFields();
+      for (Field field : fields) {
+        if ("mPopup".equals(field.getName())) {
+          field.setAccessible(true);
+          Object menuPopupHelper = field.get(popupMenu);
+          Class<?> classPopupHelper = Class.forName(menuPopupHelper
+                  .getClass().getName());
+          Method setForceIcons = classPopupHelper.getMethod(
+                  "setForceShowIcon", boolean.class);
+          setForceIcons.invoke(menuPopupHelper, true);
+          break;
+        }
+      }
+    } catch (Throwable e) {
+      e.printStackTrace();
     }
   }
 
@@ -348,7 +390,16 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     switch (item.getItemId()) {
       case R.id.item1:
         getBlacklistAdd(getName);
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        return true;
+      case R.id.item2:
+        showFragment(NotificationFragment.create(hostname, roomId));
+        return true;
+      case R.id.item3:
+        showFragment(ListFileFragment.create(hostname, roomId));
+        return true;
+      case R.id.item4:
+        ListMessageFragment exampleDialog = ListMessageFragment.create(hostname,roomId);
+        exampleDialog.show(getSupportFragmentManager(), "example dialog");
         return true;
       default:
         return false;
@@ -636,8 +687,10 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
   @Override
   public void showHome() {
-    showFragment(new HomeFragment());
+    showFragment(RoomFragment.create(hostname, roomId));
   }
+
+
 
   @Override
   public void showRoom(String hostname, String roomId) {
@@ -724,6 +777,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 }
 
   public void nazad(View view) {
+    showFragment(RoomFragment.create(hostname,roomId));
     animateShow(activity_main_container);
     animateHide(activity_main_container);
     animateShow(recyclerViews);
@@ -771,7 +825,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
   @Override
   public void showConnecting() {
-    StatusU=4;
+    StatusU=7;
     UserStatus();
   }
 
@@ -1009,6 +1063,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                 if (response.isSuccessful()){
                   try {
                     JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                    showFragment(RoomFragment.create(hostname,roomId));
                   } catch (JSONException e) {
                     e.printStackTrace();
                   } catch (IOException e) {

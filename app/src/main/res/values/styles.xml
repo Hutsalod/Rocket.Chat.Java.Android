@@ -47,7 +47,7 @@
 
     <style name="MySwitch" parent="Theme.AppCompat.Light">
         <!-- активное состояние (30% прозрачности для фона) -->
-        <item name="colorControlActivated">#2DE0A5</item>
+        <item name="colorControlActivated">#64C365</item>
 
         <!-- неактивное состояние ползунка -->
         <item name="colorSwitchThumbNormal">#FFFFFF</item>

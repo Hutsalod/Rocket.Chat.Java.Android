@@ -2,6 +2,7 @@ package chat.wewe.persistence.realm.repositories;
 
 import android.os.Looper;
 import android.support.v4.util.Pair;
+import android.util.Log;
 
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -131,6 +132,7 @@ public class RealmMessageRepository extends RealmRepository implements MessageRe
 
   @Override
   public Flowable<List<Message>> getAllFrom(Room room) {
+
     return Flowable.defer(() -> Flowable.using(
         () -> new Pair<>(RealmStore.getRealm(hostname), Looper.myLooper()),
         pair -> RxJavaInterop.toV2Flowable(pair.first.where(RealmMessage.class)
@@ -142,10 +144,13 @@ public class RealmMessageRepository extends RealmRepository implements MessageRe
         .unsubscribeOn(AndroidSchedulers.from(Looper.myLooper()))
         .filter(it -> it.isLoaded() && it.isValid())
         .map(this::toList));
+
+
   }
 
   @Override
   public Single<Integer> unreadCountFor(Room room, User user) {
+    Log.d("TESQS", RealmMessage.USER_ID );
     return Single.defer(() -> Flowable.using(
         () -> new Pair<>(RealmStore.getRealm(hostname), Looper.myLooper()),
         pair -> RxJavaInterop.toV2Flowable(pair.first.where(RealmMessage.class)

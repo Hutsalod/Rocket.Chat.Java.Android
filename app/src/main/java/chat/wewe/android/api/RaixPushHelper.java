@@ -3,6 +3,8 @@ package chat.wewe.android.api;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,6 +24,7 @@ public class RaixPushHelper extends MethodCallHelper {
 
   public Task<Void> pushUpdate(@NonNull String pushId, @NonNull String gcmToken,
                                @Nullable String userId) {
+    Log.d("LOGTOKEN",""+gcmToken);
     return call("raix:push-update", TIMEOUT_MS, () ->
         new JSONArray().put(new JSONObject()
             .put("id", pushId)
@@ -30,6 +33,8 @@ public class RaixPushHelper extends MethodCallHelper {
             .put("metadata", new JSONObject())
             .put("token", new JSONObject().put("gcm", gcmToken))))
         .onSuccessTask(task -> Task.forResult(null));
+
+
   }
 
   public Task<Void> pushSetUser(String pushId) {
