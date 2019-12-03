@@ -2,6 +2,7 @@ package chat.wewe.android.fragment.sidebar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -19,6 +20,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -136,7 +138,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   public static   Bitmap bmp;
   private Uri mFileUri;
   public static final Integer REQUEST_GET_SINGLE_FILE = 51;
-
+  User user;
+  RocketChatAbsoluteUrl absoluteUrl;
   private String token;
   private String userId;
 
@@ -447,9 +450,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       });
 
     rootView.findViewById(R.id.securityBtn).setOnClickListener(view -> {
-   /*   languageLayaut.setVisibility(View.GONE);
-      actionContainers.setVisibility(View.GONE);
-      secyrityLayaut.setVisibility(View.VISIBLE);*/
       startActivity(new Intent(getContext(), PinCode.class));
     });
 
@@ -467,6 +467,29 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       blaclistScrol.setVisibility(View.GONE);
     });
 
+
+    rootView.findViewById(R.id.deleye_mss).setOnClickListener(view -> {
+
+
+      DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          switch (which){
+            case DialogInterface.BUTTON_POSITIVE:
+              methodCallHelper.hideAndEraseRooms();
+              break;
+
+            case DialogInterface.BUTTON_NEGATIVE:
+              //No button clicked
+              break;
+          }
+        }
+      };
+
+      AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+      builder.setMessage(getString(R.string.delet_message)+" ?").setPositiveButton("Yes", dialogClickListener)
+              .setNegativeButton("No", dialogClickListener).show();
+    });
     rootView.findViewById(R.id.languagede).setOnClickListener(view -> {
       Locale locale = new Locale("en");
       Locale.setDefault(locale);
@@ -499,16 +522,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     roomListHeaders.add(new FavoriteRoomListHeader(
         getString(R.string.fragment_sidebar_main_favorite_title)
     ));
-    /*  roomListHeaders.add(new DirectMessageRoomListHeader(
-            getString(R.string.fragment_sidebar_main_direct_messages_title),
-            () -> showAddRoomDialog(AddDirectMessageDialogFragment.create(hostname))
-
-    ));
-   roomListHeaders.add(new ChannelRoomListHeader(getString(R.string.fragment_sidebar_main_direct_messages_title),
-        () -> showAddRoomDialog(AddChannelDialogFragment.create(hostname))
-    ));*/
-
-
     adapter.setRoomListHeaders(roomListHeaders);
   }
 
@@ -526,15 +539,12 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       ed.commit();
       presenter.onLogout();
       closeUserActionContainer();
-      // destroy Activity on logout to be able to recreate most of the environment
-        this.getActivity().finish();
+
      // startActivity(new Intent(getActivity(),Intro.class));
      // finish();
       callstatic=0;
-
+        this.getActivity().finish();
     });
-
-
   }
 
   private void closeUserActionContainer() {
@@ -571,6 +581,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
   @Override
   public void show(User user, RocketChatAbsoluteUrl absoluteUrl) {
+    this.user = user;
+    this.absoluteUrl = absoluteUrl;
     onRenderCurrentUser(user, absoluteUrl);
     updateRoomListMode(user);
     token = absoluteUrl.getToken();
@@ -737,13 +749,14 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
 
       Log.d("DEBUQ", "onFailure: ERROR > " + token + " . " + userId + " . " + body);
-
+      onRenderCurrentUser(user, absoluteUrl);
       mApiServiceChat.setAvatarFile(token, userId, body)
               .enqueue(new Callback<ResponseBody>() {
 
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                   Log.d("DEBUQ", "TT");
+
                 }
 
                 @Override

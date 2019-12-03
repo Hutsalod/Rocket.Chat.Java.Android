@@ -11,10 +11,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -53,6 +55,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fernandocejas.arrow.optional.Optional;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -94,6 +97,7 @@ import chat.wewe.android.helper.AbsoluteUrlHelper;
 import chat.wewe.android.helper.KeyboardHelper;
 import chat.wewe.android.layouthelper.chatroom.dialog.RoomUserAdapter;
 import chat.wewe.android.layouthelper.sidebar.dialog.SuggestUserAdapter;
+import chat.wewe.android.service.PortSipService;
 import chat.wewe.core.SyncState;
 import chat.wewe.core.interactors.CanCreateRoomInteractor;
 import chat.wewe.core.interactors.RoomInteractor;
@@ -120,10 +124,13 @@ import static android.view.View.VISIBLE;
 import static chat.wewe.android.activity.ContactAdapter.a_chars;
 import static chat.wewe.android.activity.Intro.StatusU;
 import static chat.wewe.android.activity.Intro.TOKEN_RC;
+import static chat.wewe.android.activity.Intro.UF_SIP_NUMBER;
+import static chat.wewe.android.activity.Intro.UF_SIP_PASSWORD;
 import static chat.wewe.android.activity.Intro.callCout;
 import static chat.wewe.android.activity.Intro.callstatic;
 import static chat.wewe.android.activity.Intro.callSet;
 import static chat.wewe.android.activity.Intro.subscription;
+import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.adapter;
 import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
 import static java.security.AccessController.getContext;
 
@@ -155,7 +162,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   private CompositeDisposable compositeDisposable = new CompositeDisposable();
   private static String[] PERMISSION_CONTACT = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
   private static final int REQUEST_CONTACT = 1;
-  public static int setnupad=0;
+  public static int setnupad=0,setContact=0;
   private List<ContactModel> contactModelList = new ArrayList<>();
   BaseApiService mApiServiceChat,mApiService;
   TextInputEditText EditTextName;
@@ -347,20 +354,45 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
 
    if(SipData.getString("UF_SIP_NUMBER", "")!="" && callstatic==0 && StatusU>=4) {
-      startActivity(new Intent(getApplicationContext(), chat.wewe.android.ui.MainActivity.class));
+     SaveUserInfo();
+             Intent onLineIntent = new Intent(getBaseContext(), PortSipService.class);
+        onLineIntent.setAction(PortSipService.ACTION_SIP_REGIEST);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                getBaseContext().startForegroundService(onLineIntent);
+        }else{
+          getBaseContext().startService(onLineIntent);
+        }
     }
 
   }
 
+  public void SaveUserInfo() {
+    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplication()).edit();
+    UF_SIP_NUMBER = SipData.getString("UF_SIP_NUMBER", null);
+    UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", null);
+    String UF_SIP_SERVER = SipData.getString("UF_SIP_SERVER", "sip.weltwelle.com");
+    editor.putString(PortSipService.USER_NAME, UF_SIP_NUMBER);
+    editor.putString(PortSipService.USER_PWD, UF_SIP_PASSWORD);
+    editor.putString(PortSipService.SVR_HOST, UF_SIP_SERVER);
+    editor.putString(PortSipService.SVR_PORT, "5061");
+
+    editor.putString(PortSipService.USER_DISPALYNAME, null);
+    editor.putString(PortSipService.USER_DOMAIN, null);
+    editor.putString(PortSipService.USER_AUTHNAME, null);
+    editor.putString(PortSipService.STUN_HOST, null);
+    editor.putString(PortSipService.STUN_PORT, "3478");
+
+    editor.commit();
+  }
+
   public void showPopup(View v) {
-    if(!current_user_name.getText().equals("Сообщения")) {
+    if(nazad.getVisibility() == View.VISIBLE) {
       PopupMenu popup = new PopupMenu(this, v);
       popup.setOnMenuItemClickListener(this);
       popup.inflate(R.menu.menu_users);
       setForceShowIcon(popup);
       popup.show();
-
-
     }
   }
 
@@ -397,9 +429,15 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       case R.id.item3:
         showFragment(ListFileFragment.create(hostname, roomId));
         return true;
-      case R.id.item4:
-        ListMessageFragment exampleDialog = ListMessageFragment.create(hostname,roomId);
-        exampleDialog.show(getSupportFragmentManager(), "example dialog");
+
+      case R.id.item5:
+        setContact = 1;
+        navigation.setSelectedItemId(R.id.action_group);
+       getSharedPreferences("NameConntact", MODE_PRIVATE)
+                .edit()
+                .putString(getName, "")
+                .commit();
+        recyclerViews.setAdapter(adapter);
         return true;
       default:
         return false;
@@ -711,6 +749,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           call.setVisibility(GONE);
           contacts.setVisibility(GONE);
           setting.setVisibility(GONE);
+          setContact = 0;
           return true;
         case R.id.action_call:
           chat.setVisibility(GONE);
@@ -721,7 +760,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             startActivity(new Intent(getApplicationContext(), Success.class));
             finish();
           }
-
+          setContact = 0;
           return true;
         case R.id.action_group:
           chat.setVisibility(GONE);
@@ -734,6 +773,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             startActivity(new Intent(getApplicationContext(), Success.class));
             finish();
           }
+
           return true;
         case R.id.action_setting:
           chat.setVisibility(GONE);
@@ -755,6 +795,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             textView6.setText("Chat: Онлайн SIP: Онлайн");
           else
             textView6.setText("Chat: Онлайн SIP: Офлайн");
+          setContact = 0;
           return true;
       }
       return false;

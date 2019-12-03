@@ -35,35 +35,13 @@
 
             android:background="#C8C7CB" />
 
-        <LinearLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/margin_16"
             android:layout_marginRight="@dimen/margin_16"
-            android:layout_marginBottom="@dimen/margin_16"
-
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_16"
-                android:layout_marginRight="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_16"
-                android:text="." />
-
-            <TextView
-                android:id="@+id/message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_16"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_marginRight="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_16"
-                android:text="." />
-        </LinearLayout>
+            android:layout_marginBottom="@dimen/margin_16" />
 
 
     </LinearLayout>

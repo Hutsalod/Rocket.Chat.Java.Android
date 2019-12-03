@@ -152,8 +152,8 @@ class SwipeController extends Callback {
                         else if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
                             buttonsActions.onRightClicked(viewHolder.getAdapterPosition());
                             Log.d("SWIPE", "spotlightRoomList1 "+pos);
-                         Log.d("SWIPE", "spotlightRoomList1 "+RoomListAdapter.arrayListList.get(pos));
-                           SidebarMainFragment.methodCallHelper.deleteRooms(RoomListAdapter.arrayListList.get(pos));
+                            Log.d("SWIPE", "spotlightRoomList1 "+RoomListAdapter.arrayListList.get(pos));
+                            SidebarMainFragment.methodCallHelper.deleteRooms(RoomListAdapter.arrayListList.get(pos),RoomListAdapter.arrayListList.get(pos).substring(0,17));
                             RoomListAdapter.arrayListList.clear();
                             recyclerViews.setAdapter(adapter);
                             Log.d("SWIPE", "RIGHT_VISIBLE");
@@ -208,7 +208,7 @@ class SwipeController extends Callback {
         float textWidth = p.measureText(text);
 
         if(set==1)
-        c.drawBitmap(bmp, button.centerX() - (bmp.getWidth() / 2), button.centerY() - (bmp.getHeight() / 2), null);
+            c.drawBitmap(bmp, button.centerX() - (bmp.getWidth() / 2), button.centerY() - (bmp.getHeight() / 2), null);
 
 
         c.drawText(text, button.centerX()-(textWidth/2), button.centerY()+(textSize/2), p);

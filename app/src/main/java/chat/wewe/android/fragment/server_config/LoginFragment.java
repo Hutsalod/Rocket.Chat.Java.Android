@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
@@ -22,10 +25,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import chat.wewe.android.R;
+import chat.wewe.android.Success;
 import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.MethodCallHelper;
 import chat.wewe.android.layouthelper.oauth.OAuthProviderInfo;
 import chat.wewe.android.log.RCLog;
+import chat.wewe.android.service.PortSipService;
 import chat.wewe.core.models.LoginServiceConfiguration;
 import chat.wewe.persistence.realm.repositories.RealmLoginServiceConfigurationRepository;
 import chat.wewe.persistence.realm.repositories.RealmPublicSettingRepository;
@@ -262,10 +267,23 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
                         ed.putString("UF_SIP_SERVER", "sip.weltwelle.com");
                         ed.commit();
                       }
-                   /*   if(SipData.getString("UF_SIP_NUMBER", null)!=null & callstatic==0) {
-                        ed.commit();
-                        startActivity(new Intent(getActivity(), chat.wewe.android.ui.MainActivity.class));
-                      }*/
+
+                      if(SipData.getString("INNER_GROUP", "false").equals("false")){
+                        startActivity(new Intent(getActivity(), Success.class));
+                        finish();
+                      }
+                     if(SipData.getString("UF_SIP_NUMBER", null)!=null & callstatic==0) {
+                       SaveUserInfo();
+                       Intent onLineIntent = new Intent(getContext(), PortSipService.class);
+                       onLineIntent.putExtra(PortSipService.EXTRA_PUSHTOKEN, FirebaseInstanceId.getInstance().getToken());
+                       onLineIntent.setAction(PortSipService.ACTION_SIP_REGIEST);
+
+                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                         getContext().startForegroundService(onLineIntent);
+                       }else{
+                         getContext().startService(onLineIntent);
+                       }
+                      }
                      // getLoginChat();
                     }
                   } catch (JSONException e) {
@@ -283,6 +301,25 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
                 loading.dismiss();
               }
             });
+  }
+
+  public void SaveUserInfo() {
+    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+    UF_SIP_NUMBER = SipData.getString("UF_SIP_NUMBER", null);
+    UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", null);
+    UF_SIP_SERVER = SipData.getString("UF_SIP_SERVER", "sip.weltwelle.com");
+    editor.putString(PortSipService.USER_NAME, UF_SIP_NUMBER);
+    editor.putString(PortSipService.USER_PWD, UF_SIP_PASSWORD);
+    editor.putString(PortSipService.SVR_HOST, UF_SIP_SERVER);
+    editor.putString(PortSipService.SVR_PORT, "5061");
+
+    editor.putString(PortSipService.USER_DISPALYNAME, null);
+    editor.putString(PortSipService.USER_DOMAIN, null);
+    editor.putString(PortSipService.USER_AUTHNAME, null);
+    editor.putString(PortSipService.STUN_HOST, null);
+    editor.putString(PortSipService.STUN_PORT, "3478");
+
+    editor.commit();
   }
 
 }

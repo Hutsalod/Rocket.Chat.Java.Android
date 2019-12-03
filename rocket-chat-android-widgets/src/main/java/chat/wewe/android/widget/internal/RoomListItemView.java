@@ -58,7 +58,7 @@ public class RoomListItemView extends FrameLayout {
   private MediaPlayer song;
  SharedPreferences SipData, SipDataq;
   public ArrayList<String> arrayListLists = new ArrayList<>();
-    TextView text;
+    TextView text,textContact;
 
   public RoomListItemView(Context context) {
     super(context);
@@ -120,7 +120,7 @@ public class RoomListItemView extends FrameLayout {
 
     View alertCountContainer = findViewById(R.id.alert_count_container);
     song = (MediaPlayer) MediaPlayer.create(getContext(), R.raw.msg);
-    TextView alertCount = (TextView) findViewById(R.id.alert_count);
+    TextView alertCount = (TextView) findViewById(R.id. alert_count);
 
     if (count > 0) {
       alertCount.setText(Integer.toString(count));
@@ -155,14 +155,15 @@ public class RoomListItemView extends FrameLayout {
     SipDataq = getContext().getSharedPreferences("TimeMessage", MODE_PRIVATE);
     TextView message_out = (TextView) findViewById(R.id.message_out);
     text = (TextView) findViewById(R.id.text);
+    textContact = (TextView) findViewById(R.id.textContact);
     TextView timemessage = (TextView) findViewById(R.id.textView2);
     TextView iconText = (TextView) findViewById(R.id.iconText);
     message_out.setText(SipData.getString(roomName, ""));
     timemessage.setText(SipDataq.getString(roomName, ""));
     text.setText(roomName);
+      textContact.setText(getContext().getSharedPreferences("NameConntact", MODE_PRIVATE).getString(roomName, ""));
     ImageView statusConnects =  findViewById(R.id.statusConnect);
     statusConnects.setImageResource(R.drawable.userstatus_offline);
-
 
 
     new DownloadImageFromInternet((ImageView)findViewById(R.id.avatarUser)).execute("https://chat.weltwelle.com/avatar/"+roomName);

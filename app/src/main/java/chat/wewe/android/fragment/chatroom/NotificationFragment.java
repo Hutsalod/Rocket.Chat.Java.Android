@@ -38,6 +38,7 @@ public class NotificationFragment extends AbstractChatRoomFragment {
     private static final String ROOM_ID = "roomId";
     public String token;
     public String userId;
+    public String id;
     EditText editText;
     SharedPreferences SipData;
 
@@ -73,6 +74,7 @@ public class NotificationFragment extends AbstractChatRoomFragment {
         roomId = args.getString(ROOM_ID);
         mApiServiceChat = UtilsApiChat.getAPIService();
         userRepository = new RealmUserRepository(hostname);
+        id = roomId.replace(userId, "");
 
         absoluteUrlHelper = new AbsoluteUrlHelper(
                 hostname,
@@ -112,7 +114,7 @@ public class NotificationFragment extends AbstractChatRoomFragment {
 
 
     public  void chat_ignoreUserh(Boolean ignore){
-        mApiServiceChat.chat_ignoreUserh(token, userId, userId,roomId,ignore)
+        mApiServiceChat.chat_ignoreUserh(token, userId, roomId,id,ignore)
                 .enqueue(new Callback<ResponseBody>() {
 
                     @Override

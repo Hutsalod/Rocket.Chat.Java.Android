@@ -33,8 +33,8 @@ android {
         applicationId "chat.wewe.android"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 33
-        versionName "1.5.0"
+        versionCode 37
+        versionName "1.5.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
@@ -67,6 +67,10 @@ android {
     lintOptions {
         //avoiding okio error: https://github.com/square/okhttp/issues/896
         lintConfig file("lint.xml")
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 }
 play {

@@ -15,10 +15,15 @@ import java.util.List;
 
 import chat.wewe.android.R;
 
+import static android.content.Context.MODE_PRIVATE;
 import static chat.wewe.android.activity.Intro.callSet;
 import static chat.wewe.android.activity.Intro.callstatic;
+import static chat.wewe.android.activity.MainActivity.navigation;
+import static chat.wewe.android.activity.MainActivity.recyclerViews;
+import static chat.wewe.android.activity.MainActivity.setContact;
+import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.adapter;
 import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
-
+import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
 /**
  * Created by incred-dev on 6/7/18.
  */
@@ -85,10 +90,19 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
                 teamContact.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                    callstatic=2;
-                    getName = holder.number.getText().toString();
-                    callSet = false;
-                    mContext.startActivity(new Intent(mContext, chat.wewe.android.ui.MainActivity.class));
+                    if(setContact == 0) {
+                        callstatic = 2;
+                        getName = holder.number.getText().toString();
+                        callSet = false;
+                        mContext.startActivity(new Intent(mContext, chat.wewe.android.ui.MainActivity.class));
+                    }else {
+                        mContext.getSharedPreferences("NameConntact", MODE_PRIVATE)
+                                .edit()
+                                .putString(getName, holder.name.getText().toString())
+                                .commit();
+                        navigation.setSelectedItemId(R.id.action_chat);
+                        recyclerViews.setAdapter(adapter);
+                    }
                     }
                 });
             }

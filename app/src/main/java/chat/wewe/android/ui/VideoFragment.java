@@ -81,17 +81,15 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 
 
 		Handler handler = new Handler();
-
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
 						++t;
-						c = (t>=10)? "" : "0";
 						if(t>59){
 							t=0;
 							++m;
 						}
-						statucConnect.setText(""+m+":"+c+t);
+						statucConnect.setText(""+m+":"+((t>=10)? "" : "0")+t);
 						handler.postDelayed(this, 1000);
 					}
 				});
@@ -177,7 +175,8 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 						portSipLib.hangUp(currentLine.sessionID);
 						break;
 				}
-				startActivity(Home);
+				//startActivity(Home);
+				getActivity().finish();
 				currentLine.Reset();
 
 
@@ -270,7 +269,7 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 			long sessionId = intent.getLongExtra(PortSipService.EXTRA_CALL_SEESIONID, Session.INVALID_SESSION_ID);
 			String status = intent.getStringExtra(PortSipService.EXTRA_CALL_DESCRIPTION);
 			if(status.equals("1"))
-				startActivity(new Intent(getActivity(), chat.wewe.android.activity.MainActivity.class));
+				getActivity().finish();
 			Session session = CallManager.Instance().findSessionBySessionID(sessionId);
 			if (session != null)
 			{

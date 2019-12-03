@@ -1,7 +1,10 @@
 package chat.wewe.android.api;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Patterns;
+import android.widget.Toast;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -484,8 +487,8 @@ public class MethodCallHelper {
         });
   }
 
-  public Task<Void> deleteRooms(final String roomId) {
-    return call("eraseRoom", TIMEOUT_MS, () -> new JSONArray().put(roomId))
+  public Task<Void> deleteRooms(final String roomId,final String UF_ROCKET_ID) {
+    return call("eraseRoom", TIMEOUT_MS, () -> new JSONArray().put(roomId).put(UF_ROCKET_ID))
             .onSuccessTask(CONVERT_TO_JSON_ARRAY)
             .onSuccessTask(task -> {
               final JSONArray roomRoles = task.getResult();
@@ -501,6 +504,13 @@ public class MethodCallHelper {
             });
   }
 
+
+
+  public Task<Void>  hideAndEraseRooms() {
+   return call("hideAndEraseRooms", TIMEOUT_MS, () -> new JSONArray().put(RealmSession.DEFAULT_ID))
+            .onSuccessTask(task -> Task.forResult(null));
+ //   Log.d("XSWQAZ",""+RealmSession.DEFAULT_ID);
+  }
 
   public Task<Void> searchSpotlightUsers(String term) {
     return searchSpotlight(

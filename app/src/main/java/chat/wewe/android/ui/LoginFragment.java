@@ -183,16 +183,16 @@ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSel
         if (CallManager.Instance().regist) {
             mtxStatus.setText(TextUtils.isEmpty(tips)?getString(R.string.online):tips);
             if (callstatic==0)
-         startActivity(new Intent(getActivity(), chat.wewe.android.activity.MainActivity.class));
+         getActivity().finish();
             StatusU = 4;
             callstatic=1;
         } else {
             mtxStatus.setText(TextUtils.isEmpty(tips)?getString(R.string.offline):tips);
-        startActivity(new Intent(getActivity(), chat.wewe.android.activity.MainActivity.class));
+            getActivity().finish();
         }
         if(mtxStatus.getText().equals("No DNS results")){
             callstatic=1;
-            startActivity(new Intent(getActivity(), chat.wewe.android.activity.MainActivity.class));
+            getActivity().finish();
         }
     }
 

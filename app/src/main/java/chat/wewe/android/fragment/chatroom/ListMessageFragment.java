@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,8 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import chat.wewe.android.R;
+import chat.wewe.android.adapter.ExampleAdapterMessage;
 import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.MethodCallHelper;
 import chat.wewe.android.api.UtilsApiChat;
@@ -51,6 +55,11 @@ public class ListMessageFragment extends DialogFragment  {
     private AbsoluteUrlHelper absoluteUrlHelper;
     SharedPreferences SipData;
     BaseApiService mApiServiceChat;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    ArrayList<ExampleItemM> exampleList;
+
     public ListMessageFragment() {
     }
 
@@ -83,11 +92,18 @@ public class ListMessageFragment extends DialogFragment  {
                 new SessionInteractor(new RealmSessionRepository(hostname))
         );
 
+
         View v = inflater.inflate(R.layout.fragment_list_message, null);
+        exampleList = new ArrayList<>();
+
+        mRecyclerView = v.findViewById(R.id.recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mAdapter = new ExampleAdapterMessage(exampleList);
 
         editText = (EditText) v.findViewById(R.id.editText3);
-        name = (TextView) v.findViewById(R.id.name);
-        message = (TextView) v.findViewById(R.id.message);
+
+
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -102,8 +118,7 @@ public class ListMessageFragment extends DialogFragment  {
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
                     listMessage(editText.getText().toString());
-                    name.setText(""+n);
-                   message.setText(""+m);
+
                 }
             }
         });
@@ -117,17 +132,23 @@ public class ListMessageFragment extends DialogFragment  {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         Log.d("DEBUQ", "TT"+response.toString());
-                        if (response.isSuccessful()) {
-                            try {
-                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                                n =  jsonRESULTS.getJSONArray("messages").getJSONObject(0).getString("name");
-                                m = jsonRESULTS.getJSONArray("messages").getJSONObject(0).getString("msg");
-                                Log.d("DEBUQ", "TT"+m);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                        exampleList = new ArrayList<>();
+                        mAdapter = new ExampleAdapterMessage(exampleList);
+                        try {
+
+                            JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                            for (int i = 0; i < jsonRESULTS.getJSONArray("messages").length(); i++) {
+                                Log.d("DEBUQ", "NAME " + jsonRESULTS.getJSONArray("messages").getJSONObject(i).getJSONObject("u").getString("name"));
+                                exampleList.add(new ExampleItemM(jsonRESULTS.getJSONArray("messages").getJSONObject(i).getJSONObject("u").getString("name"), jsonRESULTS.getJSONArray("messages").getJSONObject(i).getString("msg")));
                             }
+
+                            mRecyclerView.setLayoutManager(mLayoutManager);
+                            mRecyclerView.setAdapter(mAdapter);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
 
                     }
