@@ -506,10 +506,12 @@ public class MethodCallHelper {
 
 
 
-  public Task<Void>  hideAndEraseRooms() {
-   return call("hideAndEraseRooms", TIMEOUT_MS, () -> new JSONArray().put(RealmSession.DEFAULT_ID))
+  public Task<Void>  hideAndEraseRooms(final String Id) {
+    Log.d("XSWQAZ",""+RealmSession.ID);
+   return call("hideAndEraseRooms", TIMEOUT_MS, () -> new JSONArray().put(Id))
             .onSuccessTask(task -> Task.forResult(null));
- //   Log.d("XSWQAZ",""+RealmSession.DEFAULT_ID);
+
+
   }
 
   public Task<Void> searchSpotlightUsers(String term) {

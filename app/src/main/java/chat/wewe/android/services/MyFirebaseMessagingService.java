@@ -15,7 +15,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 
 import static android.view.View.VISIBLE;
-import static chat.wewe.android.activity.MainActivity.activity_main_container;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgingService";
@@ -64,27 +63,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void handleData(Map<String, String> data) {
-        String title = data.get(TITLE);
-        String message = data.get(MESSAGE);
-        String iconUrl = data.get(IMAGE);
-        String action = data.get(ACTION);
-        String actionDestination = data.get(ACTION_DESTINATION);
-        NotificationVO notificationVO = new NotificationVO();
-        notificationVO.setTitle(title);
-        notificationVO.setMessage(message);
-        notificationVO.setIconUrl(iconUrl);
-        notificationVO.setAction(action);
+
+        if(MainActivity.active) {
+            String title = data.get(TITLE);
+            String message = data.get(MESSAGE);
+            String iconUrl = data.get(IMAGE);
+            String action = data.get(ACTION);
+            String actionDestination = data.get(ACTION_DESTINATION);
+            NotificationVO notificationVO = new NotificationVO();
+            notificationVO.setTitle(title);
+            notificationVO.setMessage(message);
+            notificationVO.setIconUrl(iconUrl);
+            notificationVO.setAction(action);
 
 
-        notificationVO.setActionDestination(actionDestination);
+            notificationVO.setActionDestination(actionDestination);
 
-        Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
 
-        NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
+            NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
 
-        notificationUtils.displayNotification(notificationVO, resultIntent);
+            notificationUtils.displayNotification(notificationVO, resultIntent);
 
-
+        }
     }
 
 

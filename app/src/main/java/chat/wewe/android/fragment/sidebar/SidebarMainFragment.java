@@ -476,7 +476,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         public void onClick(DialogInterface dialog, int which) {
           switch (which){
             case DialogInterface.BUTTON_POSITIVE:
-              methodCallHelper.hideAndEraseRooms();
+              methodCallHelper.hideAndEraseRooms(SipData.getString("ID_RC", ""));
               break;
 
             case DialogInterface.BUTTON_NEGATIVE:
@@ -543,7 +543,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
      // startActivity(new Intent(getActivity(),Intro.class));
      // finish();
       callstatic=0;
-        this.getActivity().finish();
+       //   this.getActivity().finish();
     });
   }
 

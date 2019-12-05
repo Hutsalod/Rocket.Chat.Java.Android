@@ -164,6 +164,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   private static final int REQUEST_CONTACT = 1;
   public static int setnupad=0,setContact=0;
   private List<ContactModel> contactModelList = new ArrayList<>();
+
   BaseApiService mApiServiceChat,mApiService;
   TextInputEditText EditTextName;
   Intent callInt;
@@ -175,6 +176,20 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   RecyclerView recyclerView;
   String[] mCats;
   ArrayList<String> mCatsList;
+
+  public static boolean active = false;
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    active = false;
+  }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+    active = true;
+  }
 
 
   @Override
