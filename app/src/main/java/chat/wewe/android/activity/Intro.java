@@ -18,12 +18,15 @@ import chat.wewe.android.R;
 import chat.wewe.android.Success;
 import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.UtilsApiChat;
+import chat.wewe.android.services.MyFirebaseMessagingService;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Intro extends AppCompatActivity {
+
+
     private static final String TAG = "Intro";
     private CountDownTimer countDownTimer;
     public static String UF_SIP_NUMBER,UF_SIP_PASSWORD,TOKEN_RC,TOKENWE;
@@ -32,6 +35,8 @@ public class Intro extends AppCompatActivity {
     SharedPreferences SipData;
     BaseApiService mApiServiceChat;
     public static String[]ListGetStatus = new String[1];
+    public int tabIndex = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +50,14 @@ public class Intro extends AppCompatActivity {
         ed.commit();
         UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", null);
         TOKENWE = SipData.getString("TOKENWE", null);
+
+        Intent intent = getIntent();
+        tabIndex = intent.getIntExtra(MyFirebaseMessagingService.EXTRA_TAB_INDEX, 0);
+
+        if (tabIndex==1)
+            finish();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
 
             countDownTimer = new CountDownTimer(2000, 1000) {
                 @Override

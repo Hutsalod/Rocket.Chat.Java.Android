@@ -24,6 +24,7 @@ import com.portsip.PortSIPVideoRenderer;
 import com.portsip.PortSipEnumDefine;
 import com.portsip.PortSipSdk;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import chat.wewe.android.R;
@@ -49,6 +50,7 @@ public class NumpadFragment extends BaseFragment implements AdapterView.OnItemSe
     CheckBox cbSendVideo, cbRecvVideo, cbConference, cbSendSdp;
     RocketChatApplication application;
     MainActivity activity;
+    HashMap<String, String> headers = new HashMap<String, String>();
     private PortSIPVideoRenderer remoteRenderScreen = null;
     private PortSIPVideoRenderer localRenderScreen = null;
 
@@ -92,6 +94,9 @@ private int st = 0;
         SetTableItemClickListener(dtmfPad);
         onHiddenChanged(false);
         etSipNum.setText(getName);
+
+
+        headers.put("guid",    "8D31B96A-02AC-4531-976F-A455686F8FE2");
       if(getName!=null)
 
        if(callstatic==1 && setnupad==1) {
@@ -121,6 +126,10 @@ private int st = 0;
                 showTips("Call failure");
                 return;
             }
+
+           for (HashMap.Entry<String, String> entry : headers.entrySet()) {
+               portSipSdk.addSipMessageHeader(-1, "INVITE", 1, entry.getKey(), entry.getValue());
+           }
             //default send video
             portSipSdk.sendVideo(sessionId, true);
 
@@ -160,6 +169,10 @@ private int st = 0;
             if (sessionId <= 0) {
                 showTips("Call failure");
                 return;
+            }
+
+            for (HashMap.Entry<String, String> entry : headers.entrySet()) {
+                portSipSdk.addSipMessageHeader(-1, "INVITE", 1, entry.getKey(), entry.getValue());
             }
             //default send video
             portSipSdk.sendVideo(sessionId, true);

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -56,7 +57,7 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
   private View waitingView;
   private TextView txtUsername;
   private TextView txtPasswd;
-  private String model;
+  private String idmodel,model;
   public static  SwitchCompat switchServer;
   public static String TOKENwe,UF_SIP_SERVER,UF_SIP_LOGIN,UF_ACCESS_OTH_DEVICE,INNER_GROUP,UF_ROCKET_SERVER;
   ProgressDialog loading;
@@ -79,11 +80,15 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
         new MethodCallHelper(getContext(), hostname)
     );
 
+    idmodel = Settings.Secure.getString(getContext().getContentResolver(),
+            Settings.Secure.ANDROID_ID);
     model = Build.MODEL;
 
     mApiService = UtilsApi.getAPIService(); // meng-init yang ada di package apihelper
     SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
 
+
+    Log.d("model",""+FirebaseInstanceId.getInstance().getToken());
   }
 
   @Override
@@ -195,7 +200,7 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
   }
 
   private void loginRequest(){
-    mApiService.loginRequest(txtUsername.getText().toString(), txtPasswd.getText().toString(),model)
+    mApiService.loginRequest(txtUsername.getText().toString(), txtPasswd.getText().toString(),idmodel,model,FirebaseInstanceId.getInstance().getToken())
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

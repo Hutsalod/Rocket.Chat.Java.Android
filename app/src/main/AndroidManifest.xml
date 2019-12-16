@@ -56,11 +56,16 @@
         <activity
             android:name=".ui.MainActivity"
             android:launchMode="singleInstance"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:turnScreenOn="true"
+            android:showWhenLocked="true"/>
         <activity
             android:name=".ui.IncomingActivity"
             android:launchMode="singleInstance"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:turnScreenOn="true"
+            android:showWhenLocked="true"
+            />
 
         <service android:name=".services.MyFirebaseInstanceIdService">
             <intent-filter>
@@ -75,7 +80,7 @@
 
         <service android:name=".service.RocketChatService" />
 
-        <service android:name=".service.PortSipService" /> <!-- [START firebase_service] -->
+        <service android:name=".service.PortSipService" />
 
         <service
             android:name=".service.MyFirebaseMessagingService">

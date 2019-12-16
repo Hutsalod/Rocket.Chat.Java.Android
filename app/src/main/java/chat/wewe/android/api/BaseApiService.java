@@ -35,7 +35,9 @@ public interface BaseApiService {
     @POST("rest_api/auth/")
     public Call<ResponseBody> loginRequest(@Field("USER_LOGIN") String email,
                                            @Field("USER_PASSWORD") String password,
-                                           @Field("DEVID") String devid);
+                                           @Field("DEVID") String devid,
+                                           @Field("DEVNAME") String devidname,
+                                           @Field("PUSH") String push);
 
     // Fungsi ini untuk memanggil API http://10.0.2.2/mahasiswa/register.php
     @FormUrlEncoded

@@ -52,13 +52,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         filter.addAction(PortSipService.CALL_CHANGE_ACTION);
         filter.addAction(PortSipService.PRESENCE_CHANGE_ACTION);
         registerReceiver(receiver, filter);
-
+        callstatic=1;
 
         menuGroup = findViewById(R.id.tab_menu);
         menuGroup.setOnCheckedChangeListener(this);
-        if(callstatic==0) {
-            ((RadioButton)menuGroup.getChildAt(0)).setChecked(true);
-        }else{
+        if(callstatic==1) {
             ((RadioButton)menuGroup.getChildAt(1)).setChecked(true);
             countDownTimer = new CountDownTimer(1000, 1000) {
                 @Override

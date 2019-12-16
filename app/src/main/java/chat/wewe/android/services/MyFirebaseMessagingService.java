@@ -7,6 +7,7 @@ import android.view.View;
 import chat.wewe.android.activity.Intro;
 import chat.wewe.android.activity.MainActivity;
 import chat.wewe.android.fragment.sidebar.dialog.AddChannelDialogFragment;
+import chat.wewe.android.service.PortSipService;
 import chat.wewe.android.utils.NotificationUtils;
 import chat.wewe.android.vo.NotificationVO;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -15,6 +16,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 
 import static android.view.View.VISIBLE;
+import static chat.wewe.android.service.PortSipService.ACTION_PUSH_MESSAGE;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgingService";
@@ -25,6 +27,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String ACTION = "action";
     private static final String DATA = "notification";
     private static final String ACTION_DESTINATION = "action_destination";
+    public static final String EXTRA_TAB_INDEX = "TAB_INDEX";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -49,6 +52,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
+
+
     private void handleNotification(RemoteMessage.Notification RemoteMsgNotification) {
         String message = RemoteMsgNotification.getBody();
         String title = RemoteMsgNotification.getTitle();
@@ -64,12 +69,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void handleData(Map<String, String> data) {
 
-        if(MainActivity.active) {
+    //    if(MainActivity.active) {
+
+
+
             String title = data.get(TITLE);
             String message = data.get(MESSAGE);
             String iconUrl = data.get(IMAGE);
             String action = data.get(ACTION);
             String actionDestination = data.get(ACTION_DESTINATION);
+
+
+
             NotificationVO notificationVO = new NotificationVO();
             notificationVO.setTitle(title);
             notificationVO.setMessage(message);
@@ -85,7 +96,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             notificationUtils.displayNotification(notificationVO, resultIntent);
 
-        }
+    /*   if(message.equals("Видеозвонок") || message.equals("Аудеозвонок")) {
+         //   startActivity(new Intent(getApplicationContext(), Intro.class));
+            Intent srvIntent = new Intent(this, Intro.class);
+            srvIntent.putExtra(this.EXTRA_TAB_INDEX, 1);
+            srvIntent.addCategory(Intent. CATEGORY_LAUNCHER ) ;
+            srvIntent.setAction(Intent. ACTION_MAIN ) ;
+            srvIntent.setFlags(Intent. FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_SINGLE_TOP ) ;
+
+            srvIntent.setAction(ACTION_PUSH_MESSAGE);
+            startActivity(srvIntent);
+
+
+
+      }*/
     }
 
 

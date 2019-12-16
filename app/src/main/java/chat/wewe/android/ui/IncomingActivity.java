@@ -1,17 +1,25 @@
 package chat.wewe.android.ui;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.portsip.PortSipErrorcode;
 import chat.wewe.android.R;
 import chat.wewe.android.RocketChatApplication;
+import chat.wewe.android.activity.MyAdmin;
 import chat.wewe.android.receiver.PortMessageReceiver;
 import chat.wewe.android.service.PortSipService;
 import chat.wewe.android.util.CallManager;
@@ -26,11 +34,30 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
     Button btnVideo;
     long mSessionid;
     boolean exit = false;
+
+    static final int RESULT_ENABLE = 1;
+
+    DevicePolicyManager deviceManger;
+    ActivityManager activityManager;
+    ComponentName compName;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        deviceManger = (DevicePolicyManager)getSystemService(
+                Context.DEVICE_POLICY_SERVICE);
+        activityManager = (ActivityManager)getSystemService(
+                Context.ACTIVITY_SERVICE);
+        compName = new ComponentName(this, MyAdmin.class);
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         setContentView(R.layout.incomingview);
+
+
         tips = findViewById(R.id.sessiontips);
         btnVideo = findViewById(R.id.answer_video);
         receiver = new PortMessageReceiver();
@@ -54,6 +81,20 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
         findViewById(R.id.hangup_call).setOnClickListener(this);
 		findViewById(R.id.answer_audio).setOnClickListener(this);
         btnVideo.setOnClickListener(this);
+
+        boolean active = deviceManger.isAdminActive(compName);
+        if (active) {
+            deviceManger.lockNow();
+        }
+        Intent intents = new Intent(DevicePolicyManager
+                .ACTION_ADD_DEVICE_ADMIN);
+        intents.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                compName);
+        intents.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                compName);
+        intents.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                "Additional text explaining why this needs to be added.");
+        startActivityForResult(intents, RESULT_ENABLE);
     }
 
     @Override
@@ -172,5 +213,16 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
             btnVideo.setVisibility(View.GONE);
         }
 	}
-	
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RESULT_ENABLE:
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.i("DeviceAdminSample", "Admin enabled!");
+                } else {
+                    Log.i("DeviceAdminSample", "Admin enable FAILED!");
+                }
+                return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

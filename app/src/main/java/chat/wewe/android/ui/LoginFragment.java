@@ -183,15 +183,15 @@ public class LoginFragment extends BaseFragment implements AdapterView.OnItemSel
         if (CallManager.Instance().regist) {
             mtxStatus.setText(TextUtils.isEmpty(tips)?getString(R.string.online):tips);
             if (callstatic==0)
-         getActivity().finish();
+       //  getActivity().finish();
             StatusU = 4;
             callstatic=1;
         } else {
             mtxStatus.setText(TextUtils.isEmpty(tips)?getString(R.string.offline):tips);
-            getActivity().finish();
+      //      getActivity().finish();
         }
         if(mtxStatus.getText().equals("No DNS results")){
-            callstatic=1;
+            callstatic=0;
             getActivity().finish();
         }
     }
