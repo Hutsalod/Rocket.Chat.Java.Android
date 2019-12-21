@@ -22,13 +22,13 @@
 
         <string name = "start_of_conversation"> Starten Sie eine Unterhaltung </string>
         <string name = "users_of_room_title"> Teilnehmerliste </string>
-        <string name = "fmt_room_user_count"> Gesamt:%, d Benutzer </string>
+        <string name = "fmt_room_user_count"> Gesamt: %,d Benutzer </string>
         <string name = "sending"> Senden ... </string>
         <string name = "failed_to_sync"> Fehler beim Senden! </string>
         <string name = "resend"> Senden </string>
         <string name = "discard"> Löschen </string>
 
-        <string name = "fmt_dialog_view_latest_message_title"> Neue% d Nachrichten </string>
+        <string name = "fmt_dialog_view_latest_message_title"> New %d messages</string>
         <string name = "dialog_view_latest_message_action"> Ansicht </string>
 
         <string name = "file_uploading_title"> Wird geladen ... </string>
@@ -55,7 +55,7 @@
         <string name = "input_hostname_invalid_server_message"> Ungültige Serverversion </string>
         <string name = "connection_error_try_later"> Es liegt ein Verbindungsfehler vor. Bitte versuchen Sie es später noch einmal. </string>
 
-        <string name = "version_info_text"> Version:% s </string>
+        <string name = "version_info_text"> Version: %s</string>
         <string name = "two_factor_authentication_title"> Zwei-Faktor-Authentifizierung </string>
         <string name = "open_your_authentication_app_and_enter_the_code"> Öffnen Sie die Authentifizierungsanwendung und geben Sie den Code ein </string>
         <string name = "two_factor_code"> Zwei-Faktor-Code </string>
@@ -267,9 +267,9 @@ without your confirmation.</string>
 
         <string name = "language_2"> Englisch </string>
 
-        <string name = "language_3"> Englisch </string>
+        <string name="language_3">Руский</string>
 
-        <string name = "language_4"> Ukrainisch </string>
+        <string name="language_4">Український</string>
 
         <string name = "subscription_period_prompt"> Wählen Sie einen Abonnementzeitraum aus </string>
 
@@ -317,5 +317,8 @@ without your confirmation.</string>
             <item> 720P </item>
             <item> 1080P </item>
         </string-array>
+    <string name="search">Suche</string>
 
+    <string name="menu_0">Meldungen</string>
+    <string name="open_key">Öffnen Sie die Tastatur</string>.
 </resources>

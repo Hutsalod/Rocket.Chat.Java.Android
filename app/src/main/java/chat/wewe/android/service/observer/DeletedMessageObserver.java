@@ -1,6 +1,7 @@
 package chat.wewe.android.service.observer;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -54,7 +55,6 @@ public class DeletedMessageObserver extends AbstractModelObserver<RealmMessage> 
         if (results.isEmpty()) {
             return;
         }
-
         for(RealmMessage message : results) {
             final String messageId = message.getId();
 

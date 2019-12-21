@@ -88,7 +88,7 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
     SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
 
 
-    Log.d("model",""+FirebaseInstanceId.getInstance().getToken());
+    Log.d("model",""+FirebaseInstanceId.getInstance().getToken()+ " "+model+" "+idmodel);
   }
 
   @Override

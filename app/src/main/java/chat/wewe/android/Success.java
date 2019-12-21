@@ -137,8 +137,8 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         };
         SpannableString ss = new SpannableString(textView.getText().toString());
@@ -149,6 +149,7 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
     }
 
     public void exit(View view) {
+        finish();
         startActivity(new Intent(getApplication(), MainActivity.class));
     }
 

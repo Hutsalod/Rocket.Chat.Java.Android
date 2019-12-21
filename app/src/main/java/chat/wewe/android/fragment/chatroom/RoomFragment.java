@@ -335,6 +335,7 @@ public class RoomFragment extends AbstractChatRoomFragment implements
   public boolean onItemLongClick(PairedMessage pairedMessage) {
     MessageOptionsDialogFragment messageOptionsDialogFragment = MessageOptionsDialogFragment
         .create(pairedMessage.target);
+
     messageOptionsDialogFragment.setOnMessageOptionSelectedListener(message -> {
       messageOptionsDialogFragment.dismiss();
       onEditMessage(message);
@@ -733,6 +734,7 @@ Log.d("MSG1","MSGLOG");
 
   public void onDeleteMessage(Message message) {
     presenter.deleteMessage(message);
+    methodCallHelper.deleteMessage(message.getId());
   }
 
   public void onCopy(Message message) {

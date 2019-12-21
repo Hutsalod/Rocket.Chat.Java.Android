@@ -175,8 +175,9 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 						portSipLib.hangUp(currentLine.sessionID);
 						break;
 				}
-				//startActivity(Home);
 				getActivity().finish();
+				//startActivity(Home);
+
 				currentLine.Reset();
 
 

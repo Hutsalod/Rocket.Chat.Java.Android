@@ -81,6 +81,10 @@ public interface BaseApiService {
     Call<ResponseBody>getBlacklistAdd(@Header("Authorization-Token") String Token,@Body Map<String, Object> params);
 
     @Headers({"Content-Type: application/json"})
+    @POST("rest/call/voip/")
+    Call<ResponseBody>postCallvoip(@Header("Authorization-Token") String Token,@Body Map<String, Object> params);
+
+    @Headers({"Content-Type: application/json"})
     @POST("rest/blacklist/delete/")
     Call<JsonObject>getBlacklistDell(@Header("Authorization-Token") String Token,@Body Map<String, Object> params);
 

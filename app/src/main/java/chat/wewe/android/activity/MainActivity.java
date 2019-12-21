@@ -1,6 +1,7 @@
 package chat.wewe.android.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +40,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -72,7 +75,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import bolts.Task;
@@ -81,6 +86,7 @@ import chat.wewe.android.R;
 import chat.wewe.android.RocketChatCache;
 import chat.wewe.android.Success;
 import chat.wewe.android.api.BaseApiService;
+import chat.wewe.android.api.JoinWeWe;
 import chat.wewe.android.api.MethodCallHelper;
 import chat.wewe.android.api.UtilsApi;
 import chat.wewe.android.api.UtilsApiChat;
@@ -242,6 +248,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
 
 
+
     statusTicker = new StatusTicker();
     setupSidebar();
     setDataToAdapter();
@@ -253,16 +260,20 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
         if (subscription == true) {
           callSet = false;
-          startActivity(callInt);
           setnupad = 1;
+          startActivity(callInt);
+
+
         }else{//INNER_GROUP Для теста
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
 
           }else {
             callSet = false;
-            startActivity(callInt);
             setnupad = 1;
+            startActivity(callInt);
+
+
           }
         }
       }
@@ -273,16 +284,20 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       public void onClick(View view) {
         if (subscription == true) {
           callSet = true;
-          startActivity(callInt);
           setnupad = 2;
+          startActivity(callInt);
+
+
         }else{//INNER_GROUP Для теста
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
 
           }else {
             callSet = true;
-            startActivity(callInt);
             setnupad = 2;
+            startActivity(callInt);
+
+
           }}
       }
     });
@@ -1136,6 +1151,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   }
 
 
+
+
   private void UserStatus(){
     switch (StatusU) {
       case 0:statusUsers.setImageResource(R.drawable.s000);
@@ -1186,5 +1203,18 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
     }
 
+  }
+
+
+
+  @Override
+  public boolean dispatchKeyEvent(KeyEvent event) {
+    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+      switch (event.getKeyCode()) {
+        case KeyEvent.KEYCODE_BACK:
+          return true;
+      }
+    }
+    return super.dispatchKeyEvent(event);
   }
 }

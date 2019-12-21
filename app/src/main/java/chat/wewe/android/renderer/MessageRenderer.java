@@ -2,8 +2,11 @@ package chat.wewe.android.renderer;
 
 import android.content.Context;
 import android.support.graphics.drawable.VectorDrawableCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.util.List;
 import chat.wewe.android.R;
@@ -93,11 +96,27 @@ public class MessageRenderer extends AbstractRenderer<Message> {
    * show body in RocketChatMessageLayout.
    */
   public MessageRenderer bodyInto(RocketChatMessageLayout rocketChatMessageLayout) {
+
     if (!shouldHandle(rocketChatMessageLayout)) {
       return this;
     }
 
-    rocketChatMessageLayout.setText(object.getMessage());
+    String json = object.getMessage();
+
+    try {
+
+      JSONObject obj = new JSONObject(json);
+
+      rocketChatMessageLayout.setText("*"+obj.getString("fromId")+"*");
+
+    } catch (Throwable t) {
+      rocketChatMessageLayout.setText(object.getMessage());
+    }
+
+    Runnable task = () -> {
+      String threadName = Thread.currentThread().getName();
+      System.out.println("Hello " + threadName);
+    };
 
     return this;
   }

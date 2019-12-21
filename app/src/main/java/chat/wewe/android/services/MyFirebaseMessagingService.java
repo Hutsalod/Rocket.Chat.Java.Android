@@ -1,6 +1,9 @@
 package chat.wewe.android.services;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
@@ -16,6 +19,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 
 import static android.view.View.VISIBLE;
+import static chat.wewe.android.activity.Intro.UF_SIP_NUMBER;
+import static chat.wewe.android.activity.Intro.UF_SIP_PASSWORD;
 import static chat.wewe.android.service.PortSipService.ACTION_PUSH_MESSAGE;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -27,7 +32,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String ACTION = "action";
     private static final String DATA = "notification";
     private static final String ACTION_DESTINATION = "action_destination";
-    public static final String EXTRA_TAB_INDEX = "TAB_INDEX";
+
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -96,21 +101,37 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             notificationUtils.displayNotification(notificationVO, resultIntent);
 
-    /*   if(message.equals("Видеозвонок") || message.equals("Аудеозвонок")) {
+      if(message.equals("Видеозвонок") || message.equals("Аудеозвонок")) {
          //   startActivity(new Intent(getApplicationContext(), Intro.class));
-            Intent srvIntent = new Intent(this, Intro.class);
-            srvIntent.putExtra(this.EXTRA_TAB_INDEX, 1);
-            srvIntent.addCategory(Intent. CATEGORY_LAUNCHER ) ;
-            srvIntent.setAction(Intent. ACTION_MAIN ) ;
-            srvIntent.setFlags(Intent. FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_SINGLE_TOP ) ;
+          SaveUserInfo();
+          Intent onLineIntent = new Intent(getBaseContext(), PortSipService.class);
+          onLineIntent.setAction(PortSipService.ACTION_SIP_REGIEST);
 
-            srvIntent.setAction(ACTION_PUSH_MESSAGE);
-            startActivity(srvIntent);
-
-
-
-      }*/
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+              getBaseContext().startForegroundService(onLineIntent);
+          }else{
+              getBaseContext().startService(onLineIntent);
+          }
+      }
     }
+    public void SaveUserInfo() {
+        SharedPreferences SipData = getSharedPreferences("SIP", MODE_PRIVATE);
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplication()).edit();
+        UF_SIP_NUMBER = SipData.getString("UF_SIP_NUMBER", null);
+        UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", null);
+        String UF_SIP_SERVER = SipData.getString("UF_SIP_SERVER", "sip.weltwelle.com");
+        editor.putString(PortSipService.USER_NAME, UF_SIP_NUMBER);
+        editor.putString(PortSipService.USER_PWD, UF_SIP_PASSWORD);
+        editor.putString(PortSipService.SVR_HOST, UF_SIP_SERVER);
+        editor.putString(PortSipService.SVR_PORT, "5061");
 
+        editor.putString(PortSipService.USER_DISPALYNAME, null);
+        editor.putString(PortSipService.USER_DOMAIN, null);
+        editor.putString(PortSipService.USER_AUTHNAME, null);
+        editor.putString(PortSipService.STUN_HOST, null);
+        editor.putString(PortSipService.STUN_PORT, "3478");
+
+        editor.commit();
+    }
 
 }

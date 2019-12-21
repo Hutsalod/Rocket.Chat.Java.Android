@@ -3,6 +3,7 @@ package chat.wewe.android.fragment.chatroom;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
+import android.util.Log;
 
 import com.fernandocejas.arrow.optional.Optional;
 import io.reactivex.Single;

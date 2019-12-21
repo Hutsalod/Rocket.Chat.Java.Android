@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RadioButton;
@@ -160,6 +161,19 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO},
                     REQ_DANGERS_PERMISSION);
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_BACK:
+                    return true;
+            }
+        }
+
+        return super.dispatchKeyEvent(event);
     }
 
 }

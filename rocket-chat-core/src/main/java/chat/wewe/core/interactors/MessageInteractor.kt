@@ -76,7 +76,9 @@ class MessageInteractor(private val messageRepository: MessageRepository,
     }
 
     fun delete(message: Message): Single<Boolean> {
+
         return messageRepository.delete(message)
+
     }
 
     fun unreadCountFor(room: Room, user: User): Single<Int> {

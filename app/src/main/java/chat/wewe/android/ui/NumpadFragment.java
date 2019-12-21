@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import chat.wewe.android.R;
 import chat.wewe.android.RocketChatApplication;
+import chat.wewe.android.api.JoinWeWe;
 import chat.wewe.android.receiver.PortMessageReceiver;
 import chat.wewe.android.service.PortSipService;
 import chat.wewe.android.util.CallManager;
@@ -41,6 +42,7 @@ import static chat.wewe.android.activity.Intro.callSet;
 import static chat.wewe.android.activity.Intro.callstatic;
 import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
 import static chat.wewe.android.activity.MainActivity.setnupad;
+import static org.webrtc.ContextUtils.getApplicationContext;
 
 public class NumpadFragment extends BaseFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener,
         CompoundButton.OnCheckedChangeListener ,PortMessageReceiver.BroadcastListener{
@@ -100,6 +102,7 @@ private int st = 0;
       if(getName!=null)
 
        if(callstatic==1 && setnupad==1) {
+           JoinWeWe.postCallvoip(getApplicationContext(),getName);
             if (application.mEngine == null)
                 return;
             PortSipSdk portSipSdk = application.mEngine;
@@ -144,6 +147,7 @@ private int st = 0;
            callCout=1;
        }
         if(callstatic==1 && setnupad==2) {
+            JoinWeWe.postCallvoip(getApplicationContext(),getName);
             if (application.mEngine == null)
                 return;
             PortSipSdk portSipSdk = application.mEngine;

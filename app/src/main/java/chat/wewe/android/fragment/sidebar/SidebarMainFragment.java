@@ -122,7 +122,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   public static RoomListAdapter adapter;
   SwipeController swipeController = null;
   private String hostname;
-  SharedPreferences SipData;
+  SharedPreferences SipData,sPrefs,sPref;
   public static MethodCallHelper methodCallHelper;
   private RealmSpotlightRoomRepository realmSpotlightRoomRepository;
   private SearchView searchView;
@@ -190,6 +190,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
     SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
     ed = SipData.edit();
+    sPrefs = getActivity().getSharedPreferences("pin", MODE_PRIVATE);
+    sPref = getActivity().getSharedPreferences("Setting", MODE_PRIVATE);
 
 
     bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.delete);
@@ -467,6 +469,33 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       blaclistScrol.setVisibility(View.GONE);
     });
 
+    rootView.findViewById(R.id.languageru).setOnClickListener(view -> {
+      SharedPreferences.Editor ed = SipData.edit();
+      ed.putString("LANG_APP", "RU");
+      ed.commit();
+      this.getActivity().finish();
+      startActivity(new Intent(getActivity(), Intro.class));
+    });
+
+    rootView.findViewById(R.id.languageua).setOnClickListener(view -> {
+      SharedPreferences.Editor ed = SipData.edit();
+      ed.putString("LANG_APP", "UK");
+      ed.commit();
+      this.getActivity().finish();
+      startActivity(new Intent(getActivity(), Intro.class));
+    });
+
+    rootView.findViewById(R.id.languageen).setOnClickListener(view -> {
+    });
+
+    rootView.findViewById(R.id.languagede).setOnClickListener(view -> {
+      SharedPreferences.Editor ed = SipData.edit();
+      ed.putString("LANG_APP", "DE");
+      ed.commit();
+      this.getActivity().finish();
+      startActivity(new Intent(getActivity(), Intro.class));
+
+    });
 
     rootView.findViewById(R.id.deleye_mss).setOnClickListener(view -> {
 
@@ -489,13 +518,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
       builder.setMessage(getString(R.string.delet_message)+" ?").setPositiveButton("Yes", dialogClickListener)
               .setNegativeButton("No", dialogClickListener).show();
-    });
-    rootView.findViewById(R.id.languagede).setOnClickListener(view -> {
-      Locale locale = new Locale("en");
-      Locale.setDefault(locale);
-      Configuration configuration = new Configuration();
-      configuration.locale = locale;
-      getActivity().getBaseContext().getResources().updateConfiguration(configuration, null);
     });
   }
 
@@ -527,23 +549,25 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
   private void setupLogoutButton() {
     rootView.findViewById(R.id.btn_logout).setOnClickListener(view -> {
-    /*    Intent offLineIntent = new Intent(getActivity(), PortSipService.class);
+   Intent offLineIntent = new Intent(getActivity(), PortSipService.class);
       offLineIntent.setAction(PortSipService.ACTION_SIP_UNREGIEST);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         getActivity().startForegroundService(offLineIntent);
       }else{
         getActivity().startService(offLineIntent);
-      }*/
-      ed.putString("UF_SIP_NUMBER", "");
-      ed.putString("UF_SIP_PASSWORD", "");
-      ed.commit();
+      }
+
+      ed.apply();
+      ed.clear();
+      sPrefs.edit().apply();
+      sPrefs.edit().clear();
+      sPref.edit().apply();
+      sPref.edit().clear();
+      callstatic=0;
+
       presenter.onLogout();
       closeUserActionContainer();
-
-     // startActivity(new Intent(getActivity(),Intro.class));
-     // finish();
-      callstatic=0;
-       //   this.getActivity().finish();
+       this.getActivity().finish();
     });
   }
 

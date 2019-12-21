@@ -320,6 +320,7 @@ without your confirmation.</string>
         <item>720P</item>
         <item>1080P</item>
     </string-array>
-
-
+    <string name="search">Поиск</string>
+    <string name="menu_0">Сообщения</string>
+    <string name="open_key">Открыть клавиатуру</string>
 </resources>

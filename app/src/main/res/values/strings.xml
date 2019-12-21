@@ -60,6 +60,7 @@
     <string name="open_your_authentication_app_and_enter_the_code">Откройте приложение аутентификации и введите код</string>
     <string name="two_factor_code">Двухфакторный код</string>
     <string name="navigation_search_rooms">Поиск комнат</string>
+    <string name="search">Поиск</string>
     <string name="edit_message">Редактировать сообщение</string>
     <string name="delet_message">Удалить сообщение</string>
     <string name="copy_message">Копировать сообщение</string>
@@ -282,7 +283,6 @@ without your confirmation.</string>
 
     <string name="subscription_period_monthly">Месяць $3.99</string>
 
-
     <string name="subscription_period_threemonth">3 Месяца $14.99</string>
     <string name="subscription_period_sixmonth">6 Месяцов $28.99</string>
     <string name="subscription_period_yearly">За год $59.99</string>
@@ -321,6 +321,6 @@ without your confirmation.</string>
         <item>720P</item>
         <item>1080P</item>
     </string-array>
-
-
+    <string name="menu_0">Сообщения</string>
+    <string name="open_key">Открыть клавиатуру</string>
 </resources>

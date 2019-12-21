@@ -1,6 +1,8 @@
 package chat.wewe.android.service.observer;
 
 import android.content.Context;
+import android.util.Log;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import org.json.JSONObject;

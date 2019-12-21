@@ -409,6 +409,21 @@ public class MethodCallHelper {
     }
   }
 
+  public Task<Void> usersMessage(String success,String type,String fromUserId,String rid,String toUserId) {
+    try {
+      JSONObject messageJson = new JSONObject()
+              .put("success", success)
+              .put("type", type)
+              .put("fromUserId", fromUserId)
+              .put("rid", rid)
+              .put("toUserId", toUserId);
+
+      return usersMessage(messageJson);
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
   /**
    * Send message object.
    */
@@ -418,15 +433,24 @@ public class MethodCallHelper {
   }
 
   private Task<Void> updateMessage(final JSONObject messageJson) {
+
     return call("updateMessage", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
         .onSuccessTask(task -> Task.forResult(null));
   }
 
 
   private Task<Void> deleteMessage(final JSONObject messageJson) {
+
     return call("deleteMessage", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
             .onSuccessTask(task -> Task.forResult(null));
   }
+
+  private Task<Void> usersMessage(final JSONObject messageJson) {
+
+    return call("sendInfoCallMessage", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
 
   /**
    * mark all messages are read in the room.

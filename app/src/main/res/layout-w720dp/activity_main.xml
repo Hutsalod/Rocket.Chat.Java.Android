@@ -82,7 +82,7 @@
                 android:layout_marginRight="32dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Звонки"
+                android:text="@string/menu_2"
                 android:textColor="#1B1B1B"
                 android:textSize="14sp" />
 
@@ -361,7 +361,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="10dip"
                     android:drawableLeft="@drawable/ic_kayboard"
-                    android:text="Открыть клавиатуру"
+                    android:text="@string/open_key"
                     android:textSize="16sp"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
@@ -429,7 +429,7 @@
                     android:onClick="showPopup"
                     android:layout_marginRight="@dimen/margin_8"
                     android:gravity="center"
-                    android:text="Сообщения"
+                    android:text="@string/menu_0"
                     android:textColor="#1B1B1B"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -504,7 +504,7 @@
                 android:completionThreshold="3"
                 android:drawableLeft="@drawable/ic_searchs"
                 android:drawablePadding="10dip"
-                android:hint="Поиск"
+                android:hint="@string/search"
                 android:inputType="textPersonName"
                 android:padding="10dp"
                 android:textColor="#909092"
@@ -583,7 +583,7 @@
                 android:layout_marginRight="32dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Контакты"
+                android:text="@string/menu_3"
                 android:textColor="#1B1B1B"
                 android:textSize="14sp" />
 
@@ -605,7 +605,7 @@
             android:background="@null"
             android:completionThreshold="3"
             android:drawableLeft="@drawable/ic_searchs"
-            android:hint="Поиск"
+            android:hint="@string/search"
             android:inputType="textPersonName"
             android:padding="10dp"
             android:textSize="14sp"
@@ -657,7 +657,7 @@
                 android:layout_marginRight="32dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Настройки"
+                android:text="@string/menu_4"
                 android:textColor="#1B1B1B"
                 android:textSize="14sp" />
 

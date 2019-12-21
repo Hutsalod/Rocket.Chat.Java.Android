@@ -43,18 +43,16 @@ public class PrivaryPolicy extends AppCompatActivity {
         SipData = getSharedPreferences("SIP", MODE_PRIVATE);
         sPref = getSharedPreferences("Setting", MODE_PRIVATE);
         sPrefs = getSharedPreferences("pin", MODE_PRIVATE);
-        SharedPreferences.Editor eds =  sPrefs.edit();
         code = sPrefs.getString("code", "");
-        eds.commit();
-        SharedPreferences.Editor ed =  sPref.edit();
-        ed.commit();
         if(sPref.getInt("privary", '0')=='1'){
             if(code=="") {
+                finish();
                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-             finish();
+
             } else{
+                finish();
            startActivity(new Intent(getApplicationContext(), PinCodeLong.class));
-               finish();
+
             }
         }
         ClickableSpan clickableSpan = new ClickableSpan() {
@@ -83,12 +81,12 @@ public class PrivaryPolicy extends AppCompatActivity {
         ed.commit();
         if (privary.isChecked()){
             if(code=="") {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
-
+                finish();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }else{
+                finish();
                 startActivity(new Intent(getApplicationContext(), PinCodeLong.class));
-                finish();}
+}
         }else {
             Toast.makeText(this, "Для пользования WeWe примите политику конфиденцильности!" ,
                     Toast.LENGTH_SHORT).show();
