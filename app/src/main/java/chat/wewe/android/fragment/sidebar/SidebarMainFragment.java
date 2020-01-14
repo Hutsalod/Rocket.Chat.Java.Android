@@ -88,6 +88,7 @@ import chat.wewe.persistence.realm.repositories.RealmSessionRepository;
 import chat.wewe.persistence.realm.repositories.RealmSpotlightRoomRepository;
 import chat.wewe.persistence.realm.repositories.RealmUserRepository;
 import chat.wewe.android.widget.RocketChatAvatar;
+import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -546,7 +547,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     ));
     adapter.setRoomListHeaders(roomListHeaders);
   }
-
+  private CompositeDisposable compositeSubscription = new CompositeDisposable();
   private void setupLogoutButton() {
     rootView.findViewById(R.id.btn_logout).setOnClickListener(view -> {
    Intent offLineIntent = new Intent(getActivity(), PortSipService.class);
@@ -564,16 +565,15 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       sPref.edit().apply();
       sPref.edit().clear();
       callstatic=0;
-
-      presenter.onLogout();
       closeUserActionContainer();
-       this.getActivity().finish();
+      presenter.onLogout();
+
+    this.getActivity().finish();
     });
   }
 
   private void closeUserActionContainer() {
-    final CompoundButton toggleUserAction =
-        ((CompoundButton) rootView.findViewById(R.id.toggle_user_action));
+    final CompoundButton toggleUserAction = rootView.findViewById(R.id.toggle_user_action);
     if (toggleUserAction != null && toggleUserAction.isChecked()) {
       toggleUserAction.setChecked(false);
     }

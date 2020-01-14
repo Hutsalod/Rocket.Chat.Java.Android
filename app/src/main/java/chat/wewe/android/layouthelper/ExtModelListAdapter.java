@@ -3,6 +3,7 @@ package chat.wewe.android.layouthelper;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.util.ListUpdateCallback;
+import android.util.Log;
 
 import chat.wewe.android.layouthelper.chatroom.ModelListAdapter;
 import chat.wewe.android.layouthelper.chatroom.ModelViewHolder;
@@ -67,7 +68,7 @@ public abstract class ExtModelListAdapter<T, VM, VH extends ModelViewHolder<VM>>
     if (position == super.getItemCount() + 1) {
       return VIEW_TYPE_FOOTER;
     }
-
+    Log.d("TTR","EE");
     // rely on getRealmModelViewType(VM model).
     return super.getItemViewType(position - 1);
   }

@@ -344,8 +344,8 @@ public class RoomFragment extends AbstractChatRoomFragment implements
 
     messageOptionsDialogFragment.setOnMessageOptionSelectedListeners(message -> {
       messageOptionsDialogFragment.dismiss();
-      onDeleteMessage(message);
-
+     onDeleteMessage(message);
+    //  onUsersMessage(message);
     });
 
     messageOptionsDialogFragment.setOnMessageOptionSelectedListenerss(message -> {
@@ -646,7 +646,6 @@ Log.d("MSG1","MSGLOG");
               .putString("TOKEN_RC", token)
               .putString("ID_RC", userId)
               .commit();
-
     }
  }
 
@@ -733,8 +732,12 @@ Log.d("MSG1","MSGLOG");
   }
 
   public void onDeleteMessage(Message message) {
-    presenter.deleteMessage(message);
     methodCallHelper.deleteMessage(message.getId());
+  }
+
+  public void onUsersMessage(Message message) {
+    methodCallHelper.usersMessage(true,"0",userId,roomId,"r5Dfd8o2GRD7mYXDw");
+    Log.d("TREWQ","REWQ "+roomId+" "+userId);
   }
 
   public void onCopy(Message message) {
@@ -748,7 +751,5 @@ Log.d("MSG1","MSGLOG");
     }
 
   }
-
-
 
 }

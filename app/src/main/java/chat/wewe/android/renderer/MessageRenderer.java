@@ -100,22 +100,24 @@ public class MessageRenderer extends AbstractRenderer<Message> {
     if (!shouldHandle(rocketChatMessageLayout)) {
       return this;
     }
-
+/*
     String json = object.getMessage();
 
     try {
 
       JSONObject obj = new JSONObject(json);
 
-      rocketChatMessageLayout.setText("*"+obj.getString("fromId")+"*");
+
 
     } catch (Throwable t) {
-      rocketChatMessageLayout.setText(object.getMessage());
-    }
 
+    }*/
+    rocketChatMessageLayout.setText(object.getMessage());
     Runnable task = () -> {
       String threadName = Thread.currentThread().getName();
       System.out.println("Hello " + threadName);
+
+
     };
 
     return this;

@@ -2,6 +2,7 @@ package chat.wewe.android.layouthelper.chatroom;
 
 import android.content.Context;
 import android.support.v7.util.DiffUtil;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class MessageListAdapter
   @Override
   protected int getRealmModelViewType(PairedMessage model) {
     if (model.target != null) {
+      Log.d("23.12", "messag "+model.target.getType());
       if (TextUtils.isEmpty(model.target.getType())) {
         return VIEW_TYPE_NORMAL_MESSAGE;
       } else {

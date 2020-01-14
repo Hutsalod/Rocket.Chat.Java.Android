@@ -87,8 +87,8 @@ public class InputHostnameFragment extends AbstractFragment implements InputHost
   }
 
   private String getHostname() {
-    final String host = SipData.getString("UF_ROCKET_SERVER", "chat.weltwelle.com");
-    return host.toString();
+    final String host = "chat.weltwelle.com";
+    return host;
   }
 
   private void showError(String errString) {

@@ -41,7 +41,7 @@ import static chat.wewe.android.activity.Intro.TOKEN_RC;
  */
 public class MethodCallHelper {
 
-  protected static final long TIMEOUT_MS = 20000;
+  protected static final long TIMEOUT_MS = 2000;
   protected static final Continuation<String, Task<JSONObject>> CONVERT_TO_JSON_OBJECT =
       task -> Task.forResult(new JSONObject(task.getResult()));
   protected static final Continuation<String, Task<JSONArray>> CONVERT_TO_JSON_ARRAY =
@@ -409,7 +409,7 @@ public class MethodCallHelper {
     }
   }
 
-  public Task<Void> usersMessage(String success,String type,String fromUserId,String rid,String toUserId) {
+  public Task<Void> usersMessage(Boolean success,String type,String fromUserId,String rid,String toUserId) {
     try {
       JSONObject messageJson = new JSONObject()
               .put("success", success)

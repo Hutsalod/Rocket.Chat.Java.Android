@@ -54,6 +54,12 @@ public enum MessageType {
       return context.getString(R.string.message_removed);
     }
   },
+  MESSAGE_CALL("call-info") {
+    @Override
+    public String getString(Context context, Message message) {
+      return context.getString(R.string.message_removed);
+    }
+  },
   UNSPECIFIED("");
   //------------
 
