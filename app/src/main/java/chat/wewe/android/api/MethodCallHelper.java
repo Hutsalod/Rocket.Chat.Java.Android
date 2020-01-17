@@ -33,6 +33,7 @@ import chat.wewe.android_ddp.DDPClientCallback;
 import hugo.weaving.DebugLog;
 
 import static chat.wewe.android.activity.Intro.TOKEN_RC;
+import static chat.wewe.android.fragment.chatroom.RoomFragment.userId;
 
 /**
  * Utility class for creating/handling MethodCall or RPC.
@@ -398,6 +399,23 @@ public class MethodCallHelper {
     }
   }
 
+  public Task<Void> sendMessageTime(String messageId, String roomId, String msg, long editedAt) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("_id", messageId)
+              .put("rid", roomId)
+              .put("msg", msg);
+
+
+        return sendMessageTime(messageJson,userId);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
   public Task<Void> deleteMessage(String messageID) {
     try {
       JSONObject messageJson = new JSONObject()
@@ -430,6 +448,11 @@ public class MethodCallHelper {
   private Task<Void> sendMessage(final JSONObject messageJson) {
     return call("sendMessage", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
         .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> sendMessageTime(final JSONObject messageJson,final  String Id) {
+    return call("sendMessageToDeleteAfterRead", TIMEOUT_MS, () -> new JSONArray().put(messageJson).put(Id))
+            .onSuccessTask(task -> Task.forResult(null));
   }
 
   private Task<Void> updateMessage(final JSONObject messageJson) {
@@ -531,7 +554,7 @@ public class MethodCallHelper {
 
 
   public Task<Void>  hideAndEraseRooms(final String Id) {
-    Log.d("XSWQAZ",""+RealmSession.ID);
+
    return call("hideAndEraseRooms", TIMEOUT_MS, () -> new JSONArray().put(Id))
             .onSuccessTask(task -> Task.forResult(null));
 

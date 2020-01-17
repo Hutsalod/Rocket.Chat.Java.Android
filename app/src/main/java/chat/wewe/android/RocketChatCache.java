@@ -27,6 +27,8 @@ public class RocketChatCache {
   }
 
   public void setSelectedServerHostname(String hostname) {
+
+
     setString(KEY_SELECTED_SERVER_HOSTNAME, hostname);
   }
 

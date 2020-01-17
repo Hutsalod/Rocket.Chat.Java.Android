@@ -159,7 +159,7 @@ public class RoomFragment extends AbstractChatRoomFragment implements
   public RoomFragment() {}
 
   public String token;
-  public String userId;
+  public static String userId;
   private String roomType;
 
   /**

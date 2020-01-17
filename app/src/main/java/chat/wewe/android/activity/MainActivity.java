@@ -1019,25 +1019,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     }
   }
 
-  private void setupView(Optional<RocketChatAbsoluteUrl> rocketChatAbsoluteUrlOptional) {
-    compositeDisposable.clear();
 
-    if (!rocketChatAbsoluteUrlOptional.isPresent()) {
-      return;
-    }
-
-    AutoCompleteTextView autoCompleteTextView =
-            (AutoCompleteTextView) findViewById(R.id.editText);
-
-    RealmAutoCompleteAdapter<RealmUser> adapter =
-            realmHelper.createAutoCompleteAdapter(this,
-                    (realm, text) -> realm.where(RealmUser.class)
-                            .contains(RealmUser.USERNAME, text, Case.INSENSITIVE)
-                            .findAllSorted(RealmUser.USERNAME),
-                    context -> new SuggestUserAdapter(context, rocketChatAbsoluteUrlOptional.get()));
-    autoCompleteTextView.setAdapter(adapter);
-
-  }
 
 
   public void getList(){
@@ -1217,4 +1199,5 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     }
     return super.dispatchKeyEvent(event);
   }
+
 }

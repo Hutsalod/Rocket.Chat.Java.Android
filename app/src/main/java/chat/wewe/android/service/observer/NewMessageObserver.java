@@ -60,6 +60,9 @@ public class NewMessageObserver extends AbstractModelObserver<RealmMessage> {
     final String msg = message.getMessage();
     final long editedAt = message.getEditedAt();
 
+
+    if(msg.indexOf("◫")<0){
+
     realmHelper.executeTransaction(realm ->
         realm.createOrUpdateObjectFromJson(RealmMessage.class, new JSONObject()
             .put(RealmMessage.ID, messageId)
@@ -81,5 +84,31 @@ public class NewMessageObserver extends AbstractModelObserver<RealmMessage> {
       }
       return null;
     });
+  }else {
+      String msgs = msg.replace("◫","");
+      realmHelper.executeTransaction(realm ->
+              realm.createOrUpdateObjectFromJson(RealmMessage.class, new JSONObject()
+                      .put(RealmMessage.ID, messageId)
+                      .put(RealmMessage.SYNC_STATE, SyncState.SYNCING)
+              )
+      ).onSuccessTask(task -> methodCall.sendMessageTime(messageId, roomId, msgs, editedAt)
+      ).continueWith(task -> {
+        if (task.isFaulted()) {
+          RCLog.w(task.getError());
+          realmHelper.executeTransaction(realm ->
+                  realm.createOrUpdateObjectFromJson(RealmMessage.class, new JSONObject()
+                          .put(RealmMessage.ID, messageId)
+                          .put(RealmMessage.SYNC_STATE, SyncState.FAILED)));
+        } else {
+          realmHelper.executeTransaction(realm ->
+                  realm.createOrUpdateObjectFromJson(RealmMessage.class, new JSONObject()
+                          .put(RealmMessage.ID, messageId)
+                          .put(RealmMessage.SYNC_STATE, SyncState.SYNCED)));
+        }
+        return null;
+      });
+    }
+
   }
+
 }

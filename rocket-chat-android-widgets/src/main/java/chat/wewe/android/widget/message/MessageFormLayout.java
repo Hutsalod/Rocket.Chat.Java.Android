@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -36,6 +37,7 @@ public class MessageFormLayout extends LinearLayout {
   private View btnSubmit;
   private MediaPlayer song;
   private LinearLayout layoutBlackList;
+  private CheckBox checkbox;
   private Button buttonBlackList;
   SharedPreferences SipData,SipDatas;
   private ExtraActionSelectionClickListener extraActionSelectionClickListener;
@@ -81,6 +83,7 @@ public class MessageFormLayout extends LinearLayout {
     });
 
     btnSubmit = composer.findViewById(R.id.btn_submit);
+    checkbox = composer.findViewById(R.id.checkbox);
     buttonBlackList = composer.findViewById(R.id.buttonBlackList);
 
     btnSubmit.setOnClickListener(new OnClickListener() {
@@ -88,7 +91,12 @@ public class MessageFormLayout extends LinearLayout {
       public void onClick(View view) {
         String messageText = getText();
         if (messageText.length() > 0 && submitTextListener != null) {
-          submitTextListener.onSubmitText(messageText);
+
+            if(checkbox.isChecked())
+          submitTextListener.onSubmitText(messageText+"◫");
+            else
+                submitTextListener.onSubmitText(messageText);
+
           soungPlay(song);
           long date = System.currentTimeMillis();
           SimpleDateFormat datas = new SimpleDateFormat("H:m");
@@ -139,6 +147,9 @@ public class MessageFormLayout extends LinearLayout {
     btnSubmit.setScaleX(0);
     btnSubmit.setScaleY(0);
     btnSubmit.setVisibility(GONE);
+    checkbox.setScaleX(0);
+    checkbox.setScaleY(0);
+    checkbox.setVisibility(GONE);
 
     ImageKeyboardEditText editText = (ImageKeyboardEditText) composer.findViewById(R.id.editor);
 
@@ -155,9 +166,12 @@ public class MessageFormLayout extends LinearLayout {
       public void afterTextChanged(Editable s) {
         if (TextUtils.getTrimmedLength(s) > 0) {
           animateShow(btnSubmit);
+          animateShow(checkbox);
         } else {
           animateShow(btnExtra);
           animateHide(btnSubmit);
+          animateShow(checkbox);
+          animateHide(checkbox);
         }
       }
     });
