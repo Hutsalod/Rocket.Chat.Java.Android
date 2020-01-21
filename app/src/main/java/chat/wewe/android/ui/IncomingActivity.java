@@ -2,11 +2,13 @@ package chat.wewe.android.ui;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -44,18 +46,23 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        deviceManger = (DevicePolicyManager)getSystemService(
-                Context.DEVICE_POLICY_SERVICE);
-        activityManager = (ActivityManager)getSystemService(
-                Context.ACTIVITY_SERVICE);
-        compName = new ComponentName(this, MyAdmin.class);
-        Window window = this.getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+            if (keyguardManager!= null) {
+                keyguardManager.requestDismissKeyguard(this, null);
+            }
+        }else {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+            window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        }
         setContentView(R.layout.incomingview);
 
 
@@ -80,22 +87,10 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
         setVideoAnswerVisibility(session);
 
         findViewById(R.id.hangup_call).setOnClickListener(this);
-		findViewById(R.id.answer_audio).setOnClickListener(this);
+        findViewById(R.id.answer_audio).setOnClickListener(this);
         btnVideo.setOnClickListener(this);
 
-        boolean active = deviceManger.isAdminActive(compName);
-        if (active) {
-            deviceManger.lockNow();
-        }
-        Intent intents = new Intent(DevicePolicyManager
-                .ACTION_ADD_DEVICE_ADMIN);
-        intents.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-                compName);
-        intents.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-                compName);
-        intents.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                "Additional text explaining why this needs to be added.");
-        startActivityForResult(intents, RESULT_ENABLE);
+
     }
 
     @Override
@@ -127,7 +122,7 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
         super.onDestroy();
         unregisterReceiver(receiver);
         if(exit==true)
-        startActivity(new Intent(this,MainActivity.class));
+            startActivity(new Intent(this,MainActivity.class));
     }
 
     @Override
@@ -173,7 +168,7 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
                 case R.id.answer_audio:
                 case R.id.answer_video:
                     if (currentLine.state != Session.CALL_STATE_FLAG.INCOMING) {
-                    //    Toast.makeText(this,currentLine.lineName + "No incoming call on current line",Toast.LENGTH_SHORT);
+                        //    Toast.makeText(this,currentLine.lineName + "No incoming call on current line",Toast.LENGTH_SHORT);
                         return;
                     }
                     Ring.getInstance(this).stopRingTone();
@@ -189,7 +184,7 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
                     if (currentLine.state == Session.CALL_STATE_FLAG.INCOMING) {
                         application.mEngine.rejectCall(currentLine.sessionID, 486);
                         currentLine.Reset();
-                       // Toast.makeText(this,currentLine.lineName + ": Rejected call",Toast.LENGTH_SHORT);
+                        // Toast.makeText(this,currentLine.lineName + ": Rejected call",Toast.LENGTH_SHORT);
                     }
                     break;
             }
@@ -204,27 +199,15 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
         }
 
     }
-	
-	private void setVideoAnswerVisibility(Session session){
-		if(session == null)
-			return;
-		if(session.hasVideo){
+
+    private void setVideoAnswerVisibility(Session session){
+        if(session == null)
+            return;
+        if(session.hasVideo){
             btnVideo.setVisibility(View.VISIBLE);
         }else{
             btnVideo.setVisibility(View.GONE);
         }
-	}
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case RESULT_ENABLE:
-                if (resultCode == Activity.RESULT_OK) {
-                    Log.i("DeviceAdminSample", "Admin enabled!");
-                } else {
-                    Log.i("DeviceAdminSample", "Admin enable FAILED!");
-                }
-                return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

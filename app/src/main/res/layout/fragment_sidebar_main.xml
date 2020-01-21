@@ -352,7 +352,7 @@
                 android:layout_marginLeft="16dp"
                 android:drawablePadding="16dp"
                 android:fontFamily="sans-serif-light"
-                android:text="Версия: 1.5.7 (1570)"
+                android:text="Версия: 1.6.1 (1610)"
                 android:textAppearance="?attr/textAppearanceListItemSmall"
                 android:textColor="#1B1B1B"
                 android:textSize="14sp" />

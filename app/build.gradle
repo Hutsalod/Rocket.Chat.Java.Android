@@ -33,8 +33,8 @@ android {
         applicationId "chat.wewe.android"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 50
-        versionName "1.6.0"
+        versionCode 52
+        versionName "1.6.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
@@ -81,7 +81,7 @@ play {
 ext {
     supportVersion = '28.0.0'
     playLibVersion = '11.0.4'
-    stethoVersion = '1.4.2'
+    stethoVersion = '1.5.0'
     rxbindingVersion = '2.0.0'
     rxlifecycleVersion = '2.1.0'
     icepickVersion = '3.2.0'

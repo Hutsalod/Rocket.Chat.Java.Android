@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal|center_vertical"
-    android:background="#191919"
+    android:background="#1B1B1B"
     android:orientation="vertical">
 
     <TextView
@@ -13,7 +13,7 @@
         android:textSize="24dp"
         android:gravity="center"
         android:textStyle="bold"
-        android:text="Начните бусплатный пробный период сейчас!" />
+        android:text="Начните бесплатный пробный период сейчас!" />
 
     <TextView
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="или продолжайте использовать органичевную версию"
+        android:text="или продолжайте использовать ограниченную версию"
         android:textColor="#AAAAAA"
         android:textSize="14dp" />
 
@@ -72,7 +72,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:gravity="center"
-        android:text="Счет на оплату выставляется на аккаунт Google pay пользователя при подтверждении покупки. Подписка на приложение автоматически продлевается, если не отключить автопродление раньше, чем за 24 часа до завершения текущего оплаченного периода. Деньги за следующий период использования списываются за 24 часа до конца текущего. Автопродление купленной подписки можно в любой момент отключить в параметрах учетной записи Google pay. "
+        android:text="Счет на оплату выставляется на аккаунт Google pay пользователя при подтверждении покупки. Подписка на приложение автоматически продлевается, если не отключить авто продление раньше, чем за 24 часа до завершения текущего оплаченного периода. Деньги за следующий период использования списываются за 24 часа до конца текущего. Авто продление купленной подписки можно в любой момент отключить в параметрах учетной записи Google pay."
         android:textColor="#F4F4F4"
         android:textSize="12dp" />
 

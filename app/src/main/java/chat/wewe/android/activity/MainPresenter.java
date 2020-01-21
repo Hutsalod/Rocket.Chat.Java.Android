@@ -3,6 +3,12 @@ package chat.wewe.android.activity;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
+import com.google.common.base.Optional;
+
+import chat.wewe.android.log.RCLog;
+import chat.wewe.core.PublicSettingsConstants;
+import chat.wewe.core.models.PublicSetting;
+import chat.wewe.core.repositories.PublicSettingRepository;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -42,6 +48,7 @@ public class MainPresenter extends BasePresenter<MainContract.View>
     this.methodCallHelper = methodCallHelper;
     this.connectivityManagerApi = connectivityManagerApi;
     this.rocketChatCache = rocketChatCache;
+
   }
 
   @Override
@@ -51,6 +58,8 @@ public class MainPresenter extends BasePresenter<MainContract.View>
     subscribeToSession();
     setUserOnline();
   }
+
+
 
   @Override
   public void bindView(@NonNull MainContract.View view) {
@@ -112,6 +121,18 @@ public class MainPresenter extends BasePresenter<MainContract.View>
     }
 
     onOpenRoom(hostname, roomId);
+  }
+
+  private Pair<String, String> getLogoAndSiteNamePair(Pair<Optional<PublicSetting>, Optional<PublicSetting>> settingsPair) {
+    String logoUrl = "";
+    String siteName = "";
+    if (settingsPair.first.isPresent()) {
+      logoUrl = settingsPair.first.get().getValue();
+    }
+    if (settingsPair.second.isPresent()) {
+      siteName = settingsPair.second.get().getValue();
+    }
+    return new Pair<>(logoUrl, siteName);
   }
 
   private void subscribeToUnreadCount() {

@@ -267,7 +267,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         }else{//INNER_GROUP Для теста
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
-
+            setInsertButton();
           }else {
             callSet = false;
             setnupad = 1;
@@ -291,7 +291,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         }else{//INNER_GROUP Для теста
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
-
+            setInsertButton();
           }else {
             callSet = true;
             setnupad = 2;
@@ -828,6 +828,10 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           setContact = 0;
           return true;
       }
+      if (presenter != null) {
+        presenter.release();
+      }
+
       return false;
     }
   };
