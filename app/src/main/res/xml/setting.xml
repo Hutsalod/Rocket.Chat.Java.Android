@@ -57,7 +57,7 @@
         <CheckBoxPreference
             android:title="@string/MEDIA_OPUS"
             android:key="@string/MEDIA_OPUS"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
         <CheckBoxPreference
             android:title="@string/MEDIA_DTMF"
             android:key="@string/MEDIA_DTMF"

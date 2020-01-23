@@ -87,12 +87,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             };
             countDownTimer.start();
         }
-/*
-        if(!isOnline()){
-            Toast.makeText(getApplication(), "Нету соединения с интернетом!" ,
-                    Toast.LENGTH_LONG).show();
-            startActivity(new Intent(this, chat.wewe.android.activity.MainActivity.class));
-        }*/
+
     }
 
 

@@ -321,7 +321,7 @@ public class MethodCallHelper {
           JSONObject result = task.getResult();
           final JSONArray messages = result.getJSONArray("messages");
           for (int i = 0; i < messages.length(); i++) {
-            RealmMessage.customizeJson(messages.getJSONObject(i));
+            RealmMessage.customizeJson(messages.getJSONObject(i),userId);
           }
 
           return realmHelper.executeTransaction(realm -> {
@@ -427,18 +427,20 @@ public class MethodCallHelper {
     }
   }
 
-  public Task<Void> usersMessage(Boolean success,String type,String fromUserId,String rid,String toUserId) {
+  public Task<Void> usersMessage(Boolean success,String type,String fromUserId,String toUserId,String rid) {
     try {
       JSONObject messageJson = new JSONObject()
               .put("success", success)
               .put("type", type)
               .put("fromUserId", fromUserId)
-              .put("rid", rid)
-              .put("toUserId", toUserId);
-
+              .put("toUserId", toUserId)
+              .put("rid", rid);
+      Log.d("XSWQAZ",""+messageJson);
       return usersMessage(messageJson);
     } catch (JSONException exception) {
+
       return Task.forError(exception);
+
     }
   }
 
@@ -469,6 +471,7 @@ public class MethodCallHelper {
   }
 
   private Task<Void> usersMessage(final JSONObject messageJson) {
+
 
     return call("sendInfoCallMessage", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
             .onSuccessTask(task -> Task.forResult(null));
@@ -601,4 +604,6 @@ public class MethodCallHelper {
   protected interface ParamBuilder {
     JSONArray buildParam() throws JSONException;
   }
+
+
 }

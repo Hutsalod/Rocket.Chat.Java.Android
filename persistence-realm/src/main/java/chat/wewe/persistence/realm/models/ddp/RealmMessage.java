@@ -1,5 +1,7 @@
 package chat.wewe.persistence.realm.models.ddp;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import io.realm.RealmObject;
@@ -9,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,8 @@ import chat.wewe.core.models.WebContent;
 import chat.wewe.core.models.WebContentHeaders;
 import chat.wewe.core.models.WebContentMeta;
 import chat.wewe.core.models.WebContentParsedUrl;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * RealmMessage.
@@ -47,6 +52,7 @@ public class RealmMessage extends RealmObject {
   public static final String URLS = "urls";
   public static final String EDITED_AT = "editedAt";
 
+
   @PrimaryKey private String _id;
   private String t; //type:
   private String rid; //roomId.
@@ -61,13 +67,29 @@ public class RealmMessage extends RealmObject {
   private String urls; //JSONArray.
   private long editedAt;
 
-  public static JSONObject customizeJson(JSONObject messageJson) throws JSONException {
+  public static JSONObject customizeJson(JSONObject messageJson,String s) throws JSONException {
     long ts = messageJson.getJSONObject(TIMESTAMP).getLong(JsonConstants.DATE);
     messageJson.remove(TIMESTAMP);
     messageJson.put(TIMESTAMP, ts).put(SYNC_STATE, SyncState.SYNCED);
 
     if (messageJson.isNull(GROUPABLE)) {
       messageJson.put(GROUPABLE, true);
+    }
+
+
+    if (messageJson.getJSONObject("u").isNull("_id")) {
+
+      String str = messageJson.getString("msg");
+      str.replace("#####","");
+      String [] numbers = str.split("#");
+
+      messageJson.put("msg",  messageJson.getString("emoji")+" "+  numbers[Arrays.binarySearch(numbers, s)+1]);
+      messageJson.put("u", new JSONObject().put("_id","h4BoAASbp6jwrr7qs").put("name","Status"));
+      messageJson.remove("t");
+      messageJson.remove("unread");
+      messageJson.remove("info");
+      messageJson.remove("emoji");
+      Log.d("DDD"," "+s+" "+messageJson.getString("msg")+" "+numbers);
     }
 
     long editedAt = 0L;

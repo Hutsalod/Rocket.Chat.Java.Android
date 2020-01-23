@@ -3,8 +3,10 @@ package chat.wewe.android.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,13 +32,24 @@ import java.util.concurrent.TimeUnit;
 import chat.wewe.android.R;
 import chat.wewe.android.RocketChatApplication;
 import chat.wewe.android.api.JoinWeWe;
+import chat.wewe.android.api.MethodCallHelper;
+import chat.wewe.android.fragment.chatroom.RoomContract;
+import chat.wewe.android.fragment.chatroom.RoomFragment;
+import chat.wewe.android.fragment.chatroom.RoomPresenter;
+import chat.wewe.android.helper.AbsoluteUrlHelper;
 import chat.wewe.android.receiver.PortMessageReceiver;
+import chat.wewe.android.service.ConnectivityManager;
 import chat.wewe.android.service.PortSipService;
 import chat.wewe.android.util.CallManager;
 import chat.wewe.android.util.Ring;
 import chat.wewe.android.util.Session;
+import chat.wewe.core.interactors.MessageInteractor;
+import chat.wewe.persistence.realm.repositories.RealmMessageRepository;
+import chat.wewe.persistence.realm.repositories.RealmRoomRepository;
+import chat.wewe.persistence.realm.repositories.RealmUserRepository;
 
 
+import static android.content.Context.MODE_PRIVATE;
 import static chat.wewe.android.activity.Intro.callCout;
 import static chat.wewe.android.activity.Intro.callSet;
 import static chat.wewe.android.activity.Intro.callstatic;
@@ -49,10 +62,13 @@ public class NumpadFragment extends BaseFragment implements AdapterView.OnItemSe
     private EditText etSipNum;
     private TextView mtips;
     private Spinner spline;
+
+    protected RoomContract.Presenter presenter;
     CheckBox cbSendVideo, cbRecvVideo, cbConference, cbSendSdp;
     RocketChatApplication application;
     MainActivity activity;
     HashMap<String, String> headers = new HashMap<String, String>();
+    SharedPreferences SipData;
     private PortSIPVideoRenderer remoteRenderScreen = null;
     private PortSIPVideoRenderer localRenderScreen = null;
 
@@ -67,7 +83,6 @@ private int st = 0;
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         etSipNum =  view.findViewById(R.id.etsipaddress);
         cbSendSdp =  view.findViewById(R.id.sendSdp);
         cbConference =  view.findViewById(R.id.conference);
@@ -96,103 +111,105 @@ private int st = 0;
         SetTableItemClickListener(dtmfPad);
         onHiddenChanged(false);
         etSipNum.setText(getName);
-
-
+        Log.d("REWQ","true"+getName);
         headers.put("guid",    "8D31B96A-02AC-4531-976F-A455686F8FE2");
-      if(getName!=null)
+      if(getName!=null) {
 
-       if(callstatic==1 && setnupad==1) {
-           JoinWeWe.postCallvoip(getApplicationContext(),getName);
-            if (application.mEngine == null)
-                return;
-            PortSipSdk portSipSdk = application.mEngine;
-            Session currentLine = CallManager.Instance().getCurrentSession();
-            String callTo = getName;
-            if (callTo.length() <= 0) {
-                showTips("The phone number is empty.");
-                return;
-            }
-            if (!currentLine.IsIdle()) {
-                showTips("Current line is busy now, please switch a line.");
-                return;
-            }
+          if (callstatic == 1 && setnupad == 1) {
+              JoinWeWe.postCallvoip(getApplicationContext(), getName);
+              if (application.mEngine == null)
+                  return;
+              PortSipSdk portSipSdk = application.mEngine;
+              Session currentLine = CallManager.Instance().getCurrentSession();
+              String callTo = getName;
+              if (callTo.length() <= 0) {
+                  showTips("The phone number is empty.");
+                  return;
+              }
+              if (!currentLine.IsIdle()) {
+                  showTips("Current line is busy now, please switch a line.");
+                  return;
+              }
 
-            // Ensure that we have been added one audio codec at least
-            if (portSipSdk.isAudioCodecEmpty()) {
-                showTips("Audio Codec Empty,add audio codec at first");
-                return;
-            }
+              // Ensure that we have been added one audio codec at least
+              if (portSipSdk.isAudioCodecEmpty()) {
+                  showTips("Audio Codec Empty,add audio codec at first");
+                  return;
+              }
 
-            // Usually for 3PCC need to make call without SDP
-            long sessionId = portSipSdk.call(callTo, cbSendSdp.isChecked(), callSet);
-            if (sessionId <= 0) {
-                showTips("Call failure");
-                return;
-            }
+              // Usually for 3PCC need to make call without SDP
+              long sessionId = portSipSdk.call(callTo, cbSendSdp.isChecked(), callSet);
+              if (sessionId <= 0) {
+                  showTips("Call failure");
+                  return;
+              }
 
-           for (HashMap.Entry<String, String> entry : headers.entrySet()) {
-               portSipSdk.addSipMessageHeader(-1, "INVITE", 1, entry.getKey(), entry.getValue());
-           }
-            //default send video
-            portSipSdk.sendVideo(sessionId, true);
+              for (HashMap.Entry<String, String> entry : headers.entrySet()) {
+                  portSipSdk.addSipMessageHeader(-1, "INVITE", 1, entry.getKey(), entry.getValue());
+              }
+              //default send video
+              portSipSdk.sendVideo(sessionId, true);
 
-            currentLine.remote = callTo;
+              currentLine.remote = callTo;
 
-            currentLine.sessionID = sessionId;
-            currentLine.state = Session.CALL_STATE_FLAG.TRYING;
-            currentLine.hasVideo = callSet;
-            showTips(currentLine.lineName + ": Calling...");
-           setnupad = 0;
-           //getName=null;
-           callCout=1;
-       }
-        if(callstatic==1 && setnupad==2) {
-            JoinWeWe.postCallvoip(getApplicationContext(),getName);
-            if (application.mEngine == null)
-                return;
-            PortSipSdk portSipSdk = application.mEngine;
-            Session currentLine = CallManager.Instance().getCurrentSession();
-            String callTo = getName;
-            if (callTo.length() <= 0) {
-                showTips("The phone number is empty.");
-                return;
-            }
-            if (!currentLine.IsIdle()) {
-                showTips("Current line is busy now, please switch a line.");
-                return;
-            }
+              currentLine.sessionID = sessionId;
+              currentLine.state = Session.CALL_STATE_FLAG.TRYING;
+              currentLine.hasVideo = callSet;
+              showTips(currentLine.lineName + ": Calling...");
+              setnupad = 0;
+              //getName=null;
+              callCout = 1;
+              Log.d("REWQ", "true" + getName);
 
-            // Ensure that we have been added one audio codec at least
-            if (portSipSdk.isAudioCodecEmpty()) {
-                showTips("Audio Codec Empty,add audio codec at first");
-                return;
-            }
+          }
+          if (callstatic == 1 && setnupad == 2) {
+              JoinWeWe.postCallvoip(getApplicationContext(), getName);
+              if (application.mEngine == null)
+                  return;
+              PortSipSdk portSipSdk = application.mEngine;
+              Session currentLine = CallManager.Instance().getCurrentSession();
+              String callTo = getName;
+              if (callTo.length() <= 0) {
+                  showTips("The phone number is empty.");
+                  return;
+              }
+              if (!currentLine.IsIdle()) {
+                  showTips("Current line is busy now, please switch a line.");
+                  return;
+              }
 
-            // Usually for 3PCC need to make call without SDP
-            long sessionId = portSipSdk.call(callTo, cbSendSdp.isChecked(), callSet);
-            if (sessionId <= 0) {
-                showTips("Call failure");
-                return;
-            }
+              // Ensure that we have been added one audio codec at least
+              if (portSipSdk.isAudioCodecEmpty()) {
+                  showTips("Audio Codec Empty,add audio codec at first");
+                  return;
+              }
 
-            for (HashMap.Entry<String, String> entry : headers.entrySet()) {
-                portSipSdk.addSipMessageHeader(-1, "INVITE", 1, entry.getKey(), entry.getValue());
-            }
-            //default send video
-            portSipSdk.sendVideo(sessionId, true);
+              // Usually for 3PCC need to make call without SDP
+              long sessionId = portSipSdk.call(callTo, cbSendSdp.isChecked(), callSet);
+              if (sessionId <= 0) {
+                  showTips("Call failure");
+                  return;
+              }
 
-            currentLine.remote = callTo;
+              for (HashMap.Entry<String, String> entry : headers.entrySet()) {
+                  portSipSdk.addSipMessageHeader(-1, "INVITE", 1, entry.getKey(), entry.getValue());
+              }
+              //default send video
+              portSipSdk.sendVideo(sessionId, true);
 
-            currentLine.sessionID = sessionId;
-            currentLine.state = Session.CALL_STATE_FLAG.TRYING;
-            currentLine.hasVideo = callSet;
-            showTips(currentLine.lineName + ": Calling...");
-            callstatic=1;
-            setnupad = 0;
-          //  getName=null;
-            callCout=1;
-        }
+              currentLine.remote = callTo;
 
+              currentLine.sessionID = sessionId;
+              currentLine.state = Session.CALL_STATE_FLAG.TRYING;
+              currentLine.hasVideo = callSet;
+              showTips(currentLine.lineName + ": Calling...");
+              callstatic = 1;
+              setnupad = 0;
+              //  getName=null;
+              callCout = 1;
+
+          }
+      }
 
     }
 
@@ -203,7 +220,6 @@ private int st = 0;
         if (PortSipService.CALL_CHANGE_ACTION.equals(action)) {
             long sessionId = intent.getLongExtra(PortSipService.EXTRA_CALL_SEESIONID, Session.INVALID_SESSION_ID);
             String status = intent.getStringExtra(PortSipService.EXTRA_CALL_DESCRIPTION);
-
             showTips(status);
         }
     }

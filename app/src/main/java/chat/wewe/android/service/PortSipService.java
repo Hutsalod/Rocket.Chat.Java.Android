@@ -306,7 +306,7 @@ public class PortSipService extends Service implements OnPortSIPEvent {
 //        if (preferences.getBoolean(context.getString(R.string.MEDIA_G7221), false)) {
 //            sdk.addAudioCodec(PortSipEnumDefine.ENUM_AUDIOCODEC_G7221);
 //        }
-        if (preferences.getBoolean(context.getString(R.string.MEDIA_OPUS), false)) {
+        if (preferences.getBoolean(context.getString(R.string.MEDIA_OPUS), true)) {
             sdk.addAudioCodec(PortSipEnumDefine.ENUM_AUDIOCODEC_OPUS);
         }
 

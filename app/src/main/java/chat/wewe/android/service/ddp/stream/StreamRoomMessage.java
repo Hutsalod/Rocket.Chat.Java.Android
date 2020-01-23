@@ -43,6 +43,6 @@ public class StreamRoomMessage extends AbstractStreamNotifyEventSubscriber {
 
   @Override
   protected JSONObject customizeFieldJson(JSONObject json) throws JSONException {
-    return RealmMessage.customizeJson(super.customizeFieldJson(json));
+    return RealmMessage.customizeJson(super.customizeFieldJson(json),getPrimaryKeyForModel());
   }
 }

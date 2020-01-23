@@ -69,7 +69,7 @@ public class MessageListAdapter
   @Override
   protected int getRealmModelViewType(PairedMessage model) {
     if (model.target != null) {
-      Log.d("23.12", "messag "+model.target.getType());
+
       if (TextUtils.isEmpty(model.target.getType())) {
         return VIEW_TYPE_NORMAL_MESSAGE;
       } else {

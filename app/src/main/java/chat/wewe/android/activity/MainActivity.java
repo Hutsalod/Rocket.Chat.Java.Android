@@ -253,7 +253,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     setupSidebar();
     setDataToAdapter();
     navigation.setSelectedItemId(R.id.action_chat);
-
+    Log.d("XSWQAZ","ADD ");
     BtnCall.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -262,20 +262,21 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           callSet = false;
           setnupad = 1;
           startActivity(callInt);
-
-
+          setInsertButton();
+          Log.d("XSWQAZ","ADD ");
         }else{//INNER_GROUP Для теста
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
-            setInsertButton();
+
           }else {
             callSet = false;
             setnupad = 1;
             startActivity(callInt);
-
+              setInsertButton();
 
           }
         }
+        saveData();
       }
     });
     btnVideoCall.setOnClickListener(new View.OnClickListener() {
@@ -286,19 +287,21 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           callSet = true;
           setnupad = 2;
           startActivity(callInt);
-
-
+          setInsertButton();
+          Log.d("XSWQAZ","ADD ");
         }else{//INNER_GROUP Для теста
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
-            setInsertButton();
+
           }else {
             callSet = true;
             setnupad = 2;
             startActivity(callInt);
-
+              setInsertButton();
 
           }}
+
+        saveData();
       }
     });
 
@@ -394,6 +397,28 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           getBaseContext().startService(onLineIntent);
         }
     }
+
+    EditTextName.addTextChangedListener(new TextWatcher() {
+      // ...
+
+
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+        if (EditTextName.getText().toString().indexOf("+")<0) {
+          EditTextName.setText("+"+EditTextName.getText().toString());
+        }
+      }
+    });
 
   }
 
@@ -558,11 +583,13 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     SimpleDateFormat datas = new SimpleDateFormat("H:m:s yyyy-MM-dd");
     String time = datas.format(date);
         insertItem(""+getName, ""+time);
+    Log.d("XSWQAZ","ADD ");
   }
 
   private void insertItem(String line1, String line2) {
     mExampleList.add(new ExampleItem(line1, line2));
     mAdapters.notifyItemInserted(mExampleList.size());
+
   }
 
   public void helpB(View v) {
@@ -570,48 +597,70 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     switch (clickedButton.getId()) {
       case R.id.btn1:
         EditTextName.setText(EditTextName.getText()+"1");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn2:
         EditTextName.setText(EditTextName.getText()+"2");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn3:
         EditTextName.setText(EditTextName.getText()+"3");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn4:
         EditTextName.setText(EditTextName.getText()+"4");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn5:
         EditTextName.setText(EditTextName.getText()+"5");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn6:
         EditTextName.setText(EditTextName.getText()+"6");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn7:
         EditTextName.setText(EditTextName.getText()+"7");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn8:
         EditTextName.setText(EditTextName.getText()+"8");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn9:
         EditTextName.setText(EditTextName.getText()+"9");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn10:
         EditTextName.setText(EditTextName.getText()+"*");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn11:
         EditTextName.setText(EditTextName.getText()+"0");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn12:
         EditTextName.setText(EditTextName.getText()+"#");
+        EditTextName.setSelection(EditTextName.getText().length());
         break;
       case R.id.btn13:
         navigation.setSelectedItemId(R.id.action_group);
         break;
       case R.id.btn14:
-        getName = EditTextName.getText().toString();
-        callSet = false;
-        startActivity(callInt);
-        setnupad = 1;
+        getName = EditTextName.getText().toString().replace("+", "").replaceAll("[^0-9\\.]", "");
+          if(!EditTextName.getText().toString().substring(1,2).equals("0") && EditTextName.getText().toString().length()>3) {
+              if(EditTextName.getText().toString().indexOf("+")<0)
+                  EditTextName.setText("+"+EditTextName.getText().toString());
+            callSet = false;
+            startActivity(callInt);
+            setInsertButton();
+            setnupad = 1;
+        }else {
+            Toast.makeText(getApplication(), "Неверный формат международного телефонного номера",
+                    Toast.LENGTH_SHORT).show();
+
+          }
+
         break;
       case R.id.btn15:
         if(!EditTextName.getText().toString().equals(""))

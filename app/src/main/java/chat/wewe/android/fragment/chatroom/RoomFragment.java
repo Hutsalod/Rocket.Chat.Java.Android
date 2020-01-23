@@ -110,6 +110,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
+import static chat.wewe.android.ui.VideoFragment.callSed;
 
 /**
  * Chat room screen.
@@ -125,6 +126,7 @@ public class RoomFragment extends AbstractChatRoomFragment implements
   private static final int DIALOG_ID = 1;
   private static final String HOSTNAME = "hostname";
   private static final String ROOM_ID = "roomId";
+  public static MethodCallHelper onUsersMessage;
 
   public SharedPreferences SipDataVideo;
   public static ArrayList<Uri> ListImage = new ArrayList<Uri>();
@@ -539,6 +541,17 @@ Log.d("MSG1","MSGLOG");
     super.onResume();
     presenter.bindView(this);
     closeSideMenuIfNeeded();
+    Log.d("XSWQAZ","TEST "+callSed);
+
+    if (callSed == 2) {
+      callSed = 0;
+      methodCallHelper.usersMessage(true, "0", userId, roomId.replaceAll(userId, ""), roomId);
+    } else if (callSed == 1) {
+      callSed = 0;
+      methodCallHelper.usersMessage(false, "0", userId, roomId.replaceAll(userId, ""), roomId);
+
+    }
+
   }
 
   @Override
@@ -645,6 +658,8 @@ Log.d("MSG1","MSGLOG");
               .edit()
               .putString("TOKEN_RC", token)
               .putString("ID_RC", userId)
+              .putString("RM_ID", roomId)
+              .putString("hostname", hostname)
               .commit();
     }
  }
@@ -669,6 +684,8 @@ Log.d("MSG1","MSGLOG");
       newMessageIndicatorManager.reset();
     }
     previousUnreadMessageExists = unreadMessageExists;
+
+
   }
 
   @Override
@@ -714,6 +731,7 @@ Log.d("MSG1","MSGLOG");
         .setNeutralButton(R.string.discard,
             (dialog, which) -> presenter.deleteMessage(message))
         .show();
+
   }
 
   @Override

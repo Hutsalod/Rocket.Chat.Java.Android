@@ -1,16 +1,23 @@
 package chat.wewe.android.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.portsip.PortSIPVideoRenderer;
+import com.portsip.PortSipEnumDefine;
 import com.portsip.PortSipErrorcode;
 import com.portsip.PortSipSdk;
 
@@ -19,27 +26,48 @@ import java.util.TimerTask;
 
 import chat.wewe.android.R;
 import chat.wewe.android.RocketChatApplication;
+import chat.wewe.android.api.MethodCallHelper;
+import chat.wewe.android.fragment.chatroom.RoomContract;
+import chat.wewe.android.fragment.chatroom.RoomPresenter;
+import chat.wewe.android.helper.AbsoluteUrlHelper;
 import chat.wewe.android.receiver.PortMessageReceiver;
+import chat.wewe.android.service.ConnectivityManager;
 import chat.wewe.android.service.PortSipService;
 import chat.wewe.android.util.CallManager;
 import chat.wewe.android.util.Ring;
 import chat.wewe.android.util.Session;
+import chat.wewe.core.interactors.MessageInteractor;
+import chat.wewe.persistence.realm.repositories.RealmMessageRepository;
+import chat.wewe.persistence.realm.repositories.RealmRoomRepository;
+import chat.wewe.persistence.realm.repositories.RealmUserRepository;
 
+import static android.content.Context.MODE_PRIVATE;
 import static chat.wewe.android.activity.Intro.callCout;
 import static chat.wewe.android.activity.MainActivity.current_user_name;
+import static org.webrtc.ContextUtils.getApplicationContext;
 
 public class VideoFragment extends BaseFragment implements View.OnClickListener ,PortMessageReceiver.BroadcastListener{
-	RocketChatApplication application;
-	MainActivity activity;
-	int t = 0,m;
-	String c;
+	private RocketChatApplication application;
+	private MainActivity activity;
+	private int t = 0,m;
+	public static int callSed = 0;
+	private boolean setNumber = true;
 	private PortSIPVideoRenderer remoteRenderScreen = null;
 	private PortSIPVideoRenderer localRenderScreen = null;
 	private PortSIPVideoRenderer.ScalingType scalingType = PortSIPVideoRenderer.ScalingType.SCALE_ASPECT_BALANCED;// SCALE_ASPECT_FIT or SCALE_ASPECT_FILL;
 	private ImageView imgSwitchCamera = null;
-	private ImageView imgScaleType = null,finish_car= null,ic_video_call= null,ic_audio_call= null;
+	private ImageView imgScaleType = null,finish_car= null,ic_video_call= null,ic_audio_call= null,ic_number = null;
 
 	public TextView usersName,statucConnect;
+
+	private EditText etSipNum;
+	private AbsoluteUrlHelper absoluteUrlHelper;
+	protected RoomContract.Presenter presenter;
+	private String userId,roomId,hostname;
+	private MethodCallHelper methodCallHelper;
+	private SharedPreferences SipData;
+	private RealmRoomRepository roomRepository;
+	private RealmUserRepository userRepository;
 
 	@Nullable
 	@Override
@@ -56,17 +84,43 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+
+		etSipNum =  view.findViewById(R.id.etsipaddress);
+		SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
+		userId = SipData.getString("ID_RC","");
+		roomId = SipData.getString("RM_ID","");
+		hostname = SipData.getString("hostname","");
+		methodCallHelper = new MethodCallHelper(getApplicationContext(), hostname);
+		roomRepository = new RealmRoomRepository(hostname);
+		TableLayout dtmfPad =  view.findViewById(R.id.dtmf_pad);
+		MessageInteractor messageInteractor = new MessageInteractor(
+				new RealmMessageRepository(hostname),
+				roomRepository
+		);
+		presenter = new RoomPresenter(
+				roomId,
+				userRepository,
+				messageInteractor,
+				roomRepository,
+				absoluteUrlHelper,
+				methodCallHelper,
+				ConnectivityManager.getInstance(getApplicationContext())
+		);
+
 		imgSwitchCamera = (ImageView)view.findViewById(R.id.ibcamera);
 		imgScaleType = (ImageView)view.findViewById(R.id.ibscale);
 		finish_car = (ImageView)view.findViewById(R.id.finish_car);
 		ic_video_call = (ImageView)view.findViewById(R.id.ic_video_call);
 		ic_audio_call = (ImageView)view.findViewById(R.id.ic_audio_call);
+		ic_number = (ImageView)view.findViewById(R.id.ic_number);
 		Timer time = new Timer();
 		imgScaleType.setOnClickListener(this);
 		imgSwitchCamera.setOnClickListener(this);
 		finish_car.setOnClickListener(this);
 		ic_video_call.setOnClickListener(this);
 		ic_audio_call.setOnClickListener(this);
+		ic_number.setOnClickListener(this);
+		SetTableItemClickListener(dtmfPad);
 
 		usersName = (TextView) view.findViewById(R.id.usersName);
 		usersName.setText("" +current_user_name.getText());
@@ -131,17 +185,59 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 	}
 
 	@Override
-	public void onClick(View v)
+	public void onClick(View view)
 	{
-		Intent Home = new Intent(getActivity(), chat.wewe.android.activity.MainActivity.class);
+		if (application.mEngine == null)
+			return;
 		PortSipSdk portSipLib = application.mEngine;
 		Session currentLine = CallManager.Instance().getCurrentSession();
-		switch (v.getId())
+
+
+
+		switch (view.getId())
 		{
+
+			case R.id.zero:
+			case R.id.one:
+			case R.id.two:
+			case R.id.three:
+			case R.id.four:
+			case R.id.five:
+			case R.id.six:
+			case R.id.seven:
+			case R.id.eight:
+			case R.id.nine:
+			case R.id.star:
+			case R.id.sharp: {
+				String numberString = ((Button) view).getText().toString();
+                Log.d("XSWQAZ",""+numberString);
+				char number = numberString.charAt(0);
+			//	etSipNum.append(numberString);
+				if (CallManager.Instance().regist && currentLine.state == Session.CALL_STATE_FLAG.CONNECTED) {
+					if (number == '*') {
+						portSipLib.sendDtmf(currentLine.sessionID, PortSipEnumDefine.ENUM_DTMF_MOTHOD_RFC2833, 10,
+								160, true);
+						return;
+					}
+					if (number == '#') {
+						portSipLib.sendDtmf(currentLine.sessionID, PortSipEnumDefine.ENUM_DTMF_MOTHOD_RFC2833, 11,
+								160, true);
+						return;
+					}
+					int sum = Integer.parseInt(numberString);// 0~9
+					portSipLib.sendDtmf(currentLine.sessionID, PortSipEnumDefine.ENUM_DTMF_MOTHOD_RFC2833, sum,
+							160, true);
+				}
+			}
+			break;
 			case R.id.ibcamera:
 				application.mUseFrontCamera = !application.mUseFrontCamera;
 				SetCamera(portSipLib, application.mUseFrontCamera);
 				break;
+            case R.id.ic_number:
+				SwitchPanel();
+
+                break;
 			case R.id.ibscale:
 				if (scalingType == PortSIPVideoRenderer.ScalingType.SCALE_ASPECT_FIT)
 				{
@@ -261,18 +357,41 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 			}
 		}
 	}
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+
+	}
+
+
+	private void SwitchPanel(){
+		View dtmfView = getView().findViewById(R.id.dtmf_pad);
+		if (dtmfView.getVisibility() == View.VISIBLE) {
+			dtmfView.setVisibility(View.INVISIBLE);
+		} else {
+			dtmfView.setVisibility(View.VISIBLE);
+		}
+	}
 
 	public void onBroadcastReceiver(Intent intent)
 	{
+
 		String action = intent == null ? "" : intent.getAction();
 		if (PortSipService.CALL_CHANGE_ACTION.equals(action))
 		{
 			long sessionId = intent.getLongExtra(PortSipService.EXTRA_CALL_SEESIONID, Session.INVALID_SESSION_ID);
 			String status = intent.getStringExtra(PortSipService.EXTRA_CALL_DESCRIPTION);
-			if(status.equals("1"))
-				getActivity().finish();
+			if(status.equals("1")) {
+					getActivity().finish();
+			}else if(status.indexOf("onInviteFailure")>=0) {
+				callSed=1;// methodCallHelper.usersMessage(false, "0", userId, roomId.replaceAll(userId, ""), roomId);
+			}else if(status.indexOf("OnInviteConnected")>=0) {
+				callSed=2;//  methodCallHelper.usersMessage(true, "0", userId, roomId.replaceAll(userId, ""), roomId);
+			}
+
 			Session session = CallManager.Instance().findSessionBySessionID(sessionId);
-			if (session != null)
+			Log.d("XSWQAZ","session "+session);
+			if (session.state != null)
 			{
 				switch (session.state)
 				{
@@ -287,6 +406,17 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 						break;
 
 				}
+			}
+		}
+	}
+
+	private void SetTableItemClickListener(TableLayout table) {
+
+		for (int i = 0; i < table.getChildCount(); i++) {
+			TableRow tableRow = (TableRow) table.getChildAt(i);
+			int line = tableRow.getChildCount();
+			for (int index = 0; index < line; index++) {
+				tableRow.getChildAt(index).setOnClickListener(this);
 			}
 		}
 	}
