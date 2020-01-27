@@ -102,7 +102,7 @@ public class PortSipService extends Service implements OnPortSIPEvent {
 
         }
 
-        startForeground(SERVICE_NOTIFICATION,builder.build());
+        startForeground(SERVICE_NOTIFICATION,builder.setSmallIcon(R.drawable.ic_stat_name).build());
 
 
     }
@@ -911,7 +911,11 @@ public class PortSipService extends Service implements OnPortSIPEvent {
         }else{
             builder = new Notification.Builder(this);
         }
-
+        builder.setSmallIcon(R.drawable.ic_stat_name)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(message)
+                .setContentIntent(contentIntent)
+                .build();
 
         sendBroadcast(broadIntent);
     }

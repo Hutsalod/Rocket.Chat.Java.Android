@@ -54,6 +54,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -147,7 +148,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
   private StatusTicker statusTicker;
   private MainContract.Presenter presenter;
-  private LinearLayout chat,call,contacts, setting,kayboardLayout,openKey;
+  public static LinearLayout chat;
+  private LinearLayout call,contacts, setting,kayboardLayout,openKey;
   public static LinearLayout callUsers;
   public static AppCompatAutoCompleteTextView editText;
   public static RecyclerView recyclerViews;
@@ -505,25 +507,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     createRoom();
   }
 
-  private void scheduleNotification(Notification notification, int delay) {
 
-    Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-    notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
-    notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-    long futureInMillis = SystemClock.elapsedRealtime() + delay;
-    AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-  }
-
-  private Notification getNotification(String content) {
-    Notification.Builder builder = new Notification.Builder(this);
-    builder.setContentTitle("Scheduled Notification");
-    builder.setContentText(content);
-    builder.setSmallIcon(R.drawable.ic_app_logo);
-    return builder.build();
-  }
 
   private void animateHide(final View view) {
     view.animate().scaleX(0).scaleY(0).setDuration(150).withEndAction(new Runnable() {
@@ -877,9 +861,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           setContact = 0;
           return true;
       }
-      if (presenter != null) {
-        presenter.release();
-      }
 
       return false;
     }
@@ -901,6 +882,12 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 }
 
   public void nazad(View view) {
+ /*   RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) chat
+            .getLayoutParams();
+
+    layoutParams.setMargins(0, 0, 0, 60);
+    chat.setLayoutParams(layoutParams);
+    navigation.setVisibility(VISIBLE);*/
     showFragment(RoomFragment.create(hostname,roomId));
     animateShow(activity_main_container);
     animateHide(activity_main_container);
@@ -915,6 +902,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     animateHide(statusRoom);
 
     current_user_name.setText("Сообщения");
+
 
   }
 
@@ -1110,7 +1098,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
     private void UF_ORIGINAL_TRID(){
       Map<String, Object> jsonParams = new ArrayMap<>();
-//put something inside the map, could be null
       jsonParams.put("UF_ORIGINAL_TRID", "tt");
         jsonParams.put("GET_USER", "1");
         mApiService.subscription("KEY:"+SipData.getString("TOKENWE",""),"application/json",jsonParams)

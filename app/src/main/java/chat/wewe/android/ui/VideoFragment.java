@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -68,6 +69,7 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 	private SharedPreferences SipData;
 	private RealmRoomRepository roomRepository;
 	private RealmUserRepository userRepository;
+	private FrameLayout ramkaVideo;
 
 	@Nullable
 	@Override
@@ -128,6 +130,8 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 
 		localRenderScreen = (PortSIPVideoRenderer)view.findViewById(R.id.local_video_view);
 		remoteRenderScreen = (PortSIPVideoRenderer)view.findViewById(R.id.remote_video_view);
+		ramkaVideo = view.findViewById(R.id.ramka_video);
+
 
 		scalingType = PortSIPVideoRenderer.ScalingType.SCALE_ASPECT_FIT;//
 		remoteRenderScreen.setScalingType(scalingType);
@@ -147,6 +151,14 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 						handler.postDelayed(this, 1000);
 					}
 				});
+
+		Session currentLine = CallManager.Instance().getCurrentSession();
+
+		/*if(currentLine.hasVideo==true)
+			ramkaVideo.setVisibility(View.VISIBLE);
+		else
+            ramkaVideo.setVisibility(View.INVISIBLE);*/
+
 	}
 
 
@@ -158,9 +170,11 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 		if(localRenderScreen!=null){
 			if(portSipLib!=null) {
 				portSipLib.displayLocalVideo(false);
+
 			}
 			localRenderScreen.release();
 		}
+
 
 		CallManager.Instance().setRemoteVideoWindow(application.mEngine,-1,null);//set
 		if(remoteRenderScreen!=null){
@@ -286,7 +300,7 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 					currentLine.bMute = false;
 					ic_video_call.setImageResource(R.drawable.ic_video_call);
 				} else {
-					portSipLib.muteSession(currentLine.sessionID, true,
+					portSipLib.muteSession(currentLine.sessionID, false,
 							true, true, true);
 					currentLine.bMute = true;
 					ic_video_call.setImageResource(R.drawable.ic_video_call_off);
@@ -294,15 +308,19 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 			}
 			break;
 			case R.id.ic_audio_call:
-				if (scalingType == PortSIPVideoRenderer.ScalingType.SCALE_ASPECT_FIT)
+				if (currentLine.bDenam)
 				{
 					ic_audio_call.setImageResource(R.drawable.ic_audio_call);
-					scalingType = PortSIPVideoRenderer.ScalingType.SCALE_ASPECT_FILL;
-				}
-				else if (scalingType == PortSIPVideoRenderer.ScalingType.SCALE_ASPECT_FILL)
-				{
+					portSipLib.muteSession(currentLine.sessionID, false,
+							false, false, false);
+					currentLine.bDenam = false;
+
+					} else {
+
 					ic_audio_call.setImageResource(R.drawable.ic_audio_call_off);
-					scalingType = PortSIPVideoRenderer.ScalingType.SCALE_ASPECT_BALANCED;
+					portSipLib.muteSession(currentLine.sessionID, true,
+							false, true, true);
+					currentLine.bDenam = true;
 				}
 				break;
 		}

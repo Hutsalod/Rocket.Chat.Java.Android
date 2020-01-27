@@ -10,6 +10,7 @@ public class Session
 	public boolean hasVideo;
 	public boolean bHold;
 	public boolean bMute;
+	public boolean bDenam;
 	public String lineName;
 	public CALL_STATE_FLAG state;
 

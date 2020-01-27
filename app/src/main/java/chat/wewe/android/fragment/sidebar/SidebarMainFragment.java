@@ -31,6 +31,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -108,11 +110,13 @@ import static chat.wewe.android.activity.MainActivity.btnCreate;
 import static chat.wewe.android.activity.MainActivity.callUsers;
 import static chat.wewe.android.activity.MainActivity.current_user_name;
 import static chat.wewe.android.activity.MainActivity.editText;
+import static chat.wewe.android.activity.MainActivity.navigation;
 import static chat.wewe.android.activity.MainActivity.nazad;
 import static chat.wewe.android.activity.MainActivity.recyclerViews;
 import static chat.wewe.android.activity.MainActivity.search_btn_users;
 import static chat.wewe.android.activity.MainActivity.statusRoom;
 import static chat.wewe.android.fragment.server_config.LoginFragment.TOKENwe;
+import static chat.wewe.android.activity.MainActivity.chat;
 
 public class SidebarMainFragment extends AbstractFragment implements SidebarMainContract.View {
 
@@ -261,7 +265,12 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         eds.commit();
         getStatus(getName);
         animateShow(activity_main_container);
+      /*  RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) chat
+                .getLayoutParams();
 
+        layoutParams.setMargins(0, 0, 0, 0);
+        chat.setLayoutParams(layoutParams);
+        navigation.setVisibility(GONE);*/
       }
 
       @Override
@@ -568,7 +577,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       closeUserActionContainer();
       presenter.onLogout();
 
-    this.getActivity().finish();
+  //  this.getActivity().finish();
     });
   }
 

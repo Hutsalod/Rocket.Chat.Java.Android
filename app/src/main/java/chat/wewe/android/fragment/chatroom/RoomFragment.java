@@ -541,7 +541,8 @@ Log.d("MSG1","MSGLOG");
     super.onResume();
     presenter.bindView(this);
     closeSideMenuIfNeeded();
-    Log.d("XSWQAZ","TEST "+callSed);
+
+
 
     if (callSed == 2) {
       callSed = 0;
@@ -553,6 +554,8 @@ Log.d("MSG1","MSGLOG");
     }
 
   }
+
+
 
   @Override
   public void onPause() {

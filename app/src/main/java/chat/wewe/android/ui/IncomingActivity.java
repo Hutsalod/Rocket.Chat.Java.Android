@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.portsip.PortSipErrorcode;
 import chat.wewe.android.R;
 import chat.wewe.android.RocketChatApplication;
-import chat.wewe.android.activity.MyAdmin;
 import chat.wewe.android.receiver.PortMessageReceiver;
 import chat.wewe.android.service.PortSipService;
 import chat.wewe.android.util.CallManager;

@@ -68,7 +68,7 @@ public class NotificationUtils {
             String action = notificationVO.getAction();
             String destination = notificationVO.getActionDestination();
 
-            final int icon = R.mipmap.ic_launcher;
+            final int icon = R.drawable.ic_stat_name;
 
             PendingIntent resultPendingIntent;
 
@@ -114,7 +114,7 @@ public class NotificationUtils {
                         .setContentTitle(title)
                         .setContentIntent(resultPendingIntent)
                         .setStyle(inboxStyle)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_stat_name)
                         .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                         .setContentText(message)
                         .setVisibility(VISIBILITY_PUBLIC).build();
@@ -127,7 +127,7 @@ public class NotificationUtils {
                         .setContentTitle(title)
                         .setContentIntent(resultPendingIntent)
                         .setStyle(inboxStyle)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_stat_name)
                         .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                         .setContentText(message)
                         .setVisibility(VISIBILITY_PUBLIC).build();

@@ -33,7 +33,7 @@ android {
         applicationId "chat.wewe.android"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 56
+        versionCode 58
         versionName "1.6.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
