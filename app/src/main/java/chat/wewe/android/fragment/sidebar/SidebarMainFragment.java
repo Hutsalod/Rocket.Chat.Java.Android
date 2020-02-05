@@ -207,11 +207,19 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   public void onResume() {
     super.onResume();
     presenter.bindView(this);
+    if(callstatic==5) {
+      callstatic=0;
+      setupLogoutButtons();
+    }
   }
 
   @Override
   public void onPause() {
     presenter.release();
+    if(callstatic==5) {
+      callstatic=0;
+      setupLogoutButtons();
+    }
     super.onPause();
   }
 
@@ -286,6 +294,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
 
     });
+
 
 
     switch1 = (SwitchCompat) rootView.findViewById(R.id.deviceprivat);
@@ -579,6 +588,10 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
   //  this.getActivity().finish();
     });
+  }
+
+  private void setupLogoutButtons() {
+    presenter.onLogout();
   }
 
   private void closeUserActionContainer() {

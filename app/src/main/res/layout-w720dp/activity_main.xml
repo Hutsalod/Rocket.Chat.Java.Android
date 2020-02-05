@@ -121,22 +121,23 @@
                     android:id="@+id/EditTextName"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/edit_2"
+                    android:ellipsize="end"
                     android:ems="10"
                     android:gravity="center"
-                    android:hint="***"
-                    android:inputType="number"
+                    android:hint="Номер в международном формате"
+                    android:inputType="phone"
                     android:textColor="#909092"
                     android:textColorHint="#909092" />
 
                 <GridLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center|center_horizontal"
                     android:columnCount="3"
                     android:rowCount="5">
 
@@ -300,11 +301,12 @@
                         android:id="@+id/btn13"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="15dp"
                         android:background="@drawable/ic_contacts"
+                        android:gravity="center_horizontal"
                         android:onClick="helpB"
                         android:textColor="#191919"
                         android:textSize="20sp" />
@@ -313,11 +315,12 @@
                         android:id="@+id/btn14"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="15dp"
                         android:background="@drawable/ic_call"
+                        android:gravity="center_horizontal"
                         android:onClick="helpB"
                         android:textColor="#191919"
                         android:textSize="20sp" />
@@ -326,11 +329,12 @@
                         android:id="@+id/btn15"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="15dp"
                         android:background="@drawable/ic_backspace_black_24dp"
+                        android:gravity="center_horizontal"
                         android:onClick="helpB"
                         android:textColor="#191919"
                         android:textSize="20sp" />
@@ -441,6 +445,16 @@
                 android:layout_gravity="center"
                 android:orientation="horizontal"
                 android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/task"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="Button"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_sort_black_24dp" />
 
                 <ImageView
                     android:id="@+id/BtnCall"

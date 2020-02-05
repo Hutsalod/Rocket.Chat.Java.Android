@@ -55,6 +55,7 @@ import static  chat.wewe.android.Constants.SKU_DELAROY_SIXMONTH;
 import static  chat.wewe.android.Constants.SKU_DELAROY_THREEMONTH;
 import static  chat.wewe.android.Constants.SKU_DELAROY_YEARLY;
 import static  chat.wewe.android.Constants.base64EncodedPublicKey;
+import static chat.wewe.android.activity.Intro.callstatic;
 import static chat.wewe.android.activity.Intro.subscription;
 
 
@@ -138,7 +139,6 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
             @Override
             public void onClick(View widget) {
                 finish();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         };
         SpannableString ss = new SpannableString(textView.getText().toString());
@@ -149,8 +149,8 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
     }
 
     public void exit(View view) {
+        callstatic = 5;
         finish();
-        startActivity(new Intent(getApplication(), MainActivity.class));
     }
 
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {

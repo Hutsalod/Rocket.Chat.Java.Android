@@ -411,10 +411,11 @@ public class MethodCallHelper {
               .put("taskText", taskText)
               .put("username", username)
               .put("responsible", responsible);
-
+      Log.d("XSWQAZ",""+messageJson);
       return AddTask(messageJson);
 
     } catch (JSONException exception) {
+      Log.d("XSWQAZ","ERRRO"+exception);
       return Task.forError(exception);
     }
   }

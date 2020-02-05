@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import chat.wewe.android.R;
 import static android.content.Context.MODE_PRIVATE;
 import static chat.wewe.android.activity.Intro.callSet;
 import static chat.wewe.android.activity.Intro.callstatic;
+import static chat.wewe.android.activity.Intro.subscription;
 import static chat.wewe.android.activity.MainActivity.navigation;
 import static chat.wewe.android.activity.MainActivity.recyclerViews;
 import static chat.wewe.android.activity.MainActivity.setContact;
@@ -91,10 +93,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
                     @Override
                     public void onClick(View view) {
                     if(setContact == 0) {
-                        callstatic = 2;
-                        getName = holder.number.getText().toString();
-                        callSet = false;
-                        mContext.startActivity(new Intent(mContext, chat.wewe.android.ui.MainActivity.class));
+                        if (subscription==true) {
+                            callstatic = 2;
+                            getName = holder.number.getText().toString();
+                            callSet = false;
+                            mContext.startActivity(new Intent(mContext, chat.wewe.android.ui.MainActivity.class));
+                        }else {
+                            Toast.makeText(mContext,"У вас нет доступа!",Toast.LENGTH_LONG).show();
+                        }
                     }else {
                         mContext.getSharedPreferences("NameConntact", MODE_PRIVATE)
                                 .edit()

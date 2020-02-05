@@ -54,6 +54,8 @@ import chat.wewe.android.api.UtilsApiChat;
 import chat.wewe.android.fragment.chatroom.dialog.FileUploadProgressDialogFragment;
 import chat.wewe.android.fragment.chatroom.dialog.MessageOptionsDialogFragment;
 import chat.wewe.android.fragment.chatroom.dialog.UsersOfRoomDialogFragment;
+import chat.wewe.android.fragment.sidebar.dialog.AddChannelDialogFragment;
+import chat.wewe.android.fragment.sidebar.dialog.AddTaskFragment;
 import chat.wewe.android.helper.AbsoluteUrlHelper;
 import chat.wewe.android.helper.FileUploadHelper;
 import chat.wewe.android.helper.LoadMoreScrollListener;
@@ -283,6 +285,14 @@ public class RoomFragment extends AbstractChatRoomFragment implements
         }
       }
     };
+
+    task.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+      //  AddTask("k1","k2","k3");
+        openDialog();
+      }
+    });
 
     setupSideMenu();
     setupMessageComposer();
@@ -680,17 +690,17 @@ Log.d("MSG1","MSGLOG");
       animateHide(BtnCall);
       animateHide(btnVideoCall);
       animateHide(task);
-      Log.d("yhntgb","TYPE  TYPE_CHANNEL");
+      Log.d("yhntgb","TYPE  TYPE_CHANNEL"+roomId);
     } else if (Room.TYPE_PRIVATE.equals(type)) {
       animateShow(task);
       animateHide(BtnCall);
       animateHide(btnVideoCall);
-      Log.d("yhntgb","TYPE  TYPE_PRIVATE");
+      Log.d("yhntgb","TYPE  TYPE_PRIVATE"+roomId);
     } else if (Room.TYPE_DIRECT_MESSAGE.equals(type)) {
       animateShow(BtnCall);
       animateShow(btnVideoCall);
       animateHide(task);
-      Log.d("yhntgb","TYPE  TYPE_DIRECT_MESSAGE");
+      Log.d("yhntgb","TYPE  TYPE_DIRECT_MESSAGE"+roomId);
 
     } else {
       Log.d("yhntgb","TYPE  ELSE");
@@ -795,6 +805,9 @@ Log.d("MSG1","MSGLOG");
     Log.d("TREWQ","REWQ "+roomId+" "+userId);
   }
 
+
+
+
   public void onCopy(Message message) {
 
     try {
@@ -805,6 +818,11 @@ Log.d("MSG1","MSGLOG");
     } catch (Exception exception) {
     }
 
+  }
+
+  public void openDialog() {
+    AddTaskFragment exampleDialog = AddTaskFragment.newInstance(roomId);
+    exampleDialog.show(getActivity().getSupportFragmentManager(), "example dialog");
   }
 
 }

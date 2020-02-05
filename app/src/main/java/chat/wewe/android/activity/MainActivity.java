@@ -637,14 +637,18 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       case R.id.btn14:
         getName = EditTextName.getText().toString().replace("+", "").replaceAll("[^0-9\\.]", "");
           if(!EditTextName.getText().toString().substring(1,2).equals("0") && EditTextName.getText().toString().length()>3) {
+            if (subscription==true) {
               if(EditTextName.getText().toString().indexOf("+")<0)
                   EditTextName.setText("+"+EditTextName.getText().toString());
             callSet = false;
             startActivity(callInt);
             setInsertButton();
             setnupad = 1;
+          }else {
+            Toast.makeText(getApplicationContext(),"У вас нет доступа!",Toast.LENGTH_LONG).show();
+          }
         }else {
-            Toast.makeText(getApplication(), "Неверный формат международного телефонного номера",
+            Toast.makeText(getApplicationContext(), "Неверный формат международного телефонного номера",
                     Toast.LENGTH_SHORT).show();
 
           }
@@ -673,6 +677,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     if (presenter != null) {
       presenter.bindViewOnly(this);
     }
+
+
   }
 
   @Override
@@ -825,7 +831,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           setting.setVisibility(GONE);
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
-            finish();
           }
           setContact = 0;
           return true;
@@ -838,7 +843,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           requestContactsPermissions();
           if(SipData.getString("INNER_GROUP", "false").equals("false")){
             startActivity(new Intent(getApplicationContext(), Success.class));
-            finish();
           }
 
           return true;

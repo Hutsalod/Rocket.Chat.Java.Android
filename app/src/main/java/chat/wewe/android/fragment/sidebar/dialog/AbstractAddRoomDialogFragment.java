@@ -56,6 +56,10 @@ public abstract class AbstractAddRoomDialogFragment extends RxAppCompatDialogFra
     }
   }
 
+  protected final  void taskCreate(String roomId, String name, String taskText, String username,String responsible){
+    methodCall.AddTask(roomId,name,taskText,username,responsible);
+  }
+
   protected abstract Task<Void> getMethodCallForSubmitAction();
 
   protected final void createRoom() {
