@@ -447,6 +447,16 @@
                 android:visibility="gone">
 
                 <ImageView
+                    android:id="@+id/task"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="Button"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_sort_black_24dp" />
+
+                <ImageView
                     android:id="@+id/BtnCall"
                     android:layout_width="26dp"
                     android:layout_height="26dp"

@@ -399,6 +399,118 @@ public class MethodCallHelper {
     }
   }
 
+
+  //Добавить задачу
+  public Task<Void> AddTask(String roomId, String name, String taskText, String username,String responsible) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", roomId)
+              .put("name", name)
+              .put("taskText", taskText)
+              .put("username", username)
+              .put("responsible", responsible);
+
+      return AddTask(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+  //Получить список задач для канала
+  public Task<Void> getTask(String roomId) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", roomId);
+
+      return AddTask(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+
+  //Добавить сообщение к задаче
+  public Task<Void> AddMsgToTask(String roomId,String numberId,String message) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", roomId)
+              .put("numberId", numberId)
+              .put("message", numberId);
+      return AddMsgToTask(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+  //Редактировать задачу
+  public Task<Void> updateTask(String roomId,String numberId,String message) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", roomId)
+              .put("numberId", numberId)
+              .put("message", numberId);
+      return updateTask(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+  //Закрыть задачу
+  public Task<Void> closeTask(String roomId,String numberId,String message) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", roomId)
+              .put("numberId", numberId)
+              .put("username", numberId);
+      return closeTask(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+  //Вспомогательные методы
+  public Task<Void> getLastMessageByRoomId(String roomId,String numberId,String message) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", roomId);
+      return getLastMessageByRoomId(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+  //Получить всех пользователей в канале
+  public Task<Void> getUsersByRoomId(String roomId,String numberId,String message) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", roomId);
+      return getUsersByRoomId(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
   public Task<Void> sendMessageTime(String messageId, String roomId, String msg, long editedAt) {
     try {
 
@@ -415,6 +527,8 @@ public class MethodCallHelper {
       return Task.forError(exception);
     }
   }
+
+
 
   public Task<Void> deleteMessage(String messageID) {
     try {
@@ -450,6 +564,42 @@ public class MethodCallHelper {
   private Task<Void> sendMessage(final JSONObject messageJson) {
     return call("sendMessage", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
         .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> AddTask(final JSONObject messageJson) {
+    return call("AddTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> getTask(final JSONObject messageJson) {
+    return call("getTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> AddMsgToTask(final JSONObject messageJson) {
+    return call("AddMsgToTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> updateTask(final JSONObject messageJson) {
+    return call("updateTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> closeTask(final JSONObject messageJson) {
+    return call("closeTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> getLastMessageByRoomId(final JSONObject messageJson) {
+    return call("getLastMessageByRoomId", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+
+  private Task<Void> getUsersByRoomId(final JSONObject messageJson) {
+    return call("rid", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
   }
 
   private Task<Void> sendMessageTime(final JSONObject messageJson,final  String Id) {

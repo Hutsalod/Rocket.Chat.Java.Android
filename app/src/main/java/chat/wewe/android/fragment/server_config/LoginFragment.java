@@ -283,7 +283,7 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
                        onLineIntent.putExtra(PortSipService.EXTRA_PUSHTOKEN, FirebaseInstanceId.getInstance().getToken());
                        onLineIntent.setAction(PortSipService.ACTION_SIP_REGIEST);
 
-                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                          getContext().startForegroundService(onLineIntent);
                        }else{
                          getContext().startService(onLineIntent);

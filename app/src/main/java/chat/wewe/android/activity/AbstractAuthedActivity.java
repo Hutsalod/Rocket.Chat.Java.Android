@@ -238,6 +238,7 @@ abstract class AbstractAuthedActivity extends AbstractFragmentActivity {
           @Override
           public void onFinish() {
             recyclerViews.findViewHolderForAdapterPosition(0).itemView.performClick();
+            cancel();
           }
         };
         countDownTimer.start();

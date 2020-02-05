@@ -153,7 +153,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   public static LinearLayout callUsers;
   public static AppCompatAutoCompleteTextView editText;
   public static RecyclerView recyclerViews;
-  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users;
+  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users,task;
   public  ImageView statusUsers,statusUsers2,statusUsers3,statusUsers4, btnSearch;
   public static   TextView current_user_name;
   private CountDownTimer countDownTimer;
@@ -233,6 +233,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     editText = (AppCompatAutoCompleteTextView) findViewById(R.id.editText);
     current_user_name = (TextView) findViewById(R.id.current_user_name);
     callUsers = (LinearLayout) findViewById(R.id.callUsers);
+    task = (ImageView) findViewById(R.id.task);
     BtnCall = (ImageView) findViewById(R.id.BtnCall);
     btnSearch = (ImageView) findViewById(R.id.btnSearch);
     statusUsers = (ImageView) findViewById(R.id.stanUsers);
@@ -421,6 +422,9 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         }
       }
     });
+
+   Boolean startRoom = getIntent().getBooleanExtra("startRoom",false);
+   if(startRoom) openPushRoom();
 
   }
 
@@ -889,16 +893,12 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     chat.setLayoutParams(layoutParams);
     navigation.setVisibility(VISIBLE);*/
     showFragment(RoomFragment.create(hostname,roomId));
-    animateShow(activity_main_container);
     animateHide(activity_main_container);
     animateShow(recyclerViews);
     animateShow(editText);
-    animateShow(nazad);
     animateHide(nazad);
     animateShow(btnCreate);
-    animateShow(callUsers);
     animateHide(callUsers);
-    animateShow(statusRoom);
     animateHide(statusRoom);
 
     current_user_name.setText("Сообщения");
@@ -939,6 +939,9 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   public void showConnecting() {
     StatusU=7;
     UserStatus();
+   /* statusTicker.updateStatus(StatusTicker.STATUS_TOKEN_LOGIN,
+            Snackbar.make(findViewById(getLayoutContainerForFragment()),
+                    R.string.server_config_activity_authenticating, Snackbar.LENGTH_INDEFINITE));*/
   }
 
   @Override
@@ -1121,7 +1124,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     }
 
   public void getStatus(){
-    mApiService.getStatusUsers()
+   mApiService.getStatusUsers()
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -1238,6 +1241,21 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       }
     }
     return super.dispatchKeyEvent(event);
+  }
+
+  public void openPushRoom(){
+    CountDownTimer countDownTimer = new CountDownTimer(2000, 1000) {
+      @Override
+      public void onTick(long millisUntilFinished) {
+      }
+
+      @Override
+      public void onFinish() {
+        recyclerViews.findViewHolderForAdapterPosition(0).itemView.performClick();
+        cancel();
+      }
+    };
+    countDownTimer.start();
   }
 
 }

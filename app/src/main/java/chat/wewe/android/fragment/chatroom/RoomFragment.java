@@ -110,6 +110,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static chat.wewe.android.activity.MainActivity.BtnCall;
+import static chat.wewe.android.activity.MainActivity.btnVideoCall;
+import static chat.wewe.android.activity.MainActivity.task;
 import static chat.wewe.android.ui.VideoFragment.callSed;
 
 /**
@@ -672,12 +677,23 @@ Log.d("MSG1","MSGLOG");
     String type = room.getType();
     roomType = room.getType();
     if (Room.TYPE_CHANNEL.equals(type)) {
-      setToolbarRoomIcon(R.drawable.ic_hashtag_gray_24dp);
+      animateHide(BtnCall);
+      animateHide(btnVideoCall);
+      animateHide(task);
+      Log.d("yhntgb","TYPE  TYPE_CHANNEL");
     } else if (Room.TYPE_PRIVATE.equals(type)) {
-      setToolbarRoomIcon(R.drawable.ic_lock_gray_24dp);
+      animateShow(task);
+      animateHide(BtnCall);
+      animateHide(btnVideoCall);
+      Log.d("yhntgb","TYPE  TYPE_PRIVATE");
     } else if (Room.TYPE_DIRECT_MESSAGE.equals(type)) {
-      setToolbarRoomIcon(R.drawable.ic_at_gray_24dp);
+      animateShow(BtnCall);
+      animateShow(btnVideoCall);
+      animateHide(task);
+      Log.d("yhntgb","TYPE  TYPE_DIRECT_MESSAGE");
+
     } else {
+      Log.d("yhntgb","TYPE  ELSE");
       setToolbarRoomIcon(0);
     }
     setToolbarTitle(room.getName());
@@ -689,6 +705,24 @@ Log.d("MSG1","MSGLOG");
     previousUnreadMessageExists = unreadMessageExists;
 
 
+  }
+
+  private void animateHide(final View view) {
+    view.animate().scaleX(0).scaleY(0).setDuration(150).withEndAction(new Runnable() {
+      @Override
+      public void run() {
+        view.setVisibility(GONE);
+      }
+    });
+  }
+
+  private void animateShow(final View view) {
+    view.animate().scaleX(1).scaleY(1).setDuration(150).withStartAction(new Runnable() {
+      @Override
+      public void run() {
+        view.setVisibility(VISIBLE);
+      }
+    });
   }
 
   @Override

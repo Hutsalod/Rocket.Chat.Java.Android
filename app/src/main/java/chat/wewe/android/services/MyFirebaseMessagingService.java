@@ -96,7 +96,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationVO.setActionDestination(actionDestination);
 
             Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-
+            resultIntent.putExtra("startRoom",true);
             NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
 
             notificationUtils.displayNotification(notificationVO, resultIntent);
