@@ -1,12 +1,15 @@
 package chat.wewe.android.ui;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +24,27 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.portsip.PortSIPVideoRenderer;
 import com.portsip.PortSipEnumDefine;
 import com.portsip.PortSipSdk;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import chat.wewe.android.R;
 import chat.wewe.android.RocketChatApplication;
+import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.JoinWeWe;
 import chat.wewe.android.api.MethodCallHelper;
+import chat.wewe.android.api.UtilsApi;
 import chat.wewe.android.fragment.chatroom.RoomContract;
 import chat.wewe.android.fragment.chatroom.RoomFragment;
 import chat.wewe.android.fragment.chatroom.RoomPresenter;
@@ -47,9 +59,14 @@ import chat.wewe.core.interactors.MessageInteractor;
 import chat.wewe.persistence.realm.repositories.RealmMessageRepository;
 import chat.wewe.persistence.realm.repositories.RealmRoomRepository;
 import chat.wewe.persistence.realm.repositories.RealmUserRepository;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 import static android.content.Context.MODE_PRIVATE;
+import static chat.wewe.android.activity.Intro.TOKEN_RC;
 import static chat.wewe.android.activity.Intro.callCout;
 import static chat.wewe.android.activity.Intro.callSet;
 import static chat.wewe.android.activity.Intro.callstatic;
@@ -113,10 +130,11 @@ private int st = 0;
         etSipNum.setText(getName);
         Log.d("REWQ","true"+getName);
         headers.put("guid",    "8D31B96A-02AC-4531-976F-A455686F8FE2");
+        Toast.makeText(getActivity(),"ggg",Toast.LENGTH_LONG);
       if(getName!=null) {
 
           if (callstatic == 1 && setnupad == 1) {
-              JoinWeWe.postCallvoip(getApplicationContext(), getName);
+              postCallvoip(getApplicationContext(), getName);
               if (application.mEngine == null)
                   return;
               PortSipSdk portSipSdk = application.mEngine;
@@ -163,7 +181,7 @@ private int st = 0;
 
           }
           if (callstatic == 1 && setnupad == 2) {
-              JoinWeWe.postCallvoip(getApplicationContext(), getName);
+              postCallvoip(getApplicationContext(), getName);
               if (application.mEngine == null)
                   return;
               PortSipSdk portSipSdk = application.mEngine;
@@ -687,5 +705,41 @@ private int st = 0;
                 }
                 break;
         }
+    }
+
+    public  void postCallvoip(Context Context, String NAME){
+        SharedPreferences SipData;
+        BaseApiService mApiService = UtilsApi.getAPIService();
+        SipData = Context.getSharedPreferences("SIP", MODE_PRIVATE);
+        Log.d("TREWQ",""+ UUID.randomUUID().toString()+" "+NAME);
+        Map<String, Object> jsonParams = new ArrayMap<>();
+        jsonParams.put("GUID", UUID.randomUUID().toString());
+        jsonParams.put("LOGIN_TO", NAME);
+        mApiService.postCallvoip("KEY:"+SipData.getString("TOKENWE",""),jsonParams)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()){
+                            try {
+                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                                Log.d("TREWQ",""+jsonRESULTS+" "+jsonRESULTS.getJSONObject("result").getString("ERROR"));
+                                if(jsonRESULTS.getJSONObject("result").getString("SUCCESS").equals("false")) {
+                                    Toast toast = Toast.makeText(getActivity(), jsonRESULTS.getJSONObject("result").getString("ERROR"), Toast.LENGTH_LONG);
+                                    toast.setGravity(Gravity.CENTER, 0, 50);
+                                    toast.show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    }
+                });
     }
 }

@@ -271,6 +271,8 @@ without your confirmation.</string>
 
         <string name="language_4">Український</string>
 
+    <string name="erro_call">Nicht gefundener Benutzer</string>
+
         <string name = "subscription_period_prompt"> Wählen Sie einen Abonnementzeitraum aus </string>
 
         <string name = "subscription_resignup_prompt"> Um das Abonnement erneut zu aktivieren, wählen Sie den Abonnementzeitraum aus. </string>

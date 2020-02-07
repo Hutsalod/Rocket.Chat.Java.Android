@@ -7,12 +7,12 @@ import org.json.JSONObject;
 
 public class ServerPolicyHelper {
 
-  private static final String DEFAULT_HOST = ".rocket.chat";
+  private static final String DEFAULT_HOST = "chat.weltwelle.com";
   private static final String VERSION_PROPERTY = "version";
 
   public static String enforceHostname(String hostname) {
     if (hostname == null) {
-      return "chat.weltwelle.com";
+      return "https://chat.weltwelle.com";
     }
 
     return removeTrailingSlash(removeProtocol(enforceDefaultHost(hostname)));

@@ -16,6 +16,8 @@ import chat.wewe.android.helper.TextUtils;
 /**
  * add Channel, add Private-group.
  */
+
+
 public class AddChannelDialogFragment extends AbstractAddRoomDialogFragment {
 
   public AddChannelDialogFragment() {
@@ -44,11 +46,11 @@ public class AddChannelDialogFragment extends AbstractAddRoomDialogFragment {
             .map(text -> !TextUtils.isEmpty(text))
             .compose(bindToLifecycle())
             .subscribe(
-                buttonAddChannel::setEnabled,
-                Logger::report
+                    buttonAddChannel::setEnabled,
+                    Logger::report
             );
 
- //   buttonAddChannel.setOnClickListener(view -> createRoom());
+       buttonAddChannel.setOnClickListener(view -> createRoom());
   }
 
   private boolean isChecked(int viewId) {
@@ -70,3 +72,5 @@ public class AddChannelDialogFragment extends AbstractAddRoomDialogFragment {
     }
   }
 }
+
+

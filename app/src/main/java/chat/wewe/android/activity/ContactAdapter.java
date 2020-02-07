@@ -29,7 +29,7 @@ import static chat.wewe.android.fragment.sidebar.SidebarMainFragment.getName;
 /**
  * Created by incred-dev on 6/7/18.
  */
-
+import static chat.wewe.android.activity.MainActivity.setnupad;
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHolder>{
 
     private List<ContactModel> contactModelList;
@@ -94,6 +94,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
                     public void onClick(View view) {
                     if(setContact == 0) {
                         if (subscription==true) {
+                            setnupad = 1;
                             callstatic = 2;
                             getName = holder.number.getText().toString();
                             callSet = false;

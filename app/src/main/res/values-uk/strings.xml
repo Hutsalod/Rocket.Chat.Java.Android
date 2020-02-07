@@ -273,6 +273,8 @@ without your confirmation.</string>
 
         <string name = "language_4"> Український </string>
 
+    <string name="erro_call">Не найдено користувача</string>
+
         <string name = "subscription_period_prompt"> Оберіть період підписки </string>
 
         <string name = "subscription_resignup_prompt"> Щоб знову активувати підписку, виберіть період підписки. </string>

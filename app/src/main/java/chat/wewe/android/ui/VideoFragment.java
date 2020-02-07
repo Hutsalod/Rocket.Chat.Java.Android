@@ -397,8 +397,12 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 		String action = intent == null ? "" : intent.getAction();
 		if (PortSipService.CALL_CHANGE_ACTION.equals(action))
 		{
+
 			long sessionId = intent.getLongExtra(PortSipService.EXTRA_CALL_SEESIONID, Session.INVALID_SESSION_ID);
+
+			Log.d("SIPCALL","sessionId "+sessionId);
 			String status = intent.getStringExtra(PortSipService.EXTRA_CALL_DESCRIPTION);
+			Log.d("SIPCALL","sessionId "+status);
 			if(status.equals("1")) {
 					getActivity().finish();
 			}else if(status.indexOf("onInviteFailure")>=0) {
@@ -408,6 +412,7 @@ public class VideoFragment extends BaseFragment implements View.OnClickListener 
 			}
 
 			Session session = CallManager.Instance().findSessionBySessionID(sessionId);
+			Log.d("SIPCALL","sessionId "+session);
 			Log.d("XSWQAZ","session "+session);
 			if (session.state != null)
 			{

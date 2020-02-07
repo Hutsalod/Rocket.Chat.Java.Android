@@ -275,6 +275,8 @@ without your confirmation.</string>
 
     <string name="language_4">Український</string>
 
+    <string name="erro_call">Not found user</string>
+
     <string name="subscription_period_prompt">Выберите период подписки</string>
 
     <string name="subscription_resignup_prompt">Чтобы снова активировать подписку, выберите период подписки.</string>

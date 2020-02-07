@@ -251,12 +251,14 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
 
 
-
     statusTicker = new StatusTicker();
     setupSidebar();
     setDataToAdapter();
     navigation.setSelectedItemId(R.id.action_chat);
     Log.d("XSWQAZ","ADD ");
+
+    if(SipData.getString("INNER_GROUP", "false").equals("true"))
+      subscription=true;
     BtnCall.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -376,21 +378,10 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     UF_ORIGINAL_TRID();
     UserStatus();
 
-    countDownTimer = new CountDownTimer(15000, 1000) {
-      @Override
-      public void onTick(long millisUntilFinished) {
-          getStatus();
-      }
-      @Override
-      public void onFinish() {
-        countDownTimer.start();
-      }
-    };
-    countDownTimer.start();
 
 
    if(SipData.getString("UF_SIP_NUMBER", "")!="" && callstatic==0 && StatusU>=4) {
-     SaveUserInfo();
+    /* SaveUserInfo();
              Intent onLineIntent = new Intent(getBaseContext(), PortSipService.class);
         onLineIntent.setAction(PortSipService.ACTION_SIP_REGIEST);
 
@@ -398,12 +389,10 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                 getBaseContext().startForegroundService(onLineIntent);
         }else{
           getBaseContext().startService(onLineIntent);
-        }
+        }*/
     }
 
     EditTextName.addTextChangedListener(new TextWatcher() {
-      // ...
-
 
       @Override
       public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -490,7 +479,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       case R.id.item3:
         showFragment(ListFileFragment.create(hostname, roomId));
         return true;
-
       case R.id.item5:
         setContact = 1;
         navigation.setSelectedItemId(R.id.action_group);
@@ -511,8 +499,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     createRoom();
   }
 
-
-
   private void animateHide(final View view) {
     view.animate().scaleX(0).scaleY(0).setDuration(150).withEndAction(new Runnable() {
       @Override
@@ -530,11 +516,10 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       }
     });
   }
-  public void openDialog() {
-    AddChannelDialogFragment exampleDialog = new AddChannelDialogFragment();
-    exampleDialog.show(getSupportFragmentManager(), "example dialog");
-  }
 
+  public void openDialog() {
+    AddChannelDialogFragment.create(hostname).show(getSupportFragmentManager(), "example dialog");
+  }
 
   private void saveData() {
     SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
@@ -637,7 +622,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       case R.id.btn14:
         getName = EditTextName.getText().toString().replace("+", "").replaceAll("[^0-9\\.]", "");
           if(!EditTextName.getText().toString().substring(1,2).equals("0") && EditTextName.getText().toString().length()>3) {
-            if (subscription==true) {
+            if(SipData.getString("INNER_GROUP", "false").equals("true")) {
               if(EditTextName.getText().toString().indexOf("+")<0)
                   EditTextName.setText("+"+EditTextName.getText().toString());
             callSet = false;
@@ -650,7 +635,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         }else {
             Toast.makeText(getApplicationContext(), "Неверный формат международного телефонного номера",
                     Toast.LENGTH_SHORT).show();
-
           }
 
         break;
@@ -659,9 +643,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
         EditTextName.setText(new StringBuffer(EditTextName.getText().toString()).delete(EditTextName.getText().toString().length()-1,EditTextName.getText().toString().length()));
         break;
     }
-
-
-
   }
 
   @Override
@@ -677,8 +658,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     if (presenter != null) {
       presenter.bindViewOnly(this);
     }
-
-
   }
 
   @Override
@@ -775,7 +754,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     );
 
     updateSidebarMainFragment();
-
     presenter.bindView(this);
   }
 
@@ -829,9 +807,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           call.setVisibility(VISIBLE);
           contacts.setVisibility(GONE);
           setting.setVisibility(GONE);
-          if(SipData.getString("INNER_GROUP", "false").equals("false")){
-            startActivity(new Intent(getApplicationContext(), Success.class));
-          }
           setContact = 0;
           return true;
         case R.id.action_group:
@@ -841,10 +816,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           setting.setVisibility(GONE);
           contactModelList.clear();
           requestContactsPermissions();
-          if(SipData.getString("INNER_GROUP", "false").equals("false")){
-            startActivity(new Intent(getApplicationContext(), Success.class));
-          }
-
           return true;
         case R.id.action_setting:
           chat.setVisibility(GONE);
@@ -890,12 +861,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 }
 
   public void nazad(View view) {
- /*   RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) chat
-            .getLayoutParams();
-
-    layoutParams.setMargins(0, 0, 0, 60);
-    chat.setLayoutParams(layoutParams);
-    navigation.setVisibility(VISIBLE);*/
     showFragment(RoomFragment.create(hostname,roomId));
     animateHide(activity_main_container);
     animateShow(recyclerViews);
@@ -937,20 +902,21 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                     R.string.fragment_retry_login_error_title, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.fragment_retry_login_retry_title, view ->
                             presenter.onRetryLogin()));
+    StatusU=0;
+    UserStatus();
   }
 
   @Override
   public void showConnecting() {
     StatusU=7;
     UserStatus();
-   /* statusTicker.updateStatus(StatusTicker.STATUS_TOKEN_LOGIN,
-            Snackbar.make(findViewById(getLayoutContainerForFragment()),
-                    R.string.server_config_activity_authenticating, Snackbar.LENGTH_INDEFINITE));*/
   }
 
   @Override
   public void showConnectionOk() {
     statusTicker.updateStatus(StatusTicker.STATUS_DISMISS, null);
+    StatusU=8;
+    UserStatus();
   }
 
   //TODO: consider this class to define in layouthelper for more complicated operation.
@@ -1127,27 +1093,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                 });
     }
 
-  public void getStatus(){
-   mApiService.getStatusUsers()
-            .enqueue(new Callback<ResponseBody>() {
-              @Override
-              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()){
-                  StatusU=8;
-                } else {
-                  StatusU=0;
-                }
-              }
-              @Override
-              public void onFailure(Call<ResponseBody> call, Throwable t) {
-                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
-                StatusU=0;
-
-              }
-            });
-    UserStatus();
-  }
-
   public void getBlacklistAdd(String UF_ROCKET_LOGIN){
     SipData = getSharedPreferences("SIP", MODE_PRIVATE);
     Map<String, Object> jsonParams = new ArrayMap<>();
@@ -1178,8 +1123,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
               }
             });
   }
-
-
 
 
   private void UserStatus(){
@@ -1233,8 +1176,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     }
 
   }
-
-
 
   @Override
   public boolean dispatchKeyEvent(KeyEvent event) {

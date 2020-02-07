@@ -42,7 +42,7 @@ import static chat.wewe.android.fragment.chatroom.RoomFragment.userId;
  */
 public class MethodCallHelper {
 
-  protected static final long TIMEOUT_MS = 200000;
+  protected static final long TIMEOUT_MS = 20000;
   protected static final Continuation<String, Task<JSONObject>> CONVERT_TO_JSON_OBJECT =
       task -> Task.forResult(new JSONObject(task.getResult()));
   protected static final Continuation<String, Task<JSONArray>> CONVERT_TO_JSON_ARRAY =
@@ -401,12 +401,13 @@ public class MethodCallHelper {
 
 
   //Добавить задачу
-  public Task<Void> AddTask(String roomId, String name, String taskText, String username,String responsible) {
+  public Task<Void> AddTask(String roomId, String uid,String name, String taskText, String username,String responsible) {
     try {
 
       Log.d("XSWQAZ",""+RealmSession.ID);
       JSONObject messageJson = new JSONObject()
               .put("rid", roomId)
+              .put("uid",uid)
               .put("name", name)
               .put("taskText", taskText)
               .put("username", username)
@@ -424,11 +425,10 @@ public class MethodCallHelper {
   public Task<Void> getTask(String roomId) {
     try {
 
-      Log.d("XSWQAZ",""+RealmSession.ID);
       JSONObject messageJson = new JSONObject()
               .put("rid", roomId);
 
-      return AddTask(messageJson);
+      return getTask(messageJson);
 
     } catch (JSONException exception) {
       return Task.forError(exception);
@@ -568,13 +568,25 @@ public class MethodCallHelper {
   }
 
   private Task<Void> AddTask(final JSONObject messageJson) {
-    return call("AddTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+    return call("addTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
             .onSuccessTask(task -> Task.forResult(null));
   }
 
   private Task<Void> getTask(final JSONObject messageJson) {
-    return call("getTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
-            .onSuccessTask(task -> Task.forResult(null));
+  return   call("getTasks", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+          .onSuccessTask(CONVERT_TO_JSON_ARRAY)
+          .onSuccessTask(task -> {
+            final JSONArray permissions = task.getResult();
+            Log.d("XSWQAZ","ERRRO"+permissions+CONVERT_TO_JSON_ARRAY);
+            for (int i = 0; i < permissions.length(); i++) {
+            }
+
+            return realmHelper.executeTransaction(realm -> {
+              Log.d("XSWQAZ","ERRRO"+permissions);
+              return null;
+            });
+          });
+
   }
 
   private Task<Void> AddMsgToTask(final JSONObject messageJson) {

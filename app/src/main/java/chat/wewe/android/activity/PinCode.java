@@ -105,7 +105,7 @@ public class PinCode extends AppCompatActivity {
         SharedPreferences.Editor ed =  sPref.edit();
         ed.putString("code", EditTextName.getText().toString());
         ed.commit();
-       startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finish();
     }
 
     public void closeKeys(View view) {
@@ -113,7 +113,7 @@ public class PinCode extends AppCompatActivity {
         SharedPreferences.Editor ed = sPref.edit();
         ed.putString("code", "");
         ed.commit();
-    startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     private void EditTextName(){

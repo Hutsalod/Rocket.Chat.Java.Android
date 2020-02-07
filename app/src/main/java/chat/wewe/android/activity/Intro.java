@@ -62,7 +62,7 @@ public class Intro extends AppCompatActivity {
         setLocale(SipData.getString("LANG_APP", ""));
 
         Log.d("getListStatusq", "NAME " + SipData.getString("LANG_APP", ""));
-            countDownTimer = new CountDownTimer(1500, 1000) {
+            countDownTimer = new CountDownTimer(1000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                 }

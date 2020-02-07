@@ -15,29 +15,22 @@ import chat.wewe.android.R;
  * add Channel, add Private-group.
  */
 public class AddTaskFragment extends AbstractAddRoomDialogFragment {
-  public String ActiveNumber = "";
+  public String ActiveNumber = "", userId = "";
   public AddTaskFragment() {
   }
 
-  public static AddTaskFragment create(String hostname) {
+  public static AddTaskFragment create(String hostname,String romid,String userId) {
     Bundle args = new Bundle();
     args.putString("hostname", hostname);
-
-    AddTaskFragment fragment = new AddTaskFragment();
-    fragment.setArguments(args);
-    return fragment;
-  }
-
-  public static AddTaskFragment newInstance(String romid){
-    AddTaskFragment fragment = new AddTaskFragment();
-
-    Bundle args = new Bundle();
     args.putString("romid", romid);
-    //args.putString(FrontActivity.EXTRA_SECTION_COUNTER_NUM, String.valueOf(sectionCounterNumber));
+    args.putString("userId", userId);
 
+    AddTaskFragment fragment = new AddTaskFragment();
     fragment.setArguments(args);
     return fragment;
   }
+
+
 
   @Override
   protected int getLayout() {
@@ -48,14 +41,10 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment {
   @Override
   protected void onSetupDialog() {
     View buttonAddChannel = getDialog().findViewById(R.id.btn_add_channel);
-    TextView nameTaskin = getDialog().findViewById(R.id.nameTaskin);
-    TextView msgTaskin = getDialog().findViewById(R.id.editor_channel_name);
-
-    String textTasks  = nameTaskin.getText().toString();
-    String msgTaskins = msgTaskin.getText().toString();
     ActiveNumber = getArguments().getString("romid");
 
-  //  buttonAddChannel.setOnClickListener(view -> taskCreate(ActiveNumber,textTasks,msgTaskins,"hutsalod",""));
+    buttonAddChannel.setOnClickListener(view -> createRoom());
+    //methodCall.getTask(ActiveNumber);
 
   }
 
@@ -65,9 +54,19 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment {
   protected Task<Void> getMethodCallForSubmitAction() {
 
 
+    TextView nameTaskin = getDialog().findViewById(R.id.nameTaskin);
+    TextView msgTaskin = getDialog().findViewById(R.id.msgTaskin);
+    ActiveNumber = getArguments().getString("romid");
+    userId = getArguments().getString("userId");
 
 
-      return methodCall.AddTask("","","","hutsalod","");
+    Log.d("TASKENTW","TYPE  TYPE_PRIVATE"+ActiveNumber + "" + userId + "" + nameTaskin.getText().toString() + msgTaskin.getText().toString() +"hutsalod");
+
+    if (nameTaskin.getText().length()>0) {
+      return  methodCall.AddTask(ActiveNumber,userId,nameTaskin.getText().toString(), msgTaskin.getText().toString(),"hutsalod","");
+    } else {
+      return  methodCall.AddTask(ActiveNumber,userId,nameTaskin.getText().toString(), msgTaskin.getText().toString(),"hutsalod","");
+    }
 
   }
 

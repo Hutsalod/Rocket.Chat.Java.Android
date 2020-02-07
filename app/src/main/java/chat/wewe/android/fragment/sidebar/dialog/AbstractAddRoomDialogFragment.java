@@ -1,5 +1,6 @@
 package chat.wewe.android.fragment.sidebar.dialog;
 
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -56,17 +57,14 @@ public abstract class AbstractAddRoomDialogFragment extends RxAppCompatDialogFra
     }
   }
 
-  protected final  void taskCreate(String roomId, String name, String taskText, String username,String responsible){
-    methodCall.AddTask(roomId,name,taskText,username,responsible);
-  }
-
   protected abstract Task<Void> getMethodCallForSubmitAction();
 
   protected final void createRoom() {
     showOrHideWaitingView(true);
-
     getMethodCallForSubmitAction().continueWith(task -> {
       showOrHideWaitingView(false);
+      Toast.makeText(getContext(), task.toString(), Toast.LENGTH_SHORT).show();
+
       if (task.isFaulted()) {
         Toast.makeText(getContext(), task.getError().getMessage(), Toast.LENGTH_SHORT).show();
       } else {
@@ -76,3 +74,4 @@ public abstract class AbstractAddRoomDialogFragment extends RxAppCompatDialogFra
     });
   }
 }
+

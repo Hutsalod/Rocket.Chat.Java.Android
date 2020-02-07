@@ -800,12 +800,6 @@ Log.d("MSG1","MSGLOG");
     methodCallHelper.deleteMessage(message.getId());
   }
 
-  public void onUsersMessage(Message message) {
-    methodCallHelper.usersMessage(true,"0",userId,roomId,"r5Dfd8o2GRD7mYXDw");
-    Log.d("TREWQ","REWQ "+roomId+" "+userId);
-  }
-
-
 
 
   public void onCopy(Message message) {
@@ -821,8 +815,7 @@ Log.d("MSG1","MSGLOG");
   }
 
   public void openDialog() {
-    AddTaskFragment exampleDialog = AddTaskFragment.newInstance(roomId);
-    exampleDialog.show(getActivity().getSupportFragmentManager(), "example dialog");
+    AddTaskFragment.create(hostname,roomId,userId).show(getActivity().getSupportFragmentManager(), "example dialog");
   }
 
 }
