@@ -33,7 +33,7 @@ android {
         applicationId "chat.wewe.android"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 60
+        versionCode 61
         versionName "1.6.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -100,7 +100,6 @@ dependencies {
     compile "com.google.firebase:firebase-core:$playLibVersion"
     compile "com.google.firebase:firebase-crash:$playLibVersion"
     compile "com.google.android.gms:play-services-gcm:$playLibVersion"
-    compile 'com.squareup.okhttp3:okhttp:3.8.0'
     compile "com.facebook.stetho:stetho:$stethoVersion"
     compile "com.facebook.stetho:stetho-okhttp3:$stethoVersion"
     compile 'com.uphyca:stetho_realm:2.0.1'

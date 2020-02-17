@@ -273,12 +273,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         eds.commit();
         getStatus(getName);
         animateShow(activity_main_container);
-      /*  RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) chat
-                .getLayoutParams();
-
-        layoutParams.setMargins(0, 0, 0, 0);
-        chat.setLayoutParams(layoutParams);
-        navigation.setVisibility(GONE);*/
       }
 
       @Override
@@ -408,8 +402,12 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       email.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@weltwelle.com"});
       email.putExtra(Intent.EXTRA_SUBJECT, "Support on Android application");
       email.putExtra(Intent.EXTRA_TEXT, "Support");
-      email.setType("message/rfc822");
-      startActivity(Intent.createChooser(email, ""));
+      email.setData(Uri.parse("mailto:"));
+      email.setType("text/plain");
+      try {
+        startActivity(Intent.createChooser(email, ""));
+      } catch (android.content.ActivityNotFoundException ex) {
+      }
     });
 
       rootView.findViewById(R.id.blaclist).setOnClickListener(view -> {
@@ -568,21 +566,15 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   private CompositeDisposable compositeSubscription = new CompositeDisposable();
   private void setupLogoutButton() {
     rootView.findViewById(R.id.btn_logout).setOnClickListener(view -> {
-   Intent offLineIntent = new Intent(getActivity(), PortSipService.class);
-      offLineIntent.setAction(PortSipService.ACTION_SIP_UNREGIEST);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        getActivity().startForegroundService(offLineIntent);
-      }else{
-        getActivity().startService(offLineIntent);
-      }
+
+      getActivity().stopService(new Intent(getActivity(),PortSipService.class));
 
       ed.apply();
       ed.clear();
-      sPrefs.edit().apply();
-      sPrefs.edit().clear();
-      sPref.edit().apply();
-      sPref.edit().clear();
+      ed.commit();
+
       callstatic=0;
+
       closeUserActionContainer();
       presenter.onLogout();
 

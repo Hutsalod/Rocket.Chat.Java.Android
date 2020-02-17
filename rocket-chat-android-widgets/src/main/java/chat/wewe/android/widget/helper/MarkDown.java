@@ -147,7 +147,7 @@ public class MarkDown {
 
 // add a list
 
-        String[] animals = {"Отрыть в брауере", "Скопировать"};
+        String[] animals = {"Открыть в браузере", "Скопировать"};
         builder.setItems(animals, new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {

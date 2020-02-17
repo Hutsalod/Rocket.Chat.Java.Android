@@ -3,7 +3,6 @@ package chat.wewe.android.api;
 import android.content.Context;
 import android.util.Log;
 import android.util.Patterns;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +17,6 @@ import chat.wewe.android.service.ConnectivityManager;
 import chat.wewe.core.models.ServerInfo;
 import chat.wewe.persistence.realm.models.ddp.RealmPermission;
 import chat.wewe.persistence.realm.models.ddp.RealmPublicSetting;
-import chat.wewe.core.SyncState;
 import chat.wewe.persistence.realm.models.ddp.RealmMessage;
 import chat.wewe.persistence.realm.models.ddp.RealmRoom;
 import chat.wewe.persistence.realm.models.ddp.RealmRoomRole;
@@ -32,7 +30,6 @@ import chat.wewe.android.service.DDPClientRef;
 import chat.wewe.android_ddp.DDPClientCallback;
 import hugo.weaving.DebugLog;
 
-import static chat.wewe.android.activity.Intro.TOKEN_RC;
 import static chat.wewe.android.fragment.chatroom.RoomFragment.userId;
 
 /**
@@ -151,6 +148,10 @@ public class MethodCallHelper {
 
         ));
 
+  }
+
+  private Task<Void> fff(Task<String>  task) {
+    return Task.delay(Log.d("XSWQAZ",""+task.getResult()));
   }
 
   /**
@@ -325,12 +326,12 @@ public class MethodCallHelper {
           }
 
           return realmHelper.executeTransaction(realm -> {
-            if (timestamp == 0) {
+           /* if (timestamp == 0) {
               realm.where(RealmMessage.class)
                   .equalTo("rid", roomId)
                   .equalTo("syncstate", SyncState.SYNCED)
                   .findAll().deleteAllFromRealm();
-            }
+            }*/
             if (messages.length() > 0) {
               realm.createOrUpdateAllFromJson(RealmMessage.class, messages);
             }
@@ -422,18 +423,7 @@ public class MethodCallHelper {
   }
 
   //Получить список задач для канала
-  public Task<Void> getTask(String roomId) {
-    try {
 
-      JSONObject messageJson = new JSONObject()
-              .put("rid", roomId);
-
-      return getTask(messageJson);
-
-    } catch (JSONException exception) {
-      return Task.forError(exception);
-    }
-  }
 
 
   //Добавить сообщение к задаче
@@ -469,14 +459,14 @@ public class MethodCallHelper {
   }
 
   //Закрыть задачу
-  public Task<Void> closeTask(String roomId,String numberId,String message) {
+  public Task<Void> closeTask(String roomId,Integer numberId,String username) {
     try {
 
       Log.d("XSWQAZ",""+RealmSession.ID);
       JSONObject messageJson = new JSONObject()
               .put("rid", roomId)
               .put("numberId", numberId)
-              .put("username", numberId);
+              .put("username", username);
       return closeTask(messageJson);
 
     } catch (JSONException exception) {
@@ -498,19 +488,6 @@ public class MethodCallHelper {
     }
   }
 
-  //Получить всех пользователей в канале
-  public Task<Void> getUsersByRoomId(String roomId,String numberId,String message) {
-    try {
-
-      Log.d("XSWQAZ",""+RealmSession.ID);
-      JSONObject messageJson = new JSONObject()
-              .put("rid", roomId);
-      return getUsersByRoomId(messageJson);
-
-    } catch (JSONException exception) {
-      return Task.forError(exception);
-    }
-  }
 
   public Task<Void> sendMessageTime(String messageId, String roomId, String msg, long editedAt) {
     try {
@@ -572,21 +549,9 @@ public class MethodCallHelper {
             .onSuccessTask(task -> Task.forResult(null));
   }
 
-  private Task<Void> getTask(final JSONObject messageJson) {
-  return   call("getTasks", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
-          .onSuccessTask(CONVERT_TO_JSON_ARRAY)
-          .onSuccessTask(task -> {
-            final JSONArray permissions = task.getResult();
-            Log.d("XSWQAZ","ERRRO"+permissions+CONVERT_TO_JSON_ARRAY);
-            for (int i = 0; i < permissions.length(); i++) {
-            }
-
-            return realmHelper.executeTransaction(realm -> {
-              Log.d("XSWQAZ","ERRRO"+permissions);
-              return null;
-            });
-          });
-
+  public Task<JSONArray> getTask(final String status) {
+    return call("getTasks", TIMEOUT_MS, () -> new JSONArray().put(status))
+           .onSuccessTask(CONVERT_TO_JSON_ARRAY);
   }
 
   private Task<Void> AddMsgToTask(final JSONObject messageJson) {
@@ -610,9 +575,9 @@ public class MethodCallHelper {
   }
 
 
-  private Task<Void> getUsersByRoomId(final JSONObject messageJson) {
-    return call("rid", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
-            .onSuccessTask(task -> Task.forResult(null));
+  public Task<JSONArray> getUsersByRoomId(final String messageJson) {
+    return call("getUsersByRoomId", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(CONVERT_TO_JSON_ARRAY);
   }
 
   private Task<Void> sendMessageTime(final JSONObject messageJson,final  String Id) {

@@ -380,8 +380,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
 
 
-   if(SipData.getString("UF_SIP_NUMBER", "")!="" && callstatic==0 && StatusU>=4) {
-    /* SaveUserInfo();
+  /* if(SipData.getString("UF_SIP_NUMBER", "").length()>1 && callstatic==0 && StatusU>=4) {
+    SaveUserInfo();
              Intent onLineIntent = new Intent(getBaseContext(), PortSipService.class);
         onLineIntent.setAction(PortSipService.ACTION_SIP_REGIEST);
 
@@ -389,8 +389,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                 getBaseContext().startForegroundService(onLineIntent);
         }else{
           getBaseContext().startService(onLineIntent);
-        }*/
-    }
+        }
+    }*/
 
     EditTextName.addTextChangedListener(new TextWatcher() {
 
@@ -414,13 +414,13 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
    Boolean startRoom = getIntent().getBooleanExtra("startRoom",false);
    if(startRoom) openPushRoom();
-
+    stopService(new Intent(getApplicationContext(),PortSipService.class));
   }
 
   public void SaveUserInfo() {
     SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplication()).edit();
-    UF_SIP_NUMBER = SipData.getString("UF_SIP_NUMBER", null);
-    UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", null);
+    UF_SIP_NUMBER = SipData.getString("UF_SIP_NUMBER", "");
+    UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", "");
     String UF_SIP_SERVER = SipData.getString("UF_SIP_SERVER", "sip.weltwelle.com");
     editor.putString(PortSipService.USER_NAME, UF_SIP_NUMBER);
     editor.putString(PortSipService.USER_PWD, UF_SIP_PASSWORD);
@@ -766,6 +766,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   @Override
   protected void onRoomIdUpdated() {
     super.onRoomIdUpdated();
+
     presenter.onOpenRoom(hostname, roomId);
   }
 

@@ -63,8 +63,6 @@ public abstract class AbstractAddRoomDialogFragment extends RxAppCompatDialogFra
     showOrHideWaitingView(true);
     getMethodCallForSubmitAction().continueWith(task -> {
       showOrHideWaitingView(false);
-      Toast.makeText(getContext(), task.toString(), Toast.LENGTH_SHORT).show();
-
       if (task.isFaulted()) {
         Toast.makeText(getContext(), task.getError().getMessage(), Toast.LENGTH_SHORT).show();
       } else {
