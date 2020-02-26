@@ -1,74 +1,76 @@
 <resources>
     <string name="app_name">WeWe</string>
-    <string name="fragment_sidebar_main_favorite_title">В избранное</string>
-    <string name="fragment_sidebar_main_channels_title">КАНАЛЫ</string>
-    <string name="fragment_sidebar_main_direct_messages_title">ПРЯМЫЕ СООБЩЕНИЯ</string>
-    <string name="user_status_online">Онлайн</string>
-    <string name="user_status_away">Далеко</string>
-    <string name="user_status_busy">Занятый</string>
-    <string name="user_status_invisible">Невидимый</string>
-    <string name="fragment_sidebar_main_logout_title">Выйти</string>
-    <string name="delete_message">Удалить личною переписку</string>
-    <string name="dialog_add_channel_name_title">НАЗВАНИЕ КАНАЛА</string>
-    <string name="dialog_add_channel_name">Название канала</string>
-    <string name="dialog_add_channel_private">Публичный канал</string>
-    <string name="dialog_add_channel_read_only">Канал только для чтения</string>
-    <string name="menu_1">Чаты</string>
-    <string name="menu_2">Звонки</string>
-    <string name="menu_3">Контакты</string>
-    <string name="menu_4">Настройки</string>
+    <string name="fragment_sidebar_main_favorite_title">Those</string>
+    <string name="fragment_sidebar_main_channels_title">canals</string>
+    <string name="fragment_sidebar_main_direct_messages_title">RIGHTS</string>.
+    <string name="user_status_online">Online</string>
+    <string name="user_status_away">Away</string>
+    <string name="user_status_busy"> Busy</string>
+    <string name="user_status_invisible">Visible</string>
+    <string name="fragment_sidebar_main_logout_title"> Exit</string>.
+    <string name="delete_message"> Delete correspondence personally</string>
+    <string name="dialog_add_channel_name_title">CANAL NAME</string>
+    <string name="dialog_add_channel_name"> Channel name</string>
+    <string name="dialog_add_channel_private">Public channel</string>
+    <string name="dialog_add_channel_read_only">read only channel</string>
+    <string name="menu_1">Chats</string>
+    <string name="menu_2">Calls</string>
+    <string name="menu_3">Contacts</string>
+    <string name="menu_4">Settings</string>
 
 
 
-    <string name="start_of_conversation">Начало разговора</string>
-    <string name="users_of_room_title">Список участников</string>
-    <string name="fmt_room_user_count">Всего: %,d пользователей</string>
-    <string name="sending">Посылка ...</string>
-    <string name="failed_to_sync">Не удалось отправить!</string>
-    <string name="resend">Отправить</string>
-    <string name="discard">Отбрасывать</string>
+
+    <string name="start_of_conversation">Beginning of conversation</string>
+    <string name="users_of_room_title">list of participants</string>
+    <string name="fmt_room_user_count">Total: %,d users</string>
+    <string name="sending">Submission ... </string>
+    <string name="failed_to_sync">Couldn\'t send!</string>
+    <string name="resend">Send</string>
+    <string name="discard">Reverse</string>
 
     <string name="fmt_dialog_view_latest_message_title">New %d messages</string>
-    <string name="dialog_view_latest_message_action">View</string>
+    <string name="dialog_view_latest_message_action">View</string>.
 
-    <string name="file_uploading_title">Загрузка…</string>
+    <string name="file_uploading_title">Download...</string>
 
-    <string name="dialog_user_registration_email">Пароль</string>
-    <string name="dialog_user_registration_username">Имя пользователя</string>
-    <string name="dialog_user_registration_password">Пароль</string>
+    <string name="dialog_user_registration_email"> Password</string>
+    <string name="dialog_user_registration_username">Username</string>
+    <string name="dialog_user_registration_password">Password</string>
     <string name="fragment_home_welcome_message"></string>
     <string name="fragment_input_hostname_hostname">Hostname</string>
     <string name="fragment_input_hostname_server_hint">chat.weltwelle.com</string>
-    <string name="fragment_login_username_or_email">Имя пользователя </string>
-    <string name="fragment_login_password">Пароль</string>
+    <string name="fragment_login_username_or_email">Username </string>
+    <string name="fragment_login_password">Password</string>
     <string name="fragment_retry_login_retry_title">RETRY</string>
-    <string name="fragment_retry_login_error_title">Ошибка соединения</string>
-    <string name="server_config_activity_authenticating">Проверка подлинности ...</string>
-    <string name="home_fragment_title">WeWe - Головна</string>
+    <string name="fragment_retry_login_error_title">Link error</string>
+    <string name="server_config_activity_authenticating">Authenticating ...</string>
+    <string name="home_fragment_title">WeWe - Head</string>
     <string name="fragment_sidebar_main_unread_rooms_title">UNREAD ROOMS</string>
 
-    <string name="doc_upload_message_spec_title">Файл</string>
-    <string name="image_upload_message_spec_title">Изображение</string>
-    <string name="audio_upload_message_spec_title">Аудио</string>
-    <string name="video_upload_message_spec_title">Видео</string>
 
-    <string name="input_hostname_invalid_server_message">Неверная версия сервера</string>
-    <string name="connection_error_try_later">Там ошибка соединения. Пожалуйста, попробуйте позднее.</string>
+
+    <string name="doc_upload_message_spec_title"> File</string>
+    <string name="image_upload_message_spec_title">Picture</string>
+    <string name="audio_upload_message_spec_title">Audio</string>
+    <string name="video_upload_message_spec_title">Video</string>
+
+    <string name="input_hostname_invalid_server_message">wrong server version</string>.
+    <string name="connection_error_try_later">There is a connection error. Please try later.</string>
 
     <string name="version_info_text">Version: %s</string>
-    <string name="two_factor_authentication_title">Двухфакторная аутентификация</string>
-    <string name="open_your_authentication_app_and_enter_the_code">Откройте приложение аутентификации и введите код</string>
-    <string name="two_factor_code">Двухфакторный код</string>
-    <string name="navigation_search_rooms">Поиск комнат</string>
-    <string name="search">Поиск</string>
-    <string name="edit_message">Редактировать сообщение</string>
-    <string name="delet_message">Удалить сообщение</string>
-    <string name="copy_message">Копировать сообщение</string>
-    <string name="message_options_no_message_info">К сожалению. Что-то случилось!</string>
-    <string name="message_options_no_permissions_info">У вас нет разрешений</string>
-    <string name="private_title">WeWe защищает вашу
-        конфиденциальность тщательнее, чем любой другой мессенджер.
-    Побробнее смотрите в Политике конфиденциальности</string>
+    <string name="two_factor_authentication_title">Two-factor authentication</string>
+    <string name="open_your_authentication_app_and_enter_the_code"> Open the authentication application and enter code</string>.
+    <string name="two_factor_code">Two-factor code</string>
+    <string name="navigation_search_rooms">Search for rooms</string>
+    <string name="edit_message">Edit message</string>.
+    <string name="delet_message"> Delete message</string>
+    <string name="copy_message">Copy message</string>
+    <string name="message_options_no_message_info"> Unfortunately. Something has happened!</string>
+    <string name="message_options_no_permissions_info">You have no permissions</string>.
+    <string name="private_title">WeWe protects your
+        confidentiality is more thorough than any other messenger.
+    For more information, see the Privacy Policy.</string>
 
     <!-- Dangerous Permission -->
     <!-- Title of a category of application permissioncds, listed so the user can choose whether they want to allow the application to do this. -->
@@ -241,31 +243,31 @@ without your confirmation.</string>
     <string name="str_fwbusykey">ForwardBusy</string>
     <string name="str_prack">PRACK</string>
     <string name="str_pracktitle">Enable PRACK</string>
-    <string name="str_1"> Связаться с нами </string>
-    <string name="str_2">Отвязать пользователя от WeWe от Google</string>
+    <string name="str_1"> Contact us </string>
+    <string name="str_2">Link user from WeWe to Google</string>
 
-    <string name="str_3">Политика конфиденциальности</string>
-    <string name="str_4">Доступ с неколько устройств</string>
+    <string name="str_3">Privacy policy</string>
+    <string name="str_4">Access from several devices</string>
 
-    <string name="str_5">Защита</string>
+    <string name="str_5">Security</string>
 
-    <string name="str_6">Язык</string>
+    <string name="str_6">Language</string>
 
-    <string name="str_7">Назад</string>
+    <string name="str_7">Back</string>
 
-    <string name="str_8">Отмена</string>
+    <string name="str_8">Cancel</string>
 
-    <string name="str_9">Добавить PIN код</string>
+    <string name="str_9">Add PIN code</string>
 
-    <string name="str_10">Пригласить в WeWe</string>
+    <string name="str_10">Invite to WeWe</string>
 
-    <string name="str_11">Черный список</string>
+    <string name="str_11"> Blacklist</string>
 
-    <string name="str_12">Требуется перезагрузка WeWe</string>
+    <string name="str_12">Reload required WeWe</string>
 
-    <string name="str_13">допускается латиница и цифры</string>
+    <string name="str_13"> Latin and digits</string> are allowed.
 
-    <string name="str_14">Получать уведомления</string>
+    <string name="str_14"> Get notifications</string>
 
     <string name="language_1">Deutsch</string>
 
@@ -275,25 +277,26 @@ without your confirmation.</string>
 
     <string name="language_4">Український</string>
 
-    <string name="erro_call">Not found user</string>
+    <string name="erro_call">No user found</string>
 
-    <string name="subscription_period_prompt">Выберите период подписки</string>
+    <string name="subscription_period_prompt">Select subscription period</string>
 
-    <string name="subscription_resignup_prompt">Чтобы снова активировать подписку, выберите период подписки.</string>
+    <string name="subscription_resignup_prompt">To activate the subscription again, select a subscription period.</string>
 
-    <string name="subscription_update_prompt">Чтобы изменить подписку, выберите новый период подписки.</string>
+    <string name="subscription_update_prompt">To change the subscription, select a new subscription period.</string>
 
-    <string name="subscription_period_monthly">Месяць $3.99</string>
+    <string name="subscription_period_monthly">Month $3.99</string>
 
-    <string name="subscription_period_threemonth">3 Месяца $14.99</string>
-    <string name="subscription_period_sixmonth">6 Месяцов $28.99</string>
-    <string name="subscription_period_yearly">За год $59.99</string>
-    <string name="subscription_prompt_continue">Продолжить</string>
-    <string name="subscription_prompt_cancel">Отмена</string>
-    <string name="content_description_app_loading_image">Загрузка изображения приложения</string>
+
+    <string name="subscription_period_threemonth">3 Months $14.99</string>
+    <string name="subscription_period_sixmonth">6 Months $28.99</string>
+    <string name="subscription_period_yearly">For the year, $59.99</string>
+    <string name="subscription_prompt_continue">Go on </string>
+    <string name="subscription_prompt_cancel">Cancel</string>
+    <string name="content_description_app_loading_image">Upload application image</string>
     <string name="content_description_title_image">80\'s Video Game Style Car Logo</string>
-    <string name="content_desc_gas_gauge_indicator">Индикатор датчика газа</string>
-    <string name="content_desc_free_vs_premium_indicator">Бесплатный или премиум индикатор изображения</string>
+    <string name="content_desc_gas_gauge_indicator">Gas sensor indicator</string>
+    <string name="content_desc_free_vs_premium_indicator">Free or premium image indicator</string>
     <string-array name="transports">
         <item>UDP</item>
         <item>TLS</item>
@@ -323,30 +326,31 @@ without your confirmation.</string>
         <item>720P</item>
         <item>1080P</item>
     </string-array>
-    <string name="menu_0">Сообщения</string>
-    <string name="open_key">Открыть клавиатуру</string>
-    <string name="alter_server">Альтернативный сервер</string>
-    <string name="minim_video">Сжимать видео</string>
-    <string name="hard">Высокий</string>
-    <string name="normal">Обычный</string>
-    <string name="low">Низкий</string>
-    <string name="add_task">Добавить задачу</string>
-    <string name="back_task">Назад к задачам</string>
-    <string name="delete">Удалить</string>
-    <string name="closed">Закрыть</string>
-    <string name="task_and">Задача # </string>
-    <string name="postav">Постановщик: </string>
-    <string name="otvetstv">Ответственный</string>
-    <string name="prior">Приоритет: </string>
-    <string name="dad_line">Срок выполнения: </string>
-    <string name="day">Дни: </string>
-    <string name="time">Часы: </string>
-    <string name="sozdana">Создана: </string>
-    <string name="edit_text">Редактировать</string>
-    <string name="vse"> все</string>
-    <string name="chek_list">Чек-лист: </string>
-    <string name="add_it">Добавить</string>
-    <string name="message_text">Сообщения: </string>
-    <string name="name_task">Название задачи</string>
-    <string name="write_task">Описание задачи</string>
+    <string name="search">Search</string>
+    <string name="menu_0">Messages</string>
+    <string name="open_key">Open keyboard</string>
+    <string name="alter_server">Alternative server</string>
+    <string name="minim_video">Compress video</string>
+    <string name="hard">High</string>
+    <string name="normal">Custom</string>
+    <string name="low"> Low</string>
+    <string name="add_task">Add task</string>
+    <string name="back_task"> Back to tasks</string>
+    <string name="delete"> Delete</string>
+    <string name="closed">Close</string>
+    <string name="task_and">Task # </string>
+    <string name="postav">Setter: </string>
+    <string name="otvetstv"> Responsible: </string>
+    <string name="prior">Priority: </string>
+    <string name="dad_line">Runtime: </string>
+    <string name="day">Days: </string>
+    <string name="time">Hours: </string>
+    <string name="sozdana">Created: </string>
+    <string name="edit_text">Edit</string>
+    <string name="vse"> all</string>
+    <string name="chek_list">Check list: </string>
+    <string name="add_it">Add</string>
+    <string name="message_text">Messages: </string>
+    <string name="name_task">Task name</string>
+    <string name="write_task">Task description</string>
 </resources>

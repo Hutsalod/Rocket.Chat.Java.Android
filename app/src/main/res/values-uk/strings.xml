@@ -322,7 +322,31 @@ without your confirmation.</string>
         <item>720P</item>
         <item>1080P</item>
     </string-array>
-    <string name="search">Пошук</string>
-    <string name="menu_0">Повідомлення</string>
-    <string name="open_key">Відкрити клавиатуру</string>
+    <string name = "search">Пошук</string>
+        <string name = "menu_0">Повідомлення</string>
+        <string name = "open_key">Відкрити клавіатуру</string>
+        <string name = "alter_server">Альтернативний сервер</string>
+        <string name = "minim_video">Стиснення відео</string>
+        <string name = "hard">Високий</string>
+        <string name = "normal">Спеціальний</string>
+        <string name = "low">Низький</string>
+        <string name = "add_task">Додати завдання</string>
+        <string name = "back_task">Повернутися до завдань</string>
+        <string name = "delete">Видалити</string>
+        <string name = "closed">Закрити</string>
+        <string name = "task_and">Завдання № </string>
+        <string name = "postav">Setter: </string>
+        <string name = "otvetstv">Відповідальний: </string>
+        <string name = "prior">Пріоритет: </string>
+        <string name = "dad_line">Час виконання: </string>
+        <string name = "day">Дні: </string>
+        <string name = "time">Години: </string>
+        <string name = "sozdana">Створено: </string>
+        <string name = "edit_text">Редагувати</string>
+        <string name = "vse"> усі</string>
+        <string name = "chek_list">Перевірка: </string>
+        <string name = "add_it">Додати</string>
+        <string name = "message_text">Повідомлення: </string>
+        <string name = "name_task">Назва завдання</string>
+        <string name = "write_task">Опис завдання</string>
 </resources>

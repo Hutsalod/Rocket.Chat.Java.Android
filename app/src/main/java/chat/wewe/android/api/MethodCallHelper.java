@@ -616,9 +616,9 @@ public class MethodCallHelper {
             .onSuccessTask(CONVERT_TO_JSON_ARRAY);
   }
 
-  public Task<JSONArray> getAllTaskAndUsersByUserId(final String status) {
+  public Task<JSONObject> getAllTaskAndUsersByUserId(final String status) {
     return call("getAllTaskAndUsersByUserId", TIMEOUT_MS, () -> new JSONArray().put(status))
-            .onSuccessTask(CONVERT_TO_JSON_ARRAY);
+            .onSuccessTask(CONVERT_TO_JSON_OBJECT);
   }
 
   private Task<Void> AddMsgToTask(final JSONObject messageJson) {

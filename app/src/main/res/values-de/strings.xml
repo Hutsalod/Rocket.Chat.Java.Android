@@ -320,7 +320,30 @@ without your confirmation.</string>
             <item> 1080P </item>
         </string-array>
     <string name="search">Suche</string>
-
     <string name="menu_0">Meldungen</string>
-    <string name="open_key">Öffnen Sie die Tastatur</string>.
+    <string name="open_key">Tastatur öffnen</string>
+    <string name="alter_server">Alternativer Server</string>
+    <string name="minim_video">Video komprimieren</string>
+    <string name="hard">Hoch</string>
+    <string name="normal">Normal</string>
+    <string name="low"> Niedrig</string>
+    <string name="add_task">Aufgabe hinzufügen</string>
+    <string name="back_task"> Zurück zu Aufgaben</string>
+    <string name="delete"> Löschen</string>
+    <string name="closed">Schließen</string>
+    <string name="task_and">Aufgabe # </string>
+    <string name="postav">Setter: </string>
+    <string name="otvetstv"> Verantwortlich: </string>
+    <string name="prior">Priorität: </string>
+    <string name="dad_line">Laufzeit: </string>
+    <string name="day">Tage: </string>
+    <string name="time">Stunden: </string>
+    <string name="sozdana">Erstellt: </string>
+    <string name="edit_text">Bearbeiten</string>
+    <string name="vse"> alle</string>
+    <string name="chek_list">Prüfliste: </string>
+    <string name="add_it">Hinzufügen</string>
+    <string name="message_text">Nachrichten: </string>
+    <string name="name_task"> Aufgabenname</string>
+    <string name="write_task"> Aufgabenbeschreibung</string>
 </resources>

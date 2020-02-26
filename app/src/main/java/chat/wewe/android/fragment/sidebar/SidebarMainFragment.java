@@ -498,6 +498,11 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     });
 
     rootView.findViewById(R.id.languageen).setOnClickListener(view -> {
+      SharedPreferences.Editor ed = SipData.edit();
+      ed.putString("LANG_APP", "KV");
+      ed.commit();
+      this.getActivity().finish();
+      startActivity(new Intent(getActivity(), Intro.class));
     });
 
     rootView.findViewById(R.id.languagede).setOnClickListener(view -> {

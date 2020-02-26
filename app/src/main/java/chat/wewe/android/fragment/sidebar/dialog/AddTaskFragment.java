@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -56,9 +57,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-/**
- * add Channel, add Private-group.
- */
+
 public class AddTaskFragment extends AbstractAddRoomDialogFragment implements NumberPicker.OnValueChangeListener{
   public String ActiveNumber = "", userId = "";
   private RecyclerView recyclerView,recyclerv_check;
@@ -66,15 +65,15 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
   private LinearLayout addTask,getTask,getTasks;
   private EditText editCheak,day,time;
   private Button closed,red,addCheck;
-  private Spinner spinner,prior;
-  private JSONArray info;
+  private Spinner spinner,prior,spinner2,spinner3;
+  private JSONArray info,users;
   private JSONObject object;
   private int position,size;
   private boolean editText = false;
   private CheckBox checkBox2;
   private ListView list_view;
   private TextView task_name,_taskText,_createdBy,date,text_day_line,text_prior,nameTaskin,msgTaskin,_responsible;
-  private String[] myArray, myName,items;
+  private String[] myArray, myName,items,add;
   private ArrayList<String> mNames = new ArrayList<>();
   private ArrayList<String> mCreatedBy= new ArrayList<>();
   private ArrayList<String> mPosition = new ArrayList<>();
@@ -86,7 +85,6 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
   private ArrayList<String> mitemText = new ArrayList<>();
   private ArrayList<Integer> mNumberIdCheck = new ArrayList<>();
   private ArrayList<Boolean> mcheck = new ArrayList<>();
-
 
   public AddTaskFragment() {
   }
@@ -101,8 +99,6 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
     fragment.setArguments(args);
     return fragment;
   }
-
-
 
   @Override
   protected int getLayout() {
@@ -124,6 +120,8 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
     text_day_line = getDialog().findViewById(R.id.text_day_line);
     text_prior = getDialog().findViewById(R.id.text_prior);
     editCheak = getDialog().findViewById(R.id.editCheak);
+    spinner2 = getDialog().findViewById(R.id.spinner2);
+    spinner3 = getDialog().findViewById(R.id.spinner3);
 
     task_name = getDialog().findViewById(R.id.task_name);
     _taskText = getDialog().findViewById(R.id._taskText);
@@ -133,7 +131,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
     closed = getDialog().findViewById(R.id.closed);
     red = getDialog().findViewById(R.id.red);
     addCheck = getDialog().findViewById(R.id.addCheck);
-    checkBox2 = getDialog().findViewById(R.id.addCheck);
+    checkBox2 = getDialog().findViewById(R.id.checkBox2);
 
     day = getDialog().findViewById(R.id.day);
     time = getDialog().findViewById(R.id.time);
@@ -142,7 +140,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
     msgTaskin = getDialog().findViewById(R.id.msgTaskin);
 
     userId = getArguments().getString("userId");
-    items = new String[]{"Высокий", "Обычный", "Низкий"};
+    items = new String[]{getString(R.string.hard), getString(R.string.normal), getString(R.string.low)};
 
     list_view = getDialog().findViewById(R.id.list_view);
 
@@ -172,31 +170,33 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
 
       for (int i = 1; i < info.length()+1; i++) {
         data[i] = info.getJSONObject(i-1).isNull("username") ? "" : info.getJSONObject(i-1).getString("username");
-
       }
 
-        prior.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, items));
+      prior.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, items));
       ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, data);
       adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
       spinner.setAdapter(adapter);
 
-        prior.setSelection(1);
+      prior.setSelection(1);
       return null;});
 
     buttonBlackList.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-          if(getTask.getVisibility()== GONE) {
-            addTask.setVisibility(addTask.getVisibility() == VISIBLE ? GONE : VISIBLE);
-            recyclerView.setVisibility(addTask.getVisibility() == VISIBLE ? GONE : VISIBLE);
-            buttonBlackList.setText(addTask.getVisibility() == VISIBLE ? "Назад к задачам" : "Добавить задачу");
+          if(recyclerView.getVisibility()== GONE) {
+            recyclerView.setVisibility(VISIBLE);
+            addTask.setVisibility(GONE);
+            getTask.setVisibility(GONE);
+            checkBox2.setVisibility(VISIBLE);
+            getTasks.setVisibility(GONE);
+            buttonBlackList.setText(getString(R.string.add_task));
           }else{
-              addTask.setVisibility(GONE);
-              getTask.setVisibility(GONE);
-              recyclerView.setVisibility(VISIBLE);
-              buttonBlackList.setText("Добавить задачу");
-            editText=false;
+              addTask.setVisibility(VISIBLE);
+              recyclerView.setVisibility(GONE);
+              checkBox2.setVisibility(GONE);
+              buttonBlackList.setText(getString(R.string.back_task) );
+              editText=false;
         }
         mitemId.clear();
         mitemText.clear();
@@ -225,8 +225,48 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
       public void onClick(View view) {
         if(checkBox2.isChecked()==true) {
           getTasks.setVisibility(VISIBLE);
+          methodCall.getAllTaskAndUsersByUserId(userId).onSuccessTask(task -> {
+            add = new String[task.getResult().getJSONArray("users").length()+1];
+            add[0] = "все";
+            for (int i = 1; i < task.getResult().getJSONArray("users").length()+1; i++) {
+              add[i] = task.getResult().getJSONArray("users").getString(i-1);
+
+            }
+            spinner2.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, add));
+            spinner3.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, add));
+            spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+              @Override
+              public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if(checkBox2.isChecked()==true) {
+                  restart(true);
+                }else {
+                  restart(false);
+                }
+              }
+
+              @Override
+              public void onNothingSelected(AdapterView<?> parentView) {
+              }
+            });
+            spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+              @Override
+              public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if(checkBox2.isChecked()==true) {
+                  restart(true);
+                }else {
+                  restart(false);
+                }
+              }
+
+              @Override
+              public void onNothingSelected(AdapterView<?> parentView) {
+              }
+            });
+            restart(true);
+            return null;});
         }else{
           getTasks.setVisibility(GONE);
+          restart(false);
         }
 
       }
@@ -239,7 +279,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
                   Toast.makeText(getContext(), task.getError().getMessage(), Toast.LENGTH_SHORT).show();
 
                   return null;
-              });restart();
+              });restart(false);
           }
       });
 
@@ -263,7 +303,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
         } catch (JSONException e) {
           e.printStackTrace();
         }
-        restart();
+        restart(false);
       dismiss();
       }
     });
@@ -283,7 +323,9 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
             addTask.setVisibility(VISIBLE);
             getTask.setVisibility(GONE);
             recyclerView.setVisibility(GONE);
-            buttonBlackList.setText("Отмена");
+            buttonBlackList.setText(getString(R.string.str_8));
+            getTasks.setVisibility(GONE);
+            checkBox2.setVisibility(GONE);
           }
       });
 
@@ -405,7 +447,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
       public void onRed(String uid, int position) {
         addTask.setVisibility(addTask.getVisibility()== VISIBLE ? GONE : VISIBLE);
         recyclerView.setVisibility(addTask.getVisibility()== VISIBLE ? GONE : VISIBLE);
-        buttonBlackList.setText(addTask.getVisibility()== VISIBLE ? "Отмена" : "Добавить задачу");
+        buttonBlackList.setText(addTask.getVisibility()== VISIBLE ? getString(R.string.str_8) : getString(R.string.add_task));
       }
 
       @Override
@@ -426,7 +468,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
               Toast.makeText(getContext(), task.getError().getMessage(), Toast.LENGTH_SHORT).show();
 
               return null;
-          });restart();
+          });restart(false);
       }
 
       @Override
@@ -435,7 +477,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
           Toast.makeText(getContext(), task.getError().getMessage(), Toast.LENGTH_SHORT).show();
 
           return null;
-        });restart();
+        });restart(false);
       }
     });
 
@@ -466,17 +508,17 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
         if(tab==info.getJSONObject(i).getInt("_numberId")) {
           object = info.getJSONObject(i);
 
-          task_name.setText("Задача #" + (info.getJSONObject(i).isNull("_numberId") ? " " : info.getJSONObject(i).getString("_numberId")) + (info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name")));
+          task_name.setText(getString(R.string.task_and) + (info.getJSONObject(i).isNull("_numberId") ? " " : info.getJSONObject(i).getString("_numberId")) + (info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name")));
           _taskText.setText(info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"));
-          _createdBy.setText("Постановщик: " + (info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy")));
-          _responsible.setText("Ответственный " + (info.getJSONObject(i).isNull("_responsible") ? " " : info.getJSONObject(i).getString("_responsible")));
-          text_prior.setText("Приоритет: " + (info.getJSONObject(i).isNull("_priority") ? " " : items[info.getJSONObject(i).getInt("_priority")]));
-          text_day_line.setText("Срок выполнения: " + "Дни: "+(info.getJSONObject(i).isNull("_deadline") ? " " : info.getJSONObject(i).getJSONArray("_deadline").getString(0))+ " Часы: "+(info.getJSONObject(i).isNull("_deadline") ? " " : info.getJSONObject(i).getJSONArray("_deadline").getString(1)));
-          date.setText("Создана: " + (new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date")))));
+          _createdBy.setText(getString(R.string.postav) + (info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy")));
+          _responsible.setText(getString(R.string.otvetstv) + (info.getJSONObject(i).isNull("_responsible") ? " " : info.getJSONObject(i).getString("_responsible")));
+          text_prior.setText(getString(R.string.prior) + (info.getJSONObject(i).isNull("_priority") ? " " : items[info.getJSONObject(i).getInt("_priority")]));
+          text_day_line.setText(getString(R.string.dad_line) + getString(R.string.day)+(info.getJSONObject(i).isNull("_deadline") ? " " : info.getJSONObject(i).getJSONArray("_deadline").getString(0))+ getString(R.string.time)+(info.getJSONObject(i).isNull("_deadline") ? " " : info.getJSONObject(i).getJSONArray("_deadline").getString(1)));
+          date.setText(getString(R.string.sozdana) + (new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date")))));
           if(object.getBoolean("_closed")==true) {
-            closed.setText("Удалить");
+            closed.setText(getString(R.string.delete));
           }else {
-            closed.setText("Закрыть");
+            closed.setText(getString(R.string.closed));
           }
           if(info.getJSONObject(i).getJSONArray("_messages").length()>0) {
             myArray = new String[info.getJSONObject(i).getJSONArray("_messages").length()];
@@ -509,10 +551,12 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
           break;
         }
       }
+      checkBox2.setVisibility(GONE);
+      getTasks.setVisibility(GONE);
       addTask.setVisibility(GONE);
       recyclerView.setVisibility(GONE);
       getTask.setVisibility(VISIBLE);
-      buttonBlackList.setText("Назад к задачам");
+      buttonBlackList.setText(getString(R.string.back_task));
     } catch (JSONException e) {
       e.printStackTrace();
     }
@@ -573,7 +617,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
     }
   }
 
-  public void restart(){
+  public void restart(boolean vse){
     mNames.clear();
     mCreatedBy.clear();
     mPosition.clear();
@@ -586,22 +630,45 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
     mNumberIdCheck.clear();
     mcheck.clear();
 
-    methodCall.getTask(ActiveNumber).onSuccessTask(task -> {
-      info = task.getResult();
-      for (int i = 0; i < info.length(); i++) {
-        if (info.getJSONObject(i).getString("_closed").equals("false")) {
-          add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
-        }
-      }
+      if(vse==false) {
+          methodCall.getTask(ActiveNumber).onSuccessTask(task -> {
+              info = task.getResult();
+              for (int i = 0; i < info.length(); i++) {
+                  if (info.getJSONObject(i).getString("_closed").equals("false")) {
+                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+                  }
+              }
 
-      for (int i = 0; i < info.length(); i++) {
-        if (info.getJSONObject(i).getString("_closed").equals("true")){
-          add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
-        }
+              for (int i = 0; i < info.length(); i++) {
+                  if (info.getJSONObject(i).getString("_closed").equals("true")) {
+                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+                  }
+              }
+              initRecyclerView();
+              return null;
+          });
+      }else {
+          methodCall.getAllTaskAndUsersByUserId(userId).onSuccessTask(task -> {
+              info = task.getResult().getJSONArray("tasks");
+              for (int i = 0; i < info.length(); i++) {
+                  if (info.getJSONObject(i).getString("_closed").equals("false")) {
+                    if (info.getJSONObject(i).getString("_createdBy").equals(spinner3.getSelectedItem().toString()) || "все".equals(spinner3.getSelectedItem().toString())) {
+                      if (info.getJSONObject(i).getString("_responsible").equals(spinner2.getSelectedItem().toString()) || "все".equals(spinner2.getSelectedItem().toString())) {
+                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+                  }}}
+              }
+
+              for (int i = 0; i < info.length(); i++) {
+                  if (info.getJSONObject(i).getString("_closed").equals("true")) {
+                    if (info.getJSONObject(i).getString("_createdBy").equals(spinner3.getSelectedItem().toString()) || "все".equals(spinner3.getSelectedItem().toString())) {
+                      if (info.getJSONObject(i).getString("_responsible").equals(spinner2.getSelectedItem().toString()) || "все".equals(spinner2.getSelectedItem().toString())) {
+                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+                  }}}
+              }
+              initRecyclerView();
+              return null;
+          });
       }
-      initRecyclerView();
-      getTask(position);
-      return null;});
   }
 
 
