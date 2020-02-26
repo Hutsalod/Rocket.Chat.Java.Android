@@ -56,6 +56,7 @@ import chat.wewe.android.fragment.chatroom.dialog.MessageOptionsDialogFragment;
 import chat.wewe.android.fragment.chatroom.dialog.UsersOfRoomDialogFragment;
 import chat.wewe.android.fragment.sidebar.dialog.AddChannelDialogFragment;
 import chat.wewe.android.fragment.sidebar.dialog.AddTaskFragment;
+import chat.wewe.android.fragment.sidebar.dialog.AddUsersDialogFragment;
 import chat.wewe.android.helper.AbsoluteUrlHelper;
 import chat.wewe.android.helper.FileUploadHelper;
 import chat.wewe.android.helper.LoadMoreScrollListener;
@@ -117,6 +118,7 @@ import static android.view.View.VISIBLE;
 import static chat.wewe.android.activity.MainActivity.BtnCall;
 import static chat.wewe.android.activity.MainActivity.btnVideoCall;
 import static chat.wewe.android.activity.MainActivity.task;
+import static chat.wewe.android.activity.MainActivity.user_add;
 import static chat.wewe.android.ui.VideoFragment.callSed;
 
 /**
@@ -226,6 +228,8 @@ public class RoomFragment extends AbstractChatRoomFragment implements
       presenter.loadMessages();
     }
 
+
+
     SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
 
 
@@ -286,13 +290,22 @@ public class RoomFragment extends AbstractChatRoomFragment implements
       }
     };
 
+
     task.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-      //  AddTask("k1","k2","k3");
         openDialog();
       }
     });
+
+    user_add.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        openDialogUsers();
+      }
+    });
+
+
 
     setupSideMenu();
     setupMessageComposer();
@@ -534,6 +547,8 @@ Log.d("MSG1","MSGLOG");
     }
   }
 
+
+
   public static boolean hasOpenedDialogs(FragmentActivity activity) {
     List<Fragment> fragments = activity.getSupportFragmentManager().getFragments();
     if (fragments != null) {
@@ -687,12 +702,14 @@ Log.d("MSG1","MSGLOG");
     String type = room.getType();
     roomType = room.getType();
     if (Room.TYPE_CHANNEL.equals(type)) {
+      animateShow(user_add);
+      animateShow(task);
       animateHide(BtnCall);
       animateHide(btnVideoCall);
-      animateHide(task);
       Log.d("yhntgb","TYPE  TYPE_CHANNEL"+roomId);
     } else if (Room.TYPE_PRIVATE.equals(type)) {
       animateShow(task);
+      animateShow(user_add);
       animateHide(BtnCall);
       animateHide(btnVideoCall);
       Log.d("yhntgb","TYPE  TYPE_PRIVATE"+roomId);
@@ -700,6 +717,7 @@ Log.d("MSG1","MSGLOG");
       animateShow(BtnCall);
       animateShow(btnVideoCall);
       animateHide(task);
+      animateHide(user_add);
       Log.d("yhntgb","TYPE  TYPE_DIRECT_MESSAGE"+roomId);
 
     } else {
@@ -818,4 +836,23 @@ Log.d("MSG1","MSGLOG");
     AddTaskFragment.create(hostname,roomId,userId).show(getActivity().getSupportFragmentManager(), "example dialog");
   }
 
+
+
+  public void openDialogUsers() {
+
+    AddUsersDialogFragment di = new AddUsersDialogFragment().create(hostname,roomId,userId);
+    di.setActionListener(new AddUsersDialogFragment.ActionListener() {
+      @Override
+      public void onClick(String uid) {
+        sendUsers(uid);
+      }
+    });
+    di.show(getActivity().getSupportFragmentManager(), "example dialog");
+
+
+  }
+
+  public void sendUsers(String msg){
+    presenter.sendMessage("@"+msg + " Добавить");
+  }
 }

@@ -153,7 +153,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   public static LinearLayout callUsers;
   public static AppCompatAutoCompleteTextView editText;
   public static RecyclerView recyclerViews;
-  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users,task;
+  public static  ImageView nazad,btnCreate,BtnCall,btnVideoCall,statusRoom,search_btn_users,task,user_add;
   public  ImageView statusUsers,statusUsers2,statusUsers3,statusUsers4, btnSearch;
   public static   TextView current_user_name;
   private CountDownTimer countDownTimer;
@@ -215,8 +215,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     SipData = getSharedPreferences("SIP", MODE_PRIVATE);
     callInt = new Intent(getApplicationContext(), chat.wewe.android.ui.MainActivity.class);
 
-
-
     navigation = (BottomNavigationView) findViewById(R.id.navigation);
     chat = (LinearLayout) findViewById(R.id.chat);
     call = (LinearLayout) findViewById(R.id.call);
@@ -234,6 +232,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     current_user_name = (TextView) findViewById(R.id.current_user_name);
     callUsers = (LinearLayout) findViewById(R.id.callUsers);
     task = (ImageView) findViewById(R.id.task);
+    user_add = (ImageView) findViewById(R.id.user_add);
     BtnCall = (ImageView) findViewById(R.id.BtnCall);
     btnSearch = (ImageView) findViewById(R.id.btnSearch);
     statusUsers = (ImageView) findViewById(R.id.stanUsers);
@@ -437,10 +436,16 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   }
 
   public void showPopup(View v) {
-    if(nazad.getVisibility() == View.VISIBLE) {
+    if(nazad.getVisibility() == View.VISIBLE && task.getVisibility() != View.VISIBLE) {
       PopupMenu popup = new PopupMenu(this, v);
       popup.setOnMenuItemClickListener(this);
       popup.inflate(R.menu.menu_users);
+      setForceShowIcon(popup);
+      popup.show();
+    }else{
+      PopupMenu popup = new PopupMenu(this, v);
+      popup.setOnMenuItemClickListener(this);
+      popup.inflate(R.menu.menu_users_group);
       setForceShowIcon(popup);
       popup.show();
     }
@@ -909,7 +914,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
   @Override
   public void showConnecting() {
-    StatusU=7;
+    StatusU=8;
     UserStatus();
   }
 

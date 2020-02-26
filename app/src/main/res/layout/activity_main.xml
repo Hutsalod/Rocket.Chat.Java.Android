@@ -430,8 +430,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:onClick="showPopup"
                     android:layout_marginRight="@dimen/margin_8"
+                    android:onClick="showPopup"
                     android:gravity="center"
                     android:text="@string/menu_0"
                     android:textColor="#1B1B1B"
@@ -455,6 +455,16 @@
                     android:text="Button"
                     android:visibility="gone"
                     app:srcCompat="@drawable/ic_sort_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/user_add"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="Button"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_user_registration_blue_24dp" />
 
                 <ImageView
                     android:id="@+id/BtnCall"

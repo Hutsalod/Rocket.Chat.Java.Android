@@ -256,19 +256,15 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
                       presenter.login(UF_ROCKET_LOGIN, UF_ROCKET_PASSWORD);
                       SharedPreferences.Editor ed = SipData.edit();
                       ed.putString("UF_SIP_NUMBER", UF_SIP_NUMBER);
-                      ed.commit();
                       ed.putString("UF_SIP_PASSWORD", UF_SIP_PASSWORD);
-                      ed.commit();
                       ed.putString("INNER_GROUP", INNER_GROUP);
                       ed.commit();
                       if(switchServer.isChecked()) {
                         ed.putString("UF_ROCKET_SERVER", UF_ROCKET_SERVER);
-                        ed.commit();
                         ed.putString("UF_SIP_SERVER", UF_SIP_SERVER);
                         ed.commit();
                       }else {
                         ed.putString("UF_ROCKET_SERVER", "chat.weltwelle.com");
-                        ed.commit();
                         ed.putString("UF_SIP_SERVER", "sip.weltwelle.com");
                         ed.commit();
                       }

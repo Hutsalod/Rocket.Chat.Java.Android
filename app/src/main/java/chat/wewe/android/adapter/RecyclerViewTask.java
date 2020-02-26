@@ -61,17 +61,17 @@ public class RecyclerViewTask extends RecyclerView.Adapter<RecyclerViewTask.View
         holder.data.setText(mData.get(position));
 
         if(mClosed.get(position)) {
-            holder.linerm.setBackgroundColor(Color.parseColor("#FFBED5"));
+            holder.linerm.setBackgroundColor(Color.parseColor("#F3F3F3"));
         }else {
-            holder.linerm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mListener.onGet(mNumberId.get(position));
-                }
-            });
-            holder.linerm.setBackgroundColor(Color.parseColor("#E2FAE3"));
-        }
 
+            holder.linerm.setBackgroundColor(Color.parseColor("#DCF1DF"));
+        }
+        holder.linerm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onGet(mNumberId.get(position));
+            }
+        });
 
         holder.red.setOnClickListener(new View.OnClickListener() {
             @Override

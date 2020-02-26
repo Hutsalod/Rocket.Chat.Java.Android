@@ -348,6 +348,11 @@ public class MethodCallHelper {
         .onSuccessTask(task -> Task.forResult(null));
   }
 
+  public Task<JSONArray> getUserRoles() {
+    return call("getUserRoles", TIMEOUT_MS, () -> new JSONArray())
+            .onSuccessTask(CONVERT_TO_JSON_ARRAY);
+  }
+
   public Task<Void> setUserPresence(final String status) {
     return call("UserPresence:" + status, TIMEOUT_MS)
         .onSuccessTask(task -> Task.forResult(null));
@@ -402,7 +407,7 @@ public class MethodCallHelper {
 
 
   //Добавить задачу
-  public Task<Void> AddTask(String roomId, String uid,String name, String taskText, String username,String responsible) {
+  public Task<Void> AddTask(String roomId, String uid,String name, String taskText, String username,String responsible,int priority,int day,int time) {
     try {
 
       Log.d("XSWQAZ",""+RealmSession.ID);
@@ -412,7 +417,9 @@ public class MethodCallHelper {
               .put("name", name)
               .put("taskText", taskText)
               .put("username", username)
-              .put("responsible", responsible);
+              .put("responsible", responsible)
+              .put("priority", priority)
+              .put("deadline", new JSONArray().put(day).put(time));
       Log.d("XSWQAZ",""+messageJson);
       return AddTask(messageJson);
 
@@ -442,21 +449,7 @@ public class MethodCallHelper {
     }
   }
 
-  //Редактировать задачу
-  public Task<Void> updateTask(String roomId,String numberId,String message) {
-    try {
 
-      Log.d("XSWQAZ",""+RealmSession.ID);
-      JSONObject messageJson = new JSONObject()
-              .put("rid", roomId)
-              .put("numberId", numberId)
-              .put("message", numberId);
-      return updateTask(messageJson);
-
-    } catch (JSONException exception) {
-      return Task.forError(exception);
-    }
-  }
 
   //Закрыть задачу
   public Task<Void> closeTask(String roomId,Integer numberId,String username) {
@@ -468,6 +461,75 @@ public class MethodCallHelper {
               .put("numberId", numberId)
               .put("username", username);
       return closeTask(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+  //Закрыть задачу
+  public Task<Void> removeTask(String roomId,Integer numberId,String username) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", roomId)
+              .put("numberId", numberId)
+              .put("uid", username);
+      return removeTask(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+  //Закрыть задачу
+  public Task<Void> addCheckListItem(String rid,String uid,int numberId,int itemId,String itemText) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", rid)
+              .put("uid", uid)
+              .put("numberId", numberId)
+              .put("itemId", itemId)
+              .put("itemText", itemText);
+      return addCheckListItem(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+  //Закрыть задачу
+  public Task<Void> removeCheckListItem(String rid,String uid,Integer numberId,Integer itemId) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", rid)
+              .put("uid", uid)
+              .put("numberId", numberId)
+              .put("itemId", itemId);
+      return removeCheckListItem(messageJson);
+
+    } catch (JSONException exception) {
+      return Task.forError(exception);
+    }
+  }
+
+  //Закрыть задачу
+  public Task<Void> checkUncheckItem(String rid,String uid,int numberId,int itemId,Boolean isCheck) {
+    try {
+
+      Log.d("XSWQAZ",""+RealmSession.ID);
+      JSONObject messageJson = new JSONObject()
+              .put("rid", rid)
+              .put("uid", uid)
+              .put("numberId", numberId)
+              .put("itemId", itemId)
+              .put("isCheck", isCheck);
+      return checkUncheckItem(messageJson);
 
     } catch (JSONException exception) {
       return Task.forError(exception);
@@ -551,7 +613,12 @@ public class MethodCallHelper {
 
   public Task<JSONArray> getTask(final String status) {
     return call("getTasks", TIMEOUT_MS, () -> new JSONArray().put(status))
-           .onSuccessTask(CONVERT_TO_JSON_ARRAY);
+            .onSuccessTask(CONVERT_TO_JSON_ARRAY);
+  }
+
+  public Task<JSONArray> getAllTaskAndUsersByUserId(final String status) {
+    return call("getAllTaskAndUsersByUserId", TIMEOUT_MS, () -> new JSONArray().put(status))
+            .onSuccessTask(CONVERT_TO_JSON_ARRAY);
   }
 
   private Task<Void> AddMsgToTask(final JSONObject messageJson) {
@@ -559,13 +626,33 @@ public class MethodCallHelper {
             .onSuccessTask(task -> Task.forResult(null));
   }
 
-  private Task<Void> updateTask(final JSONObject messageJson) {
+  public Task<Void> updateTask(final JSONObject messageJson) {
     return call("updateTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
             .onSuccessTask(task -> Task.forResult(null));
   }
 
   private Task<Void> closeTask(final JSONObject messageJson) {
     return call("closeTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> removeTask(final JSONObject messageJson) {
+    return call("removeTask", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> addCheckListItem(final JSONObject messageJson) {
+    return call("addCheckListItem", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> removeCheckListItem(final JSONObject messageJson) {
+    return call("removeCheckListItem", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
+  private Task<Void> checkUncheckItem(final JSONObject messageJson) {
+    return call("checkUncheckItem", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
             .onSuccessTask(task -> Task.forResult(null));
   }
 

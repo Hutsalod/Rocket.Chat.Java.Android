@@ -398,16 +398,11 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     });
 
     rootView.findViewById(R.id.supportConnect).setOnClickListener(view -> {
-      Intent email = new Intent(Intent.ACTION_SEND);
-      email.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@weltwelle.com"});
-      email.putExtra(Intent.EXTRA_SUBJECT, "Support on Android application");
-      email.putExtra(Intent.EXTRA_TEXT, "Support");
-      email.setData(Uri.parse("mailto:"));
-      email.setType("text/plain");
-      try {
-        startActivity(Intent.createChooser(email, ""));
-      } catch (android.content.ActivityNotFoundException ex) {
-      }
+      Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+              "mailto","support@weltwelle.com", null));
+      emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support on Android application");
+      emailIntent.putExtra(Intent.EXTRA_TEXT, "Support");
+      startActivity(Intent.createChooser(emailIntent, "Support"));
     });
 
       rootView.findViewById(R.id.blaclist).setOnClickListener(view -> {
