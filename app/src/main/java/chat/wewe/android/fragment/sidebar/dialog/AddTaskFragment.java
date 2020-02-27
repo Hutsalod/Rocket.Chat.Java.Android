@@ -80,6 +80,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
   private ArrayList<String> mData = new ArrayList<>();
   private ArrayList<Integer> mNumberId = new ArrayList<>();
   private ArrayList<Boolean> mClosed = new ArrayList<>();
+  private ArrayList<String> mRid= new ArrayList<>();
 
   private ArrayList<Integer> mitemId = new ArrayList<>();
   private ArrayList<String> mitemText = new ArrayList<>();
@@ -150,13 +151,13 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
               info = task.getResult();
       for (int i = 0; i < info.length(); i++) {
         if (info.getJSONObject(i).getString("_closed").equals("false")) {
-          add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+          add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"),info.getJSONObject(i).getString("_rid"));
         }
         }
 
       for (int i = 0; i < info.length(); i++) {
         if (info.getJSONObject(i).getString("_closed").equals("true")){
-          add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+          add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"),info.getJSONObject(i).getString("_rid"));
       }
       }
       initRecyclerView();
@@ -412,13 +413,14 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
     d.show();
   }
 
-  private void add(String name,String uid,String createdBy,String data,Integer numberId,Boolean closed){
+  private void add(String name,String uid,String createdBy,String data,Integer numberId,Boolean closed,String rid){
     mNames.add(name);
     mPosition.add(uid);
     mCreatedBy.add(createdBy);
     mData.add(data);
     mNumberId.add(numberId);
     mClosed.add(closed);
+    mRid.add(rid);
   }
 
   private void addCheck(int itemId,String itemText,Boolean check,int numberId){
@@ -429,7 +431,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
   }
 
   public void initRecyclerView(){
-    RecyclerViewTask adapter = new RecyclerViewTask(getContext(), mNames,mPosition,mCreatedBy,mData,mNumberId,mClosed);
+    RecyclerViewTask adapter = new RecyclerViewTask(getContext(), mNames,mPosition,mCreatedBy,mData,mNumberId,mClosed,mRid);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     adapter.setActionListener(new RecyclerViewTask.ActionListener() {
@@ -451,8 +453,10 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
       }
 
       @Override
-      public void onGet(int position) {
+      public void onGet(int position,String roomId) {
         getTask(position);
+        if(checkBox2.isChecked())
+        mListener.onClick(roomId);
       }
     });
   }
@@ -635,13 +639,13 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
               info = task.getResult();
               for (int i = 0; i < info.length(); i++) {
                   if (info.getJSONObject(i).getString("_closed").equals("false")) {
-                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"),info.getJSONObject(i).getString("_rid"));
                   }
               }
 
               for (int i = 0; i < info.length(); i++) {
                   if (info.getJSONObject(i).getString("_closed").equals("true")) {
-                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"),info.getJSONObject(i).getString("_rid"));
                   }
               }
               initRecyclerView();
@@ -654,7 +658,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
                   if (info.getJSONObject(i).getString("_closed").equals("false")) {
                     if (info.getJSONObject(i).getString("_createdBy").equals(spinner3.getSelectedItem().toString()) || "все".equals(spinner3.getSelectedItem().toString())) {
                       if (info.getJSONObject(i).getString("_responsible").equals(spinner2.getSelectedItem().toString()) || "все".equals(spinner2.getSelectedItem().toString())) {
-                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"),info.getJSONObject(i).getString("_rid"));
                   }}}
               }
 
@@ -662,7 +666,7 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
                   if (info.getJSONObject(i).getString("_closed").equals("true")) {
                     if (info.getJSONObject(i).getString("_createdBy").equals(spinner3.getSelectedItem().toString()) || "все".equals(spinner3.getSelectedItem().toString())) {
                       if (info.getJSONObject(i).getString("_responsible").equals(spinner2.getSelectedItem().toString()) || "все".equals(spinner2.getSelectedItem().toString())) {
-                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"));
+                      add(info.getJSONObject(i).isNull("_name") ? " " : info.getJSONObject(i).getString("_name"), info.getJSONObject(i).isNull("_taskText") ? " " : info.getJSONObject(i).getString("_taskText"), info.getJSONObject(i).isNull("_createdBy") ? " " : info.getJSONObject(i).getString("_createdBy"), new SimpleDateFormat("dd.MM.yyyy hh:mm").format(new java.util.Date((long) info.getJSONObject(i).getJSONObject("_date").getLong("$date"))), info.getJSONObject(i).isNull("_numberId") ? 0 : info.getJSONObject(i).getInt("_numberId"), info.getJSONObject(i).isNull("_closed") ? false : info.getJSONObject(i).getBoolean("_closed"),info.getJSONObject(i).getString("_rid"));
                   }}}
               }
               initRecyclerView();
@@ -671,6 +675,17 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
       }
   }
 
+
+
+  public interface ActionListener{
+    void onClick(String uid);
+  }
+
+  private AddTaskFragment.ActionListener mListener;
+
+  public void setActionListener(AddTaskFragment.ActionListener listener){
+    mListener = listener;
+  }
 
 
 }

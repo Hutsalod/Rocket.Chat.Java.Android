@@ -32,16 +32,18 @@ public class RecyclerViewTask extends RecyclerView.Adapter<RecyclerViewTask.View
     private ArrayList<String> mData = new ArrayList<>();
     private ArrayList<Integer> mNumberId = new ArrayList<>();
     private ArrayList<Boolean> mClosed = new ArrayList<>();
+    private ArrayList<String> mRid= new ArrayList<>();
     private int set = 0;
     private Context mContext;
 
-    public RecyclerViewTask(Context context, ArrayList<String> imageNames, ArrayList<String> position, ArrayList<String> createdBy, ArrayList<String> data, ArrayList<Integer> numberId,ArrayList<Boolean>  closed) {
+    public RecyclerViewTask(Context context, ArrayList<String> imageNames, ArrayList<String> position, ArrayList<String> createdBy, ArrayList<String> data, ArrayList<Integer> numberId,ArrayList<Boolean>  closed,ArrayList<String> rid) {
         mPosition = position;
         mImageNames = imageNames;
         mCreatedBy = createdBy;
         mData = data;
         mNumberId = numberId;
         mClosed = closed;
+        mRid = rid;
         mContext = context;
 
     }
@@ -69,7 +71,7 @@ public class RecyclerViewTask extends RecyclerView.Adapter<RecyclerViewTask.View
         holder.linerm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onGet(mNumberId.get(position));
+                mListener.onGet(mNumberId.get(position),mRid.get(position));
             }
         });
 
@@ -116,7 +118,7 @@ public class RecyclerViewTask extends RecyclerView.Adapter<RecyclerViewTask.View
     public interface ActionListener{
         void onClick(String uid,  int position);
         void onRed(String uid,  int position);
-        void onGet( int position);
+        void onGet( int position,String rid);
     }
 
     private ActionListener mListener;

@@ -90,7 +90,7 @@ public class AddUsersDialogFragment extends AbstractAddRoomDialogFragment {
   @Override
   protected Task<Void> getMethodCallForSubmitAction() {
 
-      return methodCall.createChannel("", true);
+      return methodCall.createChannel("", "", true);
 
   }
 

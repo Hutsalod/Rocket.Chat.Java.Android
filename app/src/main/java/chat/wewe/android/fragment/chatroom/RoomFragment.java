@@ -48,6 +48,7 @@ import java.util.TimerTask;
 
 import chat.wewe.android.BackgroundLooper;
 import chat.wewe.android.R;
+import chat.wewe.android.activity.MainActivity;
 import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.MethodCallHelper;
 import chat.wewe.android.api.UtilsApiChat;
@@ -59,6 +60,7 @@ import chat.wewe.android.fragment.sidebar.dialog.AddTaskFragment;
 import chat.wewe.android.fragment.sidebar.dialog.AddUsersDialogFragment;
 import chat.wewe.android.helper.AbsoluteUrlHelper;
 import chat.wewe.android.helper.FileUploadHelper;
+import chat.wewe.android.helper.KeyboardHelper;
 import chat.wewe.android.helper.LoadMoreScrollListener;
 import chat.wewe.android.helper.Logger;
 import chat.wewe.android.helper.OnBackPressListener;
@@ -117,6 +119,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static chat.wewe.android.activity.MainActivity.BtnCall;
 import static chat.wewe.android.activity.MainActivity.btnVideoCall;
+import static chat.wewe.android.activity.MainActivity.current_user_name;
+import static chat.wewe.android.activity.MainActivity.nazad;
 import static chat.wewe.android.activity.MainActivity.task;
 import static chat.wewe.android.activity.MainActivity.user_add;
 import static chat.wewe.android.ui.VideoFragment.callSed;
@@ -700,6 +704,10 @@ Log.d("MSG1","MSGLOG");
   @Override
   public void render(Room room) {
     String type = room.getType();
+      if(nazad.getVisibility()==VISIBLE)
+      current_user_name.setText(" " +room.getName());
+
+
     roomType = room.getType();
     if (Room.TYPE_CHANNEL.equals(type)) {
       animateShow(user_add);
@@ -724,7 +732,8 @@ Log.d("MSG1","MSGLOG");
       Log.d("yhntgb","TYPE  ELSE");
       setToolbarRoomIcon(0);
     }
-    setToolbarTitle(room.getName());
+
+
 
     boolean unreadMessageExists = room.isAlert();
     if (newMessageIndicatorManager != null && previousUnreadMessageExists && !unreadMessageExists) {
@@ -833,7 +842,14 @@ Log.d("MSG1","MSGLOG");
   }
 
   public void openDialog() {
-    AddTaskFragment.create(hostname,roomId,userId).show(getActivity().getSupportFragmentManager(), "example dialog");
+    AddTaskFragment task = new AddTaskFragment().create(hostname,roomId,userId);
+    task.setActionListener(new AddTaskFragment.ActionListener() {
+      @Override
+      public void onClick(String uid) {
+        showRoom(uid);
+      }
+    });
+    task.show(getActivity().getSupportFragmentManager(), "example dialog");
   }
 
 
@@ -844,13 +860,19 @@ Log.d("MSG1","MSGLOG");
     di.setActionListener(new AddUsersDialogFragment.ActionListener() {
       @Override
       public void onClick(String uid) {
-        sendUsers(uid);
+     sendUsers(uid);
       }
     });
     di.show(getActivity().getSupportFragmentManager(), "example dialog");
 
 
   }
+
+  public void showRoom(String roomId){
+    ((MainActivity)getActivity()).showRoom(hostname,roomId);
+  }
+
+
 
   public void sendUsers(String msg){
     presenter.sendMessage("@"+msg + " Добавить");

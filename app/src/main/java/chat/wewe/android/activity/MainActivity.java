@@ -414,6 +414,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
    Boolean startRoom = getIntent().getBooleanExtra("startRoom",false);
    if(startRoom) openPushRoom();
     stopService(new Intent(getApplicationContext(),PortSipService.class));
+
+    current_user_name.setText(getString(R.string.menu_0));
   }
 
   public void SaveUserInfo() {
@@ -867,7 +869,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 }
 
   public void nazad(View view) {
-    showFragment(RoomFragment.create(hostname,roomId));
+    //showFragment(RoomFragment.create(hostname,roomId));
     animateHide(activity_main_container);
     animateShow(recyclerViews);
     animateShow(editText);
@@ -876,7 +878,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     animateHide(callUsers);
     animateHide(statusRoom);
 
-    current_user_name.setText("Сообщения");
+    current_user_name.setText(getString(R.string.menu_0));
 
 
   }

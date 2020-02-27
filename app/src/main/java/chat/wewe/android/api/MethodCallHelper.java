@@ -363,11 +363,12 @@ public class MethodCallHelper {
         .onSuccessTask(CONVERT_TO_JSON_OBJECT);
   }
 
-  public Task<Void> createChannel(final String name, final boolean readOnly) {
+  public Task<Void> createChannel(final String name,final String fname, final boolean readOnly) {
     return call("createChannel", TIMEOUT_MS, () -> new JSONArray()
         .put(name)
         .put(new JSONArray())
-        .put(readOnly))
+        .put(readOnly)
+        .put(fname))
         .onSuccessTask(task -> Task.forResult(null));
   }
 
