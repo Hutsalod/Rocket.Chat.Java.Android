@@ -348,6 +348,7 @@
                 android:background="#C8C7CB" />
 
             <TextView
+                android:id="@+id/version_info"
                 style="@style/sidebar_list_item"
                 android:layout_marginLeft="16dp"
                 android:drawablePadding="16dp"
@@ -520,16 +521,7 @@
                 android:layout_height="0.5dp"
                 android:background="#C8C7CB" />
 
-            <TextView
-                android:id="@+id/version_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/margin_8"
-                android:fontFamily="sans-serif-light"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textColor="#1B1B1B"
-                tools:text="" />
+
         </LinearLayout>
 
 

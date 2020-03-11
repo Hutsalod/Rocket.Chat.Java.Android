@@ -406,6 +406,20 @@ public class MethodCallHelper {
     }
   }
 
+  //Переслать сообщение
+  public Task<Void> forwardMessage(String id, String ridDestination,String ridSourse) {
+    try {
+      JSONObject messageJson = new JSONObject()
+              .put("id", id)
+              .put("ridDestination",ridDestination)
+              .put("ridSourse", ridSourse);
+      return forwardMessage(messageJson);
+
+    } catch (JSONException exception) {
+      Log.d("XSWQAZ","ERRRO"+exception);
+      return Task.forError(exception);
+    }
+  }
 
   //Добавить задачу
   public Task<Void> AddTask(String roomId, String uid,String name, String taskText, String username,String responsible,int priority,int day,int time) {
@@ -612,8 +626,18 @@ public class MethodCallHelper {
             .onSuccessTask(task -> Task.forResult(null));
   }
 
+  private Task<Void> forwardMessage(final JSONObject messageJson) {
+    return call("forwardMessage", TIMEOUT_MS, () -> new JSONArray().put(messageJson))
+            .onSuccessTask(task -> Task.forResult(null));
+  }
+
   public Task<JSONArray> getTask(final String status) {
     return call("getTasks", TIMEOUT_MS, () -> new JSONArray().put(status))
+            .onSuccessTask(CONVERT_TO_JSON_ARRAY);
+  }
+
+  public Task<JSONArray> rooms_get() {
+    return call("subscriptions/get", TIMEOUT_MS, () -> new JSONArray())
             .onSuccessTask(CONVERT_TO_JSON_ARRAY);
   }
 

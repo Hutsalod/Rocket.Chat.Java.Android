@@ -60,6 +60,7 @@
     <string name="two_factor_code">Двухфакторный код</string>
     <string name="navigation_search_rooms">Поиск комнат</string>
     <string name="edit_message">Редактировать сообщение</string>
+    <string name="forward_message">Переслать сообщение</string>
     <string name="delet_message">Удалить сообщение</string>
     <string name="copy_message">Копировать сообщение</string>
     <string name="message_options_no_message_info">К сожалению. Что-то случилось!</string>

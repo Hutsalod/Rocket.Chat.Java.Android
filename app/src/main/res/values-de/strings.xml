@@ -61,6 +61,7 @@
         <string name = "two_factor_code"> Zwei-Faktor-Code </string>
         <string name = "navigation_search_rooms"> Nach Räumen suchen </string>
         <string name = "edit_message"> Beitrag bearbeiten </string>
+    <string name="forward_message">Переслать сообщение</string>
         <string name = "delet_message"> Nachricht löschen </string>
         <string name = "copy_message"> Nachricht kopieren </string>
         <string name = "message_options_no_message_info"> Entschuldigung. Es ist etwas passiert! </string>

@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.fernandocejas.arrow.optional.Optional;
 import com.jakewharton.rxbinding2.support.v4.widget.RxDrawerLayout;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -379,7 +380,6 @@ public class RoomFragment extends AbstractChatRoomFragment implements
     messageOptionsDialogFragment.setOnMessageOptionSelectedListeners(message -> {
       messageOptionsDialogFragment.dismiss();
      onDeleteMessage(message);
-    //  onUsersMessage(message);
     });
 
     messageOptionsDialogFragment.setOnMessageOptionSelectedListenerss(message -> {
@@ -387,7 +387,14 @@ public class RoomFragment extends AbstractChatRoomFragment implements
       onCopy(message);
 
     });
-Log.d("MSG1","MSGLOG");
+
+    messageOptionsDialogFragment.setOnMessageOptionSelectedListenersss(message -> {
+      messageOptionsDialogFragment.dismiss();
+      forwardMessage(message);
+
+    });
+
+
     messageOptionsDialogFragment.show(getChildFragmentManager(), "MessageOptionsDialogFragment");
     return true;
   }
@@ -827,7 +834,11 @@ Log.d("MSG1","MSGLOG");
     methodCallHelper.deleteMessage(message.getId());
   }
 
+  public void forwardMessage(Message message) {
 
+    openDialogUserss(message);
+
+  }
 
   public void onCopy(Message message) {
 
@@ -852,11 +863,25 @@ Log.d("MSG1","MSGLOG");
     task.show(getActivity().getSupportFragmentManager(), "example dialog");
   }
 
+  public void openDialogUserss(Message message) {
 
+    AddUsersDialogFragment di = new AddUsersDialogFragment().create(hostname,roomId,userId,1);
+    di.setActionListener(new AddUsersDialogFragment.ActionListener() {
+      @Override
+      public void onClick(String uid) {
+       methodCallHelper.forwardMessage(message.getId(),uid,roomId);
+        showRoom(uid);
+
+      }
+    });
+    di.show(getActivity().getSupportFragmentManager(), "example dialog");
+
+
+  }
 
   public void openDialogUsers() {
 
-    AddUsersDialogFragment di = new AddUsersDialogFragment().create(hostname,roomId,userId);
+    AddUsersDialogFragment di = new AddUsersDialogFragment().create(hostname,roomId,userId,0);
     di.setActionListener(new AddUsersDialogFragment.ActionListener() {
       @Override
       public void onClick(String uid) {

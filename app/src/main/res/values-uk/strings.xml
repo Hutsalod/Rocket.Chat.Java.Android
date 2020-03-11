@@ -54,13 +54,14 @@
         <string name = "input_hostname_invalid_server_message"> Невірна версія сервера </string>
         <string name = "connection_error_try_later"> Там помилка з\'єднання. Будь ласка, спробуйте пізніше. </string>
 
-        <string name = "version_info_text"> Version: %s </string>
+        <string name = "version_info_text"> Версія: %s </string>
         <string name = "two_factor_authentication_title"> Двухфакторная аутентифікація </string>
         <string name = "open_your_authentication_app_and_enter_the_code"> Відкрийте додаток аутентифікації і введіть код </string>
         <string name = "two_factor_code"> Двохфакторну код </string>
         <string name = "navigation_search_rooms"> Пошук кімнат </string>
         <string name = "edit_message"> Редагувати повідомлення </string>
         <string name = "delet_message"> Видалити повідомлення </string>
+    <string name="forward_message">Переслать сообщение</string>
         <string name = "copy_message"> Копіювати повідомлення </string>
         <string name = "message_options_no_message_info"> На жаль. Щось трапилося! </string>
         <string name = "message_options_no_permissions_info"> У вас немає дозволів </string>

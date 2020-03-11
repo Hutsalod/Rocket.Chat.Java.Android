@@ -55,13 +55,14 @@
     <string name="input_hostname_invalid_server_message">Неверная версия сервера</string>
     <string name="connection_error_try_later">Там ошибка соединения. Пожалуйста, попробуйте позднее.</string>
 
-    <string name="version_info_text">Version: %s</string>
+    <string name="version_info_text">Версия: %s</string>
     <string name="two_factor_authentication_title">Двухфакторная аутентификация</string>
     <string name="open_your_authentication_app_and_enter_the_code">Откройте приложение аутентификации и введите код</string>
     <string name="two_factor_code">Двухфакторный код</string>
     <string name="navigation_search_rooms">Поиск комнат</string>
     <string name="search">Поиск</string>
     <string name="edit_message">Редактировать сообщение</string>
+    <string name="forward_message">Переслать сообщение</string>
     <string name="delet_message">Удалить сообщение</string>
     <string name="copy_message">Копировать сообщение</string>
     <string name="message_options_no_message_info">К сожалению. Что-то случилось!</string>

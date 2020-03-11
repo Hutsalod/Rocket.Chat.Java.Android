@@ -227,12 +227,12 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
         if(checkBox2.isChecked()==true) {
           getTasks.setVisibility(VISIBLE);
           methodCall.getAllTaskAndUsersByUserId(userId).onSuccessTask(task -> {
-            add = new String[task.getResult().getJSONArray("users").length()+1];
-            add[0] = "все";
-            for (int i = 1; i < task.getResult().getJSONArray("users").length()+1; i++) {
-              add[i] = task.getResult().getJSONArray("users").getString(i-1);
+              add = new String[task.getResult().getJSONArray("users").length()+1];
+              add[0] = "все";
+              for (int i = 1; i < task.getResult().getJSONArray("users").length()+1; i++) {
+                add[i] = task.getResult().getJSONArray("users").getString(i-1);
 
-            }
+              }
             spinner2.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, add));
             spinner3.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, add));
             spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

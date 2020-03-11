@@ -29,6 +29,23 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#C8C7CB" />
+
+    <Button
+        android:id="@+id/message_forward_send_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="@string/forward_message"
+        android:fontFamily="sans-serif-light"
+        android:textColor="#1B1B1B"
+        android:visibility="gone"
+        android:textSize="14sp"
+        tools:visibility="visible" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#C8C7CB" />
+
     <Button
         android:id="@+id/delete_btn"
         android:layout_width="match_parent"

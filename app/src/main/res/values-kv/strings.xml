@@ -65,6 +65,7 @@
     <string name="navigation_search_rooms">Search for rooms</string>
     <string name="edit_message">Edit message</string>.
     <string name="delet_message"> Delete message</string>
+    <string name="forward_message">Переслать сообщение</string>
     <string name="copy_message">Copy message</string>
     <string name="message_options_no_message_info"> Unfortunately. Something has happened!</string>
     <string name="message_options_no_permissions_info">You have no permissions</string>.

@@ -69,11 +69,23 @@ public class MessageOptionsDialogFragment extends BottomSheetDialogFragment {
     }
   };
 
+
+  private OnMessageOptionSelectedListenersss internalListenersss = new OnMessageOptionSelectedListenersss() {
+    @Override
+    public void onEdit(Message message) {
+      if (externalListenersss != null) {
+        externalListenersss.onEdit(message);
+      }
+    }
+  };
+
   private OnMessageOptionSelectedListener externalListener = null;
 
   private OnMessageOptionSelectedListener externalListeners = null;
 
   private OnMessageOptionSelectedListener externalListenerss = null;
+
+  private OnMessageOptionSelectedListener externalListenersss = null;
 
   public static MessageOptionsDialogFragment create(@NonNull Message message) {
     Bundle bundle = new Bundle();
@@ -98,6 +110,11 @@ public class MessageOptionsDialogFragment extends BottomSheetDialogFragment {
   public void setOnMessageOptionSelectedListenerss(
           OnMessageOptionSelectedListener onMessageOptionSelectedListener) {
     externalListenerss = onMessageOptionSelectedListener;
+  }
+
+  public void setOnMessageOptionSelectedListenersss(
+          OnMessageOptionSelectedListener onMessageOptionSelectedListener) {
+    externalListenersss = onMessageOptionSelectedListener;
   }
 
   @NonNull
@@ -157,6 +174,10 @@ public class MessageOptionsDialogFragment extends BottomSheetDialogFragment {
               coppy_btn.setVisibility(View.VISIBLE);
               coppy_btn.setOnClickListener(view -> internalListenerss.onEdit(pair.first));
 
+              View forwardMessage = bottomSheetDialog.findViewById(R.id.message_forward_send_action);
+              forwardMessage.setVisibility(View.VISIBLE);
+              forwardMessage.setOnClickListener(view -> internalListenersss.onEdit(pair.first));
+
               if (pair.second) {
                 bottomSheetDialog.findViewById(R.id.message_options_info)
                         .setVisibility(View.GONE);
@@ -166,6 +187,7 @@ public class MessageOptionsDialogFragment extends BottomSheetDialogFragment {
                 delete_btn.setOnClickListener(view -> internalListeners.onEdit(pair.first));
                 editView.setVisibility(View.VISIBLE);
                 editView.setOnClickListener(view -> internalListener.onEdit(pair.first));
+
 
               } else {
                /* ((TextView) bottomSheetDialog.findViewById(R.id.message_options_info))
@@ -216,6 +238,10 @@ public class MessageOptionsDialogFragment extends BottomSheetDialogFragment {
   }
 
   public interface OnMessageOptionSelectedListenerss {
+    void onEdit(Message message);
+  }
+
+  public interface OnMessageOptionSelectedListenersss {
     void onEdit(Message message);
   }
 }
