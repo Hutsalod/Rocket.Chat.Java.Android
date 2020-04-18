@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.portsip.OnPortSIPEvent;
 import com.portsip.PortSipEnumDefine;
 import com.portsip.PortSipErrorcode;
@@ -29,8 +30,11 @@ import chat.wewe.android.util.ContactManager;
 import chat.wewe.android.util.Ring;
 import chat.wewe.android.util.Session;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
+
+import static chat.wewe.android.activity.Intro.callSet;
 
 
 public class PortSipService extends Service implements OnPortSIPEvent {
@@ -64,13 +68,15 @@ public class PortSipService extends Service implements OnPortSIPEvent {
     public static final String EXTRA_CALL_SEESIONID = "SessionID";
     public static final String EXTRA_CALL_DESCRIPTION = "Description";
     public static final String EXTRA_PUSHTOKEN = "token";
-
+    RocketChatApplication application;
     private final String APPID = "chat.wewe.android";
     private PortSipSdk mEngine;
     private RocketChatApplication applicaton;
     private final int SERVICE_NOTIFICATION  = 31414;
     private String channelID = "PortSipService";
     private String pushToken;
+
+    HashMap<String, String> headers = new HashMap<String, String>();
 
     @Override
     public void onCreate() {
@@ -81,7 +87,7 @@ public class PortSipService extends Service implements OnPortSIPEvent {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            NotificationChannel channel = new NotificationChannel(channelID, "Sip", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel(channelID, "Sip", NotificationManager.IMPORTANCE_LOW);
             channel.enableLights(true);
             notificationManager.createNotificationChannel(channel);
 
@@ -123,7 +129,7 @@ public class PortSipService extends Service implements OnPortSIPEvent {
                 if (!TextUtils.isEmpty(pushToken) && CallManager.Instance().regist)
                 {
                     String pushMessage = "device-os=android;device-uid=" + pushToken + ";allow-call-push=true;allow-message-push=true;app-id=" + APPID;
-                    mEngine.addSipMessageHeader(-1, "REGISTER", 1, "portsip-push", pushMessage);
+                    mEngine.addSipMessageHeader(-1, "ALL", 1, "token", pushMessage);
                 }
             }
 
@@ -203,16 +209,19 @@ public class PortSipService extends Service implements OnPortSIPEvent {
 
         result = mEngine.initialize(PortSipEnumDefine.ENUM_TRANSPORT_TLS, "0.0.0.0", localPort,
                 PortSipEnumDefine.ENUM_LOG_LEVEL_NONE, dataPath,
-                8, "PortSIP SDK for Android", 0, 0, dataPath, "", false, null);
+                8, "", 0, 0, dataPath, "", false, null);
         if(result != PortSipErrorcode.ECoreErrorNone) {
             showTipMessage("initialize failure ErrorCode = " + result);
             mEngine.DeleteCallManager();
             CallManager.Instance().resetAll();
             return;
         }
+        mEngine.addSipMessageHeader(-1, "REGISTER", 1, "tokenYA", FirebaseInstanceId.getInstance().getToken());
+        mEngine.addSipMessageHeader(-1, "INVITE", 1, "tokenYA", FirebaseInstanceId.getInstance().getToken());
+
 
         result = mEngine.setUser(userName, displayName, authName, password,
-                userDomain, sipServer, sipServerPort, stunServer, stunServerPort, null, 5060);
+                userDomain, sipServer, sipServerPort, stunServer, stunServerPort, null, 5061);
 
         if(result != PortSipErrorcode.ECoreErrorNone)
         {
@@ -242,7 +251,7 @@ public class PortSipService extends Service implements OnPortSIPEvent {
 
         if (!TextUtils.isEmpty(pushToken)) {
             String pushMessage = "device-os=android;device-uid=" + pushToken + ";allow-call-push=true;allow-message-push=true;app-id=" + APPID;
-            mEngine.addSipMessageHeader(-1, "REGISTER", 1, "portsip-push", pushMessage);
+            mEngine.addSipMessageHeader(-1, "REGISTER", 1, "token", pushMessage);
         }
 
         mEngine.setInstanceId(getInstanceID());
@@ -255,6 +264,8 @@ public class PortSipService extends Service implements OnPortSIPEvent {
             mEngine.DeleteCallManager();
             CallManager.Instance().resetAll();
         }
+
+
     }
 
     private void showTipMessage(String tipMessage)
@@ -389,7 +400,7 @@ public class PortSipService extends Service implements OnPortSIPEvent {
     public void UnregisterToServerWithoutPush() {
         if (!TextUtils.isEmpty(pushToken)) {
             String pushMessage = "device-os=android;device-uid=" + pushToken + ";allow-call-push=false;allow-message-push=false;app-id=" + APPID;
-            mEngine.addSipMessageHeader(-1, "REGISTER", 1, "portsip-push", pushMessage);
+            mEngine.addSipMessageHeader(-1, "REGISTER", 1, "tokenYA", pushMessage);
         }
 
         mEngine.unRegisterServer();
@@ -917,6 +928,8 @@ public class PortSipService extends Service implements OnPortSIPEvent {
                 .setContentIntent(contentIntent)
                 .build();
 
+
+
         sendBroadcast(broadIntent);
     }
 
@@ -939,6 +952,15 @@ public class PortSipService extends Service implements OnPortSIPEvent {
                     mCpuLock.acquire();
                 }
             }
+
+            headers.put("guid",    "8D31B96A-02AC-4531-976F-A455686F8FE2");
+            headers.put("token",    FirebaseInstanceId.getInstance().getToken());
+
+
+            for (HashMap.Entry<String, String> entry : headers.entrySet()) {
+                applicaton.mEngine.addSipMessageHeader(-1, "INVITE", 1, entry.getKey(), entry.getValue());
+            }
+            applicaton.mEngine.sendVideo(applicaton.mEngine.call("wewe_token", true, callSet), true);
         } else {//close
             if (mCpuLock != null) {
                 synchronized (mCpuLock) {

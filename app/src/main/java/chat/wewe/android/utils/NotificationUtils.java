@@ -151,30 +151,7 @@ public class NotificationUtils {
         }
     }
 
-    /**
-     * Downloads push notification image before displaying it in
-     * the notification tray
-     *
-     * @param strURL : URL of the notification Image
-     * @return : BitMap representation of notification Image
-     */
-    private Bitmap getBitmapFromURL(String strURL) {
-        try {
-            URL url = new URL(strURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
-    /**
-     * Playing notification sound
-     */
     public void playNotificationSound() {
         try {
             Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE

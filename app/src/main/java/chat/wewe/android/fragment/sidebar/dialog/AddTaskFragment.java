@@ -61,9 +61,9 @@ import static android.view.View.VISIBLE;
 public class AddTaskFragment extends AbstractAddRoomDialogFragment implements NumberPicker.OnValueChangeListener{
   public String ActiveNumber = "", userId = "";
   private RecyclerView recyclerView,recyclerv_check;
-  private Button buttonBlackList;
+  private Button buttonBlackList,addMessage;
   private LinearLayout addTask,getTask,getTasks;
-  private EditText editCheak,day,time;
+  private EditText editCheak,day,time,textMessage;
   private Button closed,red,addCheck;
   private Spinner spinner,prior,spinner2,spinner3;
   private JSONArray info,users;
@@ -123,7 +123,9 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
     editCheak = getDialog().findViewById(R.id.editCheak);
     spinner2 = getDialog().findViewById(R.id.spinner2);
     spinner3 = getDialog().findViewById(R.id.spinner3);
+    textMessage = getDialog().findViewById(R.id.textMessage);
 
+    addMessage = getDialog().findViewById(R.id.addMessage);
     task_name = getDialog().findViewById(R.id.task_name);
     _taskText = getDialog().findViewById(R.id._taskText);
     _createdBy = getDialog().findViewById(R.id._createdBy);
@@ -283,6 +285,21 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
               });restart(false);
           }
       });
+
+    addMessage.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        methodCall.AddMsgToTask(ActiveNumber, position,textMessage.getText().toString(),userId).continueWith(task -> {
+        //  Toast.makeText(getContext(), task.getError().getMessage(), Toast.LENGTH_SHORT).show();
+          list_view.setAdapter(null);
+          getTask(position);
+          textMessage.setText("");
+          return null;
+        });
+
+
+      }
+    });
 
     closed.setOnClickListener(new View.OnClickListener() {
       @Override

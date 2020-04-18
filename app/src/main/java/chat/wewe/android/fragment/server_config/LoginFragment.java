@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,9 @@ import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import chat.wewe.android.R;
 import chat.wewe.android.Success;
 import chat.wewe.android.api.BaseApiService;
@@ -200,7 +204,10 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
   }
 
   private void loginRequest(){
-    mApiService.loginRequest(txtUsername.getText().toString(), txtPasswd.getText().toString(),idmodel,model,FirebaseInstanceId.getInstance().getToken())
+    String tokent = FirebaseInstanceId.getInstance().getToken();
+    if(idmodel.length()<2)
+      idmodel = "noiddevice";
+    mApiService.loginRequest(txtUsername.getText().toString(), txtPasswd.getText().toString(),idmodel,"GOOGLE",model,tokent,tokent)
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -213,10 +220,21 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
                       ed.putString("TOKENWE", TOKENwe);
                       ed.commit();
                       Log.i("MSG","TEST" +TOKENwe);
-                      getSettings();
+                      postCallvoip(TOKENwe);
+                      getSettings(TOKENwe);
                     }else {
-                      Toast.makeText(getActivity(), "Пользователь не найден" ,
-                              Toast.LENGTH_SHORT).show();
+                      switch (jsonRESULTS.getInt("ERROR_CODE")) {
+                        case 1: Toast.makeText(getActivity().getApplicationContext(), "Не верные данные", Toast.LENGTH_SHORT).show();
+                        break;
+                        case 2: Toast.makeText(getActivity().getApplicationContext(), "Пользователь не найден", Toast.LENGTH_SHORT).show();
+                          break;
+                        case 3: Toast.makeText(getActivity().getApplicationContext(), "Пользователь неактивен", Toast.LENGTH_SHORT).show();
+                          break;
+                        case 4: Toast.makeText(getActivity().getApplicationContext(), "Неверный пароль", Toast.LENGTH_SHORT).show();
+                          break;
+                        case 5: Toast.makeText(getActivity().getApplicationContext(), "Не найден пользователь по токену", Toast.LENGTH_SHORT).show();
+                          break;
+                      }
                     }
                   } catch (JSONException e) {
                     e.printStackTrace();
@@ -235,8 +253,64 @@ public class LoginFragment extends AbstractServerConfigFragment implements Login
             });
   }
 
-  private void getSettings(){
-    mApiService.getSettings(" KEY:"+TOKENwe)
+  public  void postCallvoip(String token){
+
+    Map<String, Object> jsonParams = new ArrayMap<>();
+    jsonParams.put("UF_PUSH_TOKEN", FirebaseInstanceId.getInstance().getToken());
+    mApiService.postPush("KEY:"+token,jsonParams)
+            .enqueue(new Callback<ResponseBody>() {
+              @Override
+              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                  try {
+                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                    Log.d("TREWQ",""+jsonRESULTS);
+                  } catch (JSONException e) {
+                    e.printStackTrace();
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                } else {
+                }
+              }
+
+              @Override
+              public void onFailure(Call<ResponseBody> call, Throwable t) {
+              }
+            });
+  }
+
+
+  public  void voipToken(){
+
+    Map<String, Object> jsonParams = new ArrayMap<>();
+    jsonParams.put("UF_VOIP_TOKEN", FirebaseInstanceId.getInstance().getToken());
+    mApiService.voip_token("KEY:"+SipData.getString("TOKENWE",""),jsonParams)
+            .enqueue(new Callback<ResponseBody>() {
+              @Override
+              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                  try {
+                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                    Log.d("TREWQ",""+jsonRESULTS);
+                  } catch (JSONException e) {
+                    e.printStackTrace();
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                } else {
+                }
+              }
+
+              @Override
+              public void onFailure(Call<ResponseBody> call, Throwable t) {
+              }
+            });
+  }
+
+
+  private void getSettings(String token){
+    mApiService.getSettings(" KEY:"+token)
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

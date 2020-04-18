@@ -50,6 +50,7 @@ import chat.wewe.android.activity.PinCode;
 import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.UtilsApi;
 import chat.wewe.android.api.UtilsApiChat;
+import chat.wewe.android.fragment.chatroom.RoomFragment;
 import chat.wewe.android.log.RCLog;
 import chat.wewe.android.service.PortSipService;
 import io.reactivex.Observable;
@@ -201,6 +202,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
     bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.delete);
    Log.d("TOKENWE", "TOKENWE"+SipData.getString("TOKENWE",""));
+
+
   }
 
   @Override
@@ -216,10 +219,6 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   @Override
   public void onPause() {
     presenter.release();
-    if(callstatic==5) {
-      callstatic=0;
-      setupLogoutButtons();
-    }
     super.onPause();
   }
 
@@ -271,7 +270,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         SharedPreferences.Editor eds = SipData.edit();
         eds.putString("getName", room.getName());
         eds.commit();
-        getStatus(getName);
+
         animateShow(activity_main_container);
       }
 
@@ -299,7 +298,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     blaclistScrol = (NestedScrollView) rootView.findViewById(R.id.blaclistScrol);
 
     recyclerViews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-   // new ItemTouchHelper(swipeController).attachToRecyclerView(recyclerViews);
+  //new ItemTouchHelper(swipeController).attachToRecyclerView(recyclerViews);
     recyclerViews.setAdapter(adapter);
 
     swipeController = new SwipeController(new SwipeControllerActions() {
@@ -347,6 +346,27 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
             Logger::report
         );
 
+
+
+
+
+     Boolean exit = getActivity().getIntent().getBooleanExtra("exit",false);
+    if(exit==true){
+
+      new AlertDialog.Builder(getContext())
+              .setTitle(getString(R.string.fragment_sidebar_main_logout_title)+ " ?")
+              .setMessage("")
+              .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                  exitPush();
+                }
+              })
+
+              // A null listener allows the button to dismiss the dialog and take no further action.
+              .setNegativeButton(android.R.string.no, null)
+              .show();
+
+    }
   }
 
   @SuppressLint("RxLeakedSubscription")
@@ -365,6 +385,10 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
                 .setVisibility(View.VISIBLE),
             Logger::report
         );
+  }
+
+  public void exitPush(){
+    presenter.onLogout();
   }
 
   private void setupUserStatusButtons() {
@@ -615,6 +639,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
   @Override
   public void showRoomList(@NonNull List<Room> roomList) {
     adapter.setRooms(roomList);
+
+
   }
 
   @Override
@@ -677,36 +703,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
     });
   }
 
-  public void getStatus(String roomName){
-    Log.d("Status3","true"+roomName);
-      statusRoom.setImageResource(R.drawable.ic_at_white_24dp);
-    mApiServiceChat.getStatus(roomName)
-            .enqueue(new Callback<ResponseBody>() {
-              @Override
-              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()){
-                  try {
-                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                    Log.d("Status3","true");
-                    if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
-                      statusRoom.setImageResource(R.drawable.ic_at_gray_24dp);
-                      Log.d("Status3","true");}
-                  } catch (JSONException e) {
-                    e.printStackTrace();
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                  }
-                } else {
-                }
-              }
 
-              @Override
-              public void onFailure(Call<ResponseBody> call, Throwable t) {
-                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
-
-              }
-            });
-  }
 
 
   public void DeleteGooglePay(){
@@ -804,6 +801,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
               });
     }
   }
+
+
 
   public String getMediaPath(Context ctx, Uri uri) {
     String path = "";

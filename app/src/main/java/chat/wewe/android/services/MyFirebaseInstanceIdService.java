@@ -1,11 +1,14 @@
 package chat.wewe.android.services;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import chat.wewe.android.service.PortSipService;
 
 /**
  * Created by Abhi on 12 Nov 2017 012.
@@ -20,10 +23,6 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
-        SharedPreferences SipData = getSharedPreferences("SIP", MODE_PRIVATE);
-        SharedPreferences.Editor ed = SipData.edit();
-        ed.putString("TOKEN_PUSH", refreshedToken);
-        ed.commit();
         // now subscribe to `global` topic to receive app wide notifications
         FirebaseMessaging.getInstance().subscribeToTopic(TOPIC_GLOBAL);
 
@@ -43,6 +42,9 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+        Intent srvIntent = new Intent(this, PortSipService.class);
+        srvIntent.setAction(PortSipService.ACTION_PUSH_TOKEN);
+        srvIntent.putExtra(PortSipService.EXTRA_PUSHTOKEN, token);
+        startService(srvIntent);
     }
 }

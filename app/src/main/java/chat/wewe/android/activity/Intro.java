@@ -1,17 +1,27 @@
 package chat.wewe.android.activity;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,14 +34,17 @@ import chat.wewe.android.R;
 import chat.wewe.android.Success;
 import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.UtilsApiChat;
+import chat.wewe.android.service.PortSipService;
 import chat.wewe.android.services.MyFirebaseMessagingService;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Intro extends AppCompatActivity {
+import static android.app.Notification.VISIBILITY_PUBLIC;
 
+public class Intro extends AppCompatActivity {
+    private static final int NOTIFICATION_ID = 200;
 
     private static final String TAG = "Intro";
     private CountDownTimer countDownTimer;
@@ -42,7 +55,8 @@ public class Intro extends AppCompatActivity {
     BaseApiService mApiServiceChat;
     public static String[]ListGetStatus = new String[1];
     String code;
-
+    private static final String CHANNEL_ID = "myChannel";
+    private static final String CHANNEL_NAME = "WeWe";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +64,11 @@ public class Intro extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.intro);
+
+
+
+
+
         SipData = getSharedPreferences("SIP", MODE_PRIVATE);
         mApiServiceChat = UtilsApiChat.getAPIService();
         getListStatus();
@@ -60,6 +79,8 @@ public class Intro extends AppCompatActivity {
         code = sPrefs.getString("code", "");
         sPref = getSharedPreferences("Setting", MODE_PRIVATE);
         setLocale(SipData.getString("LANG_APP", ""));
+
+        //SaveUserInfo();
 
         Log.d("getListStatusq", "NAME " + SipData.getString("LANG_APP", ""));
             countDownTimer = new CountDownTimer(800, 1000) {
@@ -141,5 +162,18 @@ public class Intro extends AppCompatActivity {
         android.content.res.Configuration conf = res.getConfiguration();
         conf.locale = new Locale(language_code.toLowerCase());
         res.updateConfiguration(conf, dm);
+    }
+
+    public void SaveUserInfo() {
+
+        Intent onLineIntent = new Intent(getApplicationContext(), PortSipService.class);
+        onLineIntent.putExtra(PortSipService.EXTRA_PUSHTOKEN, FirebaseInstanceId.getInstance().getToken());
+        onLineIntent.setAction(PortSipService.ACTION_SIP_REGIEST);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getApplicationContext().startForegroundService(onLineIntent);
+        }else{
+            getApplicationContext().startService(onLineIntent);
+        }
     }
 }

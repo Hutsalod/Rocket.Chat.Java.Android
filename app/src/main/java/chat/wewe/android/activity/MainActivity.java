@@ -411,11 +411,17 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       }
     });
 
-   Boolean startRoom = getIntent().getBooleanExtra("startRoom",false);
-   if(startRoom) openPushRoom();
-    stopService(new Intent(getApplicationContext(),PortSipService.class));
 
+
+
+    stopService(new Intent(getApplicationContext(),PortSipService.class));
     current_user_name.setText(getString(R.string.menu_0));
+
+
+    if(getIntent().getBooleanExtra("startRoom",false)==true) {
+      openPushRoom();
+    }
+
   }
 
   public void SaveUserInfo() {
@@ -760,6 +766,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
             new RocketChatCache(this)
     );
 
+
+
     updateSidebarMainFragment();
     presenter.bindView(this);
   }
@@ -832,13 +840,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           setting.setVisibility(VISIBLE);
 
 
-          SwitchCompat switch3 = (SwitchCompat)findViewById(R.id.switch3);
-          if(SipData.getBoolean("VIDEO_C", true)==true){
-            switch3.setChecked(true);
-          }else{
-           switch3.setChecked(false);
-          }
-
           Log.d("TEST22",""+SipData.getBoolean("VIDEO_C", true));
           TextView textView6 = (TextView)findViewById(R.id.textView6);
           if(callstatic==1)
@@ -910,13 +911,14 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
                     R.string.fragment_retry_login_error_title, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.fragment_retry_login_retry_title, view ->
                             presenter.onRetryLogin()));
+    presenter.onRetryLogin();
     StatusU=0;
     UserStatus();
   }
 
   @Override
   public void showConnecting() {
-    StatusU=8;
+    StatusU=7;
     UserStatus();
   }
 
@@ -1045,7 +1047,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
 
   public void getList(){
-    mApiServiceChat.getList(autoCompleteTextView.getText().toString())
+    mApiServiceChat.getList(autoCompleteTextView.getText().toString(),SipData.getString("TOKEN_RC",""),SipData.getString("RM_ID",""))
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -1131,6 +1133,8 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
               }
             });
   }
+
+
 
 
   private void UserStatus(){

@@ -41,7 +41,7 @@
     <string name="fragment_input_hostname_server_hint">chat.weltwelle.com</string>
     <string name="fragment_login_username_or_email">Имя пользователя </string>
     <string name="fragment_login_password">Пароль</string>
-    <string name="fragment_retry_login_retry_title">RETRY</string>
+    <string name="fragment_retry_login_retry_title">Обновить</string>
     <string name="fragment_retry_login_error_title">Ошибка соединения</string>
     <string name="server_config_activity_authenticating">Проверка подлинности ...</string>
     <string name="home_fragment_title">WeWe - Головна</string>

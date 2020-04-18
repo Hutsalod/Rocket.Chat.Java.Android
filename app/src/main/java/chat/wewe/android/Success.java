@@ -135,21 +135,16 @@ public class Success  extends AppCompatActivity implements IabBroadcastReceiver.
         SipData = getSharedPreferences("SIP", MODE_PRIVATE);
         UF_ORIGINAL_TRID2();
         textView = (TextView)findViewById(R.id.textView);
-        ClickableSpan clickableSpan = new ClickableSpan() {
+        textView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View widget) {
+            public void onClick(View view) {
                 finish();
             }
-        };
-        SpannableString ss = new SpannableString(textView.getText().toString());
-        ss.setSpan(clickableSpan, 29, 48, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        });
 
-        textView.setText(ss);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     public void exit(View view) {
-        callstatic = 5;
         finish();
     }
 

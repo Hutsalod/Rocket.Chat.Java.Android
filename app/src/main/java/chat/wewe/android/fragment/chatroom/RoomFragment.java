@@ -52,6 +52,7 @@ import chat.wewe.android.R;
 import chat.wewe.android.activity.MainActivity;
 import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.MethodCallHelper;
+import chat.wewe.android.api.UtilsApi;
 import chat.wewe.android.api.UtilsApiChat;
 import chat.wewe.android.fragment.chatroom.dialog.FileUploadProgressDialogFragment;
 import chat.wewe.android.fragment.chatroom.dialog.MessageOptionsDialogFragment;
@@ -122,6 +123,7 @@ import static chat.wewe.android.activity.MainActivity.BtnCall;
 import static chat.wewe.android.activity.MainActivity.btnVideoCall;
 import static chat.wewe.android.activity.MainActivity.current_user_name;
 import static chat.wewe.android.activity.MainActivity.nazad;
+import static chat.wewe.android.activity.MainActivity.statusRoom;
 import static chat.wewe.android.activity.MainActivity.task;
 import static chat.wewe.android.activity.MainActivity.user_add;
 import static chat.wewe.android.ui.VideoFragment.callSed;
@@ -174,10 +176,10 @@ public class RoomFragment extends AbstractChatRoomFragment implements
 
   public RoomFragment() {}
 
-  public String token;
+  public static String token;
   public static String userId;
   private String roomType;
-
+  BaseApiService mApiServiceChat;
   /**
    * create fragment with roomId.
    */
@@ -236,7 +238,7 @@ public class RoomFragment extends AbstractChatRoomFragment implements
 
 
     SipData = getActivity().getSharedPreferences("SIP", MODE_PRIVATE);
-
+    mApiServiceChat = UtilsApiChat.getAPIService();
 
   }
 
@@ -714,7 +716,7 @@ public class RoomFragment extends AbstractChatRoomFragment implements
       if(nazad.getVisibility()==VISIBLE)
       current_user_name.setText(" " +room.getName());
 
-
+    getStatus(room.getName(),token,userId);
     roomType = room.getType();
     if (Room.TYPE_CHANNEL.equals(type)) {
       animateShow(user_add);
@@ -891,6 +893,37 @@ public class RoomFragment extends AbstractChatRoomFragment implements
     di.show(getActivity().getSupportFragmentManager(), "example dialog");
 
 
+  }
+
+  public void getStatus(String roomName,String token,String id){
+    Log.d("Status3","true"+roomName + token +id);
+    statusRoom.setImageResource(R.drawable.ic_at_white_24dp);
+    mApiServiceChat.getStatus(roomName,token,id)
+            .enqueue(new Callback<ResponseBody>() {
+              @Override
+              public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                  try {
+                    JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                    Log.d("Status3","true");
+                    if(jsonRESULTS.getJSONObject("user").getString("status").equals("online")){
+                      statusRoom.setImageResource(R.drawable.ic_at_gray_24dp);
+                      Log.d("Status3","true");}
+                  } catch (JSONException e) {
+                    e.printStackTrace();
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                } else {
+                }
+              }
+
+              @Override
+              public void onFailure(Call<ResponseBody> call, Throwable t) {
+                //   Log.e("debug", "onFailure: ERROR > " + t.toString());
+
+              }
+            });
   }
 
   public void showRoom(String roomId){

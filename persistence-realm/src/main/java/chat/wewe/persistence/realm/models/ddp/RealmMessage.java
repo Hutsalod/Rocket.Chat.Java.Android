@@ -80,16 +80,30 @@ public class RealmMessage extends RealmObject {
     if (messageJson.getJSONObject("u").isNull("_id")) {
 
       String str = messageJson.getString("msg");
-      str.replace("#####","");
+      str = str.replace("#####","");
       String [] numbers = str.split("#");
 
-      messageJson.put("msg",  messageJson.getString("emoji")+" "+  numbers[Arrays.binarySearch(numbers, s)+1]);
-      messageJson.put("u", new JSONObject().put("_id","h4BoAASbp6jwrr7qs").put("name","Status"));
+
+      if(numbers[0].equals(s))
+        messageJson.put("msg",  messageJson.getString("emoji")+" "+  numbers[1]);
+      else
+        messageJson.put("msg",  messageJson.getString("emoji")+" "+  numbers[3]);
+      messageJson.put("u", new JSONObject().put("_id",s).put("name","Status").put("username","Status"));
+
+
       messageJson.remove("t");
-      messageJson.remove("unread");
+      if (!messageJson.isNull("isForward"))
+        messageJson.remove("unread");
+      if (!messageJson.isNull("isForward"))
+        messageJson.remove("unread");
       messageJson.remove("info");
       messageJson.remove("emoji");
       Log.d("DDD"," "+s+" "+messageJson.getString("msg")+" "+numbers);
+    }
+
+    if (!messageJson.isNull("isForward")) {
+      messageJson.remove("isForward");
+      messageJson.put("u", messageJson.getJSONObject("u").put("username","Переслано от "+messageJson.getJSONObject("u").getString("username")));
     }
 
     long editedAt = 0L;

@@ -223,9 +223,7 @@ public class PushNotificationHandler implements PushConstants {
                              Resources resources, String packageName, int notId) {
     Log.d(LOG_TAG, "create actions: with in-line");
     String actions = extras.getString(ACTIONS);
-    if (actions == null) {
-      return;
-    }
+
 
     try {
       JSONArray actionsArray = new JSONArray(actions);

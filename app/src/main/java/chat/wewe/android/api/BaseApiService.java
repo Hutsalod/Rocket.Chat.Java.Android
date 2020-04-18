@@ -36,10 +36,14 @@ public interface BaseApiService {
     public Call<ResponseBody> loginRequest(@Field("USER_LOGIN") String email,
                                            @Field("USER_PASSWORD") String password,
                                            @Field("DEVID") String devid,
+                                           @Field("DEVICE_TYPE") String type,
                                            @Field("DEVNAME") String devidname,
+                                           @Field("VOIP") String voip,
                                            @Field("PUSH") String push);
 
     // Fungsi ini untuk memanggil API http://10.0.2.2/mahasiswa/register.php
+
+
     @FormUrlEncoded
     @POST("rest_api/register/")
     public Call<ResponseBody> registerRequest(@Field("DEVID") String nama,
@@ -47,8 +51,24 @@ public interface BaseApiService {
                                               @Field("USER_PASSWORD") String password);
 
 
+    @Headers({"Content-type: application/json"})
+    @POST("rest/user/voip_token/")
+    public Call<ResponseBody> voip_token(@Header("Authorization-Token") String Token,@Body Map<String, Object> params);
+
     @GET("rest/user/settings/")
     Call<ResponseBody> getSettings(@Header("Authorization-Token") String authKeys);
+
+    @GET("rest/user/devices/")
+    Call<ResponseBody> getDevices(@Header("Authorization-Token") String authKeys);
+
+    @FormUrlEncoded
+    @GET("rest/user/access_device/")
+    Call<ResponseBody>getDevice(@Header("Authorization-Token") String authKeys);
+
+
+    @Headers({"Content-type: application/json"})
+    @POST("rest/user/push_token/")
+    Call<ResponseBody>postPush(@Header("Authorization-Token") String authKeys,@Body Map<String, Object> params);
 
     @FormUrlEncoded
     @POST("rest/user/access_device/")
@@ -64,13 +84,12 @@ public interface BaseApiService {
 
 
 
-    @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ"})
-    @GET("api/v1/users.info?")
-    public Call<ResponseBody>getStatus(@Query("username") String user);
 
-    @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ","Content-type: application/json"})
-    @GET("api/v1/spotlight?")
-    public Call<ResponseBody>getList(@Query("query") String user);
+    @GET("api/v1/users.info?")
+    public Call<ResponseBody>getStatus(@Query("username") String user,@Header("X-Auth-Token") String Token,@Header("X-User-Id") String id);
+
+@GET("api/v1/spotlight?")
+    public Call<ResponseBody>getList(@Query("query") String user,@Header("X-Auth-Token") String Token,@Header("X-User-Id") String id);
 
 
     @GET("rest/blacklist/get/")

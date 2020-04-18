@@ -47,12 +47,22 @@ public class RealmRoom extends RealmObject {
   public static JSONObject customizeJson(JSONObject roomSubscriptionJson) throws JSONException {
     if (!roomSubscriptionJson.isNull(LAST_SEEN)) {
       long ls = roomSubscriptionJson.getJSONObject(LAST_SEEN).getLong(JsonConstants.DATE);
+      if (!roomSubscriptionJson.isNull(TYPE)) {
+        String s = roomSubscriptionJson.getString(TYPE);
+        if (s.equals("p"))
+        roomSubscriptionJson.put("name",roomSubscriptionJson.getString("fname"));
+      }
       roomSubscriptionJson.remove(LAST_SEEN);
       roomSubscriptionJson.put(LAST_SEEN, ls);
     }
 
     if (!roomSubscriptionJson.isNull(UPDATED_AT)) {
       long updatedAt = roomSubscriptionJson.getJSONObject(UPDATED_AT).getLong(JsonConstants.DATE);
+      if (!roomSubscriptionJson.isNull(TYPE)) {
+        String s = roomSubscriptionJson.getString(TYPE);
+        if (s.equals("p"))
+          roomSubscriptionJson.put("name",roomSubscriptionJson.getString("fname"));
+      }
       roomSubscriptionJson.remove(UPDATED_AT);
       roomSubscriptionJson.put(UPDATED_AT, updatedAt);
     }

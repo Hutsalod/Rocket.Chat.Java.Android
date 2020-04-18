@@ -3,6 +3,9 @@ package chat.wewe.android.ui;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +14,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -28,6 +32,8 @@ import chat.wewe.android.util.CallManager;
 import chat.wewe.android.util.Ring;
 import chat.wewe.android.util.Session;
 
+import static android.app.Notification.VISIBILITY_PUBLIC;
+
 public class IncomingActivity extends Activity implements PortMessageReceiver.BroadcastListener, View.OnClickListener {
 
     public PortMessageReceiver receiver = null;
@@ -36,7 +42,11 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
     Button btnVideo;
     long mSessionid;
     boolean exit = false;
-
+    boolean notific = true;
+    private  final int NOTIFICATION_ID = 200;
+    private  final String PUSH_NOTIFICATION = "pushNotification";
+    private  final String CHANNEL_ID = "myChannel";
+    private  final String CHANNEL_NAME = "WeWe";
     static final int RESULT_ENABLE = 1;
 
     DevicePolicyManager deviceManger;
@@ -145,6 +155,47 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
                     case CLOSED:
                         Session anOthersession = CallManager.Instance().findIncomingCall();
                         if(anOthersession==null) {
+                            if(notific==true) {
+                                final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                                        getBaseContext(), CHANNEL_ID);
+                                Notification notification;
+
+
+                                //When Inbox Style is applied, user can expand the notification
+                                NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    notification = mBuilder.setSmallIcon(R.drawable.ic_stat_name).setTicker("").setWhen(0)
+                                            .setCategory(Notification.CATEGORY_MESSAGE)
+                                            .setAutoCancel(true)
+                                            .setContentTitle("WeWe")
+                                            .setStyle(inboxStyle)
+                                            .setSmallIcon(R.drawable.ic_stat_name)
+                                            .setContentText("Пропущенный звонок").build();
+
+                                } else {
+                                    notification = mBuilder.setSmallIcon(R.drawable.ic_stat_name).setTicker("ff").setWhen(0).setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                            .setCategory(Notification.CATEGORY_MESSAGE)
+                                            .setAutoCancel(true)
+                                            .setContentTitle("WeWe")
+                                            .setStyle(inboxStyle)
+                                            .setSmallIcon(R.drawable.ic_stat_name)
+                                            .setContentText("Пропущенный звонок").build();
+                                }
+
+
+                                NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                                            CHANNEL_NAME,
+                                            NotificationManager.IMPORTANCE_LOW);
+                                    notificationManager.createNotificationChannel(channel);
+
+                                }
+                                notificationManager.notify(NOTIFICATION_ID, notification);
+                            }
                             this.finish();
                         }else{
                             setVideoAnswerVisibility(anOthersession);
@@ -160,6 +211,7 @@ public class IncomingActivity extends Activity implements PortMessageReceiver.Br
 
     @Override
     public void onClick(View view) {
+        notific=false;
         if(application.mEngine!=null){
 
             Session currentLine = CallManager.Instance().findSessionBySessionID(mSessionid);

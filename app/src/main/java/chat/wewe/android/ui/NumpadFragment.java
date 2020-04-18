@@ -26,6 +26,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.portsip.PortSIPVideoRenderer;
 import com.portsip.PortSipEnumDefine;
 import com.portsip.PortSipSdk;
@@ -129,8 +130,10 @@ private int st = 0;
         onHiddenChanged(false);
         etSipNum.setText(getName);
         Log.d("REWQ","true"+getName);
+
         headers.put("guid",    "8D31B96A-02AC-4531-976F-A455686F8FE2");
-        Toast.makeText(getActivity(),"ggg",Toast.LENGTH_LONG);
+        headers.put("token",    FirebaseInstanceId.getInstance().getToken());
+
       if(getName!=null) {
 
           if (callstatic == 1 && setnupad == 1) {
