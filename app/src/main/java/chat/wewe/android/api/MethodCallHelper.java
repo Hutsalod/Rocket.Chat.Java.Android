@@ -749,6 +749,19 @@ public class MethodCallHelper {
         });
   }
 
+
+  public Task<JSONArray> getPermissionss() {
+
+
+    return call("permissions/get", TIMEOUT_MS)
+            .onSuccessTask(CONVERT_TO_JSON_ARRAY)
+            .onSuccessTask(task -> {
+      task.getResult();
+              return null;
+    });
+
+  }
+
   public Task<Void> getPermissions() {
     return call("permissions/get", TIMEOUT_MS)
         .onSuccessTask(CONVERT_TO_JSON_ARRAY)

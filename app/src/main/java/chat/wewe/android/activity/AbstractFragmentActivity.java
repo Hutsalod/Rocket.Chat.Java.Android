@@ -60,6 +60,7 @@ abstract class AbstractFragmentActivity extends RxAppCompatActivity {
     getSupportFragmentManager().beginTransaction()
         .replace(getLayoutContainerForFragment(), fragment)
         .commit();
+
   }
 
   protected void showFragmentWithBackStack(Fragment fragment) {

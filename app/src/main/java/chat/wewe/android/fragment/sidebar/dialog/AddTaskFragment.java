@@ -149,6 +149,11 @@ public class AddTaskFragment extends AbstractAddRoomDialogFragment implements Nu
 
     ActiveNumber = getArguments().getString("romid");
 
+    methodCall.getPermissionss().onSuccessTask(task -> {
+      task.getResult();
+
+      return null;});
+
     methodCall.getTask(ActiveNumber).onSuccessTask(task -> {
               info = task.getResult();
       for (int i = 0; i < info.length(); i++) {

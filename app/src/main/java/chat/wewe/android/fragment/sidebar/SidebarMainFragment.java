@@ -51,6 +51,8 @@ import chat.wewe.android.api.BaseApiService;
 import chat.wewe.android.api.UtilsApi;
 import chat.wewe.android.api.UtilsApiChat;
 import chat.wewe.android.fragment.chatroom.RoomFragment;
+import chat.wewe.android.fragment.sidebar.dialog.AddUsersDialogFragment;
+import chat.wewe.android.fragment.sidebar.dialog.LogDialogFragment;
 import chat.wewe.android.log.RCLog;
 import chat.wewe.android.service.PortSipService;
 import io.reactivex.Observable;
@@ -258,7 +260,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
         animateHide(btnCreate);
         animateShow(search_btn_users);
         animateHide(search_btn_users);
-        current_user_name.setText(" " +room.getName());
+       // current_user_name.setText(" " +room.getName());
         animateShow(statusRoom);
         getName=room.getName();
 
@@ -349,7 +351,7 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
 
 
 
-
+    Boolean startRoom = getActivity().getIntent().getBooleanExtra("startRoom",false);
      Boolean exit = getActivity().getIntent().getBooleanExtra("exit",false);
     if(exit==true){
 
@@ -367,6 +369,8 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
               .show();
 
     }
+
+
   }
 
   @SuppressLint("RxLeakedSubscription")
@@ -442,6 +446,11 @@ public class SidebarMainFragment extends AbstractFragment implements SidebarMain
       Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
       intent.putExtra("sms_body", "Hey, I'm using WeWe to chat and call. Join me! Apple - https://apps.apple.com/ua/app/wewe-phone/id1386715295, Android - https://play.google.com/store/apps/details?id=chat.wewe.android");
       startActivity(intent);
+    });
+
+    rootView.findViewById(R.id.log).setOnClickListener(view -> {
+      LogDialogFragment di = new LogDialogFragment().create();
+      di.show(getActivity().getSupportFragmentManager(), "example dialog");
     });
 
     rootView.findViewById(R.id.policy_mss).setOnClickListener(view -> {

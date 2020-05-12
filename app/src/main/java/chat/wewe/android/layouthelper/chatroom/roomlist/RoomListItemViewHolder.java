@@ -31,7 +31,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static chat.wewe.android.activity.Intro.ListGetStatus;
 
 
 public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
@@ -65,7 +64,7 @@ public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
         .setAlert(room.isAlert())
         .setUnreadCount(room.getUnread())
         .setTag(room);
-    getListStatus(room.getName());///Статуси
+  //  getListStatus(room.getName());///Статуси
   }
   
   public void bind(SpotlightRoom spotlightRoom) {
@@ -77,7 +76,7 @@ public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
         .setUnreadCount(0)
         .setTag(spotlightRoom);
 
-    getListStatus(spotlightRoom.getName());///Статуси
+   // getListStatus(spotlightRoom.getName());///Статуси
   }
 
 
@@ -91,20 +90,7 @@ public class RoomListItemViewHolder extends RecyclerView.ViewHolder {
     }
   }
 
-  public void getListStatus(final String roomNames){
 
-   for (int i = 0; i < ListGetStatus.length; i++) {
-
-      if (roomNames.equals(ListGetStatus[i])) {
-        Log.d("getListStatus", "OFF "+ListGetStatus[i]+"  "+ roomNames + "TRUE");
-        showUserStatusIcon(true);
-      }else{
-     // showUserStatusIcon(false);
-      }
-
-
-    }
-  }
 
   public void getStart(String roomNames){
     mApiService.getList()

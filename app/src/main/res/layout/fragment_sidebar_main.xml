@@ -508,6 +508,27 @@
                 android:textAppearance="?attr/textAppearanceListItemSmall"
                 android:fontFamily="sans-serif-light"
                 android:textColor="#1B1B1B" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="#C8C7CB" />
+
+            <TextView
+                android:id="@+id/log"
+
+                style="@style/sidebar_list_item"
+                android:layout_marginLeft="16dp"
+                android:drawablePadding="16dp"
+                android:fontFamily="sans-serif-light"
+                android:text="Log"
+                android:textAppearance="?attr/textAppearanceListItemSmall"
+                android:textColor="#1B1B1B"
+                android:textSize="14sp" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"

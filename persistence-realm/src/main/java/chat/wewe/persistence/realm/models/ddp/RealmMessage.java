@@ -78,7 +78,7 @@ public class RealmMessage extends RealmObject {
 
 
     if (messageJson.getJSONObject("u").isNull("_id")) {
-
+      if (messageJson.getString("t").equals("call-info")) {
       String str = messageJson.getString("msg");
       str = str.replace("#####","");
       String [] numbers = str.split("#");
@@ -91,7 +91,7 @@ public class RealmMessage extends RealmObject {
       messageJson.put("u", new JSONObject().put("_id",s).put("name","Status").put("username","Status"));
 
 
-      messageJson.remove("t");
+     messageJson.remove("t");
       if (!messageJson.isNull("isForward"))
         messageJson.remove("unread");
       if (!messageJson.isNull("isForward"))
@@ -99,7 +99,31 @@ public class RealmMessage extends RealmObject {
       messageJson.remove("info");
       messageJson.remove("emoji");
       Log.d("DDD"," "+s+" "+messageJson.getString("msg")+" "+numbers);
+      }
     }
+      if (!messageJson.isNull("msg")) {
+          if (messageJson.getString("msg").contains("#####")) {
+              String str = messageJson.getString("msg");
+              str = str.replace("#####", "");
+              String[] numbers = str.split("#");
+
+
+              if (numbers[0].equals(s))
+                  messageJson.put("msg", messageJson.getString("emoji") + " " + numbers[1]);
+              else
+                  messageJson.put("msg", messageJson.getString("emoji") + " " + numbers[3]);
+              messageJson.put("u", new JSONObject().put("_id", s).put("name", "WeWe").put("username", "WeWe"));
+
+
+              if (!messageJson.isNull("isForward"))
+                  messageJson.remove("unread");
+              if (!messageJson.isNull("isForward"))
+                  messageJson.remove("unread");
+              messageJson.remove("info");
+              messageJson.remove("emoji");
+          }
+      }
+
 
     if (!messageJson.isNull("isForward")) {
       messageJson.remove("isForward");

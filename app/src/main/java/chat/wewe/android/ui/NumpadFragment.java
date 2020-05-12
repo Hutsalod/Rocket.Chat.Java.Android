@@ -90,7 +90,6 @@ public class NumpadFragment extends BaseFragment implements AdapterView.OnItemSe
     private PortSIPVideoRenderer remoteRenderScreen = null;
     private PortSIPVideoRenderer localRenderScreen = null;
 
-private int st = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
@@ -131,7 +130,8 @@ private int st = 0;
         etSipNum.setText(getName);
         Log.d("REWQ","true"+getName);
 
-        headers.put("guid",    "8D31B96A-02AC-4531-976F-A455686F8FE2");
+        headers.put("guid",    UUID.randomUUID().toString());
+        headers.put("loginTO",    getName);
         headers.put("token",    FirebaseInstanceId.getInstance().getToken());
 
       if(getName!=null) {

@@ -63,6 +63,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,6 +83,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import bolts.Task;
+import chat.wewe.android.BackgroundLooper;
 import chat.wewe.android.LaunchUtil;
 import chat.wewe.android.R;
 import chat.wewe.android.RocketChatCache;
@@ -102,6 +104,7 @@ import chat.wewe.android.fragment.sidebar.SidebarMainFragment;
 import chat.wewe.android.fragment.sidebar.dialog.AddChannelDialogFragment;
 import chat.wewe.android.helper.AbsoluteUrlHelper;
 import chat.wewe.android.helper.KeyboardHelper;
+import chat.wewe.android.helper.Logger;
 import chat.wewe.android.layouthelper.chatroom.dialog.RoomUserAdapter;
 import chat.wewe.android.layouthelper.sidebar.dialog.SuggestUserAdapter;
 import chat.wewe.android.service.PortSipService;
@@ -119,6 +122,7 @@ import chat.wewe.persistence.realm.repositories.RealmServerInfoRepository;
 import chat.wewe.persistence.realm.repositories.RealmSessionRepository;
 import chat.wewe.persistence.realm.repositories.RealmUserRepository;
 import hugo.weaving.DebugLog;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.realm.Case;
 import okhttp3.ResponseBody;
@@ -182,21 +186,20 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   AutoCompleteTextView autoCompleteTextView;
   ContactAdapter contactAdapter;
   RecyclerView recyclerView;
-  String[] mCats;
   ArrayList<String> mCatsList;
 
-  public static boolean active = false;
+  //public static boolean active = false;
 
   @Override
   public void onStart() {
     super.onStart();
-    active = false;
+ //   active = false;
   }
 
   @Override
   public void onStop() {
     super.onStop();
-    active = true;
+ //   active = true;
   }
 
 
@@ -365,7 +368,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       public void afterTextChanged(Editable s) {
         if (s.length() > 0) {
           animateShow(search_btn_users);
-          getList();
+
         } else {
           animateShow(search_btn_users);
           animateHide(search_btn_users);
@@ -378,7 +381,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     UserStatus();
 
 
-
+    getList();
   /* if(SipData.getString("UF_SIP_NUMBER", "").length()>1 && callstatic==0 && StatusU>=4) {
     SaveUserInfo();
              Intent onLineIntent = new Intent(getBaseContext(), PortSipService.class);
@@ -411,18 +414,16 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       }
     });
 
-
-
-
     stopService(new Intent(getApplicationContext(),PortSipService.class));
-    current_user_name.setText(getString(R.string.menu_0));
+
+//    presenter.onOpenRoom(hostname, roomId);
 
 
-    if(getIntent().getBooleanExtra("startRoom",false)==true) {
-      openPushRoom();
-    }
+
 
   }
+
+
 
   public void SaveUserInfo() {
     SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplication()).edit();
@@ -770,12 +771,15 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
     updateSidebarMainFragment();
     presenter.bindView(this);
+
   }
 
   private void updateSidebarMainFragment() {
     getSupportFragmentManager().beginTransaction()
             .replace(R.id.sidebar_fragment_container, SidebarMainFragment.create(hostname))
             .commit();
+
+
   }
 
   @Override
@@ -792,7 +796,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
   @Override
   public void showHome() {
-    showFragment(RoomFragment.create(hostname, roomId));
+
   }
 
 
@@ -802,6 +806,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
     showFragment(RoomFragment.create(hostname, roomId));
     closeSidebarIfNeeded();
     KeyboardHelper.hideSoftKeyboard(this);
+
   }
 
   private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -840,12 +845,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
           setting.setVisibility(VISIBLE);
 
 
-          Log.d("TEST22",""+SipData.getBoolean("VIDEO_C", true));
-          TextView textView6 = (TextView)findViewById(R.id.textView6);
-          if(callstatic==1)
-            textView6.setText("Chat: Онлайн SIP: Онлайн");
-          else
-            textView6.setText("Chat: Онлайн SIP: Офлайн");
           setContact = 0;
           return true;
       }
@@ -870,7 +869,6 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 }
 
   public void nazad(View view) {
-    //showFragment(RoomFragment.create(hostname,roomId));
     animateHide(activity_main_container);
     animateShow(recyclerViews);
     animateShow(editText);
@@ -1047,24 +1045,29 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
 
 
   public void getList(){
-    mApiServiceChat.getList(autoCompleteTextView.getText().toString(),SipData.getString("TOKEN_RC",""),SipData.getString("RM_ID",""))
+    String TOKEN_RC = SipData.getString("TOKEN_RC","");
+    String ID_RC = SipData.getString("ID_RC","");
+    mApiServiceChat.getListStatus(TOKEN_RC,ID_RC)
             .enqueue(new Callback<ResponseBody>() {
               @Override
               public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()){
                   try {
+                    String[] mCats;
                     JSONObject json = new JSONObject(response.body().string());
                     JSONArray values = json.getJSONArray("users");
                     mCats = new String[values .length()];
 
                     for (int i = 0; i < values .length(); i++) {
                       JSONObject jsonobject = values .getJSONObject(i);
-                      name = jsonobject.getString("username");
+
+                      name = jsonobject.getString("name");
                       mCats[i] = ""+name;
                     }
+
                     mCatsList = new ArrayList<String>(Arrays.asList(mCats));
                     autoCompleteTextView.setAdapter(new ArrayAdapter<String>(MainActivity.this,
-                            android.R.layout.simple_dropdown_item_1line, mCats));
+                            R.layout.list_item_users, mCats));
                   } catch (JSONException e) {
                     e.printStackTrace();
                   } catch (IOException e) {
@@ -1201,7 +1204,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
   }
 
   public void openPushRoom(){
-    CountDownTimer countDownTimer = new CountDownTimer(2000, 1000) {
+    CountDownTimer countDownTimer = new CountDownTimer(5000, 1000) {
       @Override
       public void onTick(long millisUntilFinished) {
       }
@@ -1210,6 +1213,7 @@ public class MainActivity extends AbstractAuthedActivity implements MainContract
       public void onFinish() {
         recyclerViews.findViewHolderForAdapterPosition(0).itemView.performClick();
         cancel();
+        presenter.onOpenRoom(hostname, roomId);
       }
     };
     countDownTimer.start();

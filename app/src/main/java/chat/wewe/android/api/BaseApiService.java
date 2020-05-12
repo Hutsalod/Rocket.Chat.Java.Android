@@ -108,9 +108,8 @@ public interface BaseApiService {
     Call<JsonObject>getBlacklistDell(@Header("Authorization-Token") String Token,@Body Map<String, Object> params);
 
 
-    @Headers({"X-Auth-Token: hDUgZ30KAl4KG7_rofwCEBk0ewAl1CcrQGLZSx0i65x","X-User-Id: gdP4WgEFQ3mKhZXyJ"})
     @GET("api/v1/users.list?count=0")
-    public Call<ResponseBody>getListStatus();
+    Call<ResponseBody>getListStatus(@Header("X-Auth-Token") String Token,@Header("X-User-Id") String Id);
 
 
     @Headers({"Content-type: application/json"})

@@ -53,7 +53,6 @@ public class Intro extends AppCompatActivity {
     public static boolean callSet,subscription;
     SharedPreferences SipData,sPrefs,sPref;
     BaseApiService mApiServiceChat;
-    public static String[]ListGetStatus = new String[1];
     String code;
     private static final String CHANNEL_ID = "myChannel";
     private static final String CHANNEL_NAME = "WeWe";
@@ -71,7 +70,6 @@ public class Intro extends AppCompatActivity {
 
         SipData = getSharedPreferences("SIP", MODE_PRIVATE);
         mApiServiceChat = UtilsApiChat.getAPIService();
-        getListStatus();
         UF_SIP_NUMBER = SipData.getString("UF_SIP_NUMBER", null);
         UF_SIP_PASSWORD = SipData.getString("UF_SIP_PASSWORD", null);
         TOKENWE = SipData.getString("TOKENWE", null);
@@ -80,7 +78,7 @@ public class Intro extends AppCompatActivity {
         sPref = getSharedPreferences("Setting", MODE_PRIVATE);
         setLocale(SipData.getString("LANG_APP", ""));
 
-        //SaveUserInfo();
+     //   SaveUserInfo();
 
         Log.d("getListStatusq", "NAME " + SipData.getString("LANG_APP", ""));
             countDownTimer = new CountDownTimer(800, 1000) {
@@ -120,40 +118,7 @@ public class Intro extends AppCompatActivity {
 
         return super.dispatchKeyEvent(event);
     }
-    public void getListStatus(){
-        mApiServiceChat.getListStatus()
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            try {
-                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                                JSONArray values = jsonRESULTS.getJSONArray("users");
-                                ListGetStatus = new String[40];
-                                int s = 0;
-                                for (int i = 0; i < values.length(); i++) {
-                                    JSONObject jsonobject = values .getJSONObject(i);
-                                    if(jsonobject.getString("status").equals("online")) {
-                                        ListGetStatus[++s] = jsonobject.getString("username");
-                                        Log.d("getListStatus", "NAME " + jsonobject.getString("username")+"="+i);
-                                    }
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    }
-                });
-
-
-    }
 
     public void setLocale(String language_code){
         Activity activity = this;
